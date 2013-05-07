@@ -1,24 +1,42 @@
 package com.shyamu.translocwidget;
 
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Spinner;
  
 public class WidgetConfigurationActivity extends Activity{
     private int mAppWidgetId = 0 ;
+    
+    Spinner sSelectAgency, sSelectRoute, sSelectStop;
+    Button bReset, bMakeWidget;
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.configuration_activity); 
  
-        // Gettng the reference to the "Set Color" button
-        //Button btnSetColor = (Button) findViewById(R.id.btn_set_color);
- 
+        // Getting references to Spinners and Buttons
+        sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
+        sSelectRoute = (Spinner) findViewById(R.id.sSelectRoute);
+        sSelectStop = (Spinner) findViewById(R.id.sSelectStop);
+        bReset = (Button) findViewById(R.id.bReset);
+        bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
+
         // Defining a click event listener for the button "Set Color"
         OnClickListener setColorClickedListener  = new OnClickListener() {
  
@@ -40,6 +58,45 @@ public class WidgetConfigurationActivity extends Activity{
         // Setting the click listener on the "Set Color" button
        // btnSetColor.setOnClickListener(setColorClickedListener);
     }
+    
+    private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+          String response = "";
+          for (String url : urls) {
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            try {
+              HttpResponse execute = client.execute(httpGet);
+              InputStream content = execute.getEntity().getContent();
+
+              BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+              String s = "";
+              while ((s = buffer.readLine()) != null) {
+                response += s;
+              }
+
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          }
+          return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+          returnJsonString(result);
+        }
+        
+        public String returnJsonString(String result) {
+    		return result;
+    	}
+        
+      }
+
+	
+    
+    
  /*
     public void colorPicker() {
  
