@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectAgency"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        android:enabled="false"/>
 
     <Spinner
         android:id="@+id/sSelectStop"
@@ -25,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectRoute"
-        android:layout_marginTop="28dp" />
+        android:layout_marginTop="28dp"
+        android:enabled="false"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
