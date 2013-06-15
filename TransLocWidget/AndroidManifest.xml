@@ -28,7 +28,8 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
- 
+        <activity android:name=".AgencySpinnerActivity"/>
+
         <receiver android:name="AnalogClockWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

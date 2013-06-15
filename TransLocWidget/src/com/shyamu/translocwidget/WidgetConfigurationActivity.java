@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -30,9 +31,13 @@ public class WidgetConfigurationActivity extends Activity {
 	Spinner sSelectAgency, sSelectRoute, sSelectStop;
 	Button bReset, bMakeWidget;
 
-    ArrayAdapter<String> agencyLongNameArray = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item);
+    ArrayList<String> agencyLongNameArray = new ArrayList<String>();
     ArrayList<String> agencyShortNameArray = new ArrayList<String>();
     ArrayList<String> agencyIdArray = new ArrayList<String>();
+
+    ArrayList<String> routeLongNameArray = new ArrayList<String>();
+    ArrayList<String> routeShortNameArray = new ArrayList<String>();
+    ArrayList<String> routeIdArray = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,12 @@ public class WidgetConfigurationActivity extends Activity {
 		bReset = (Button) findViewById(R.id.bReset);
 		bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
 
-		// Populate agency spinner
+        // Make agency selected listener
+       AdapterView.OnItemSelectedListener agencySelectedListener = new AgencySpinnerActivity();
+       sSelectAgency.setOnItemSelectedListener(agencySelectedListener);
+
+
+        // Populate agency spinner
 		PopulateAgenciesTask task = new PopulateAgenciesTask();
 		task.execute(new String[] { "http://api.transloc.com/1.1/agencies.json" });
 
@@ -96,7 +106,6 @@ public class WidgetConfigurationActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
-			Log.v("DEBUG", response);
 
 			try {
 				JSONObject jObject = new JSONObject(response);
@@ -120,61 +129,67 @@ public class WidgetConfigurationActivity extends Activity {
 
 		}
 
-		
-		
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			
-			sSelectAgency.setAdapter(agencyLongNameArray);
+			ArrayAdapter<String> agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,agencyLongNameArray);
+			sSelectAgency.setAdapter(agencyArrayAdapter);
 		}
 
 	}
 
-    private class PopulateRoutesTask extends AsyncTask<String, Void, Void> {
+    private class PopulateRoutesTask extends AsyncTask<Void, Void, Void> {
 
-        ArrayAdapter<String> routeLongNameArray = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item);
-        ArrayList<String> routeShortNameArray = new ArrayList<String>();
-        ArrayList<String> routeIdArray = new ArrayList<String>();
+        String agencyId = "";
 
+        @Override
+        protected void onPreExecute() {
+           int position = sSelectAgency.getSelectedItemPosition();
+           agencyId = agencyIdArray.get(position);
+           Log.v("DEBUG","Selected agency ID is " + agencyId);
+           routeLongNameArray.clear();
+           routeIdArray.clear();
+           routeShortNameArray.clear();
+        }
 
-
-
-        protected Void doInBackground(String... urls) {
+        protected Void doInBackground(Void... voids) {
             String response = "";
-            for (String url : urls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                try {
-                    HttpResponse execute = client.execute(httpGet);
-                    InputStream content = execute.getEntity().getContent();
+            String url = "http://api.transloc.com/1.1/routes.json?agencies=" + agencyId;
 
-                    BufferedReader buffer = new BufferedReader(
-                            new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            try {
+                HttpResponse execute = client.execute(httpGet);
+                InputStream content = execute.getEntity().getContent();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                BufferedReader buffer = new BufferedReader(
+                        new InputStreamReader(content));
+                String s = "";
+                while ((s = buffer.readLine()) != null) {
+                    response += s;
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             Log.v("DEBUG", response);
 
             try {
                 JSONObject jObject = new JSONObject(response);
-                JSONArray jArray = jObject.getJSONArray("data");
-                for (int i = 0; i < jArray.length(); i++) {
-                    Log.v("From jArray",jArray.getJSONObject(i).getString(
+                JSONObject jObjectData = jObject.getJSONObject("data");
+                JSONArray jArrayAgency = jObjectData.getJSONArray(agencyId);
+                for(int i = 0; i < jArrayAgency.length(); i++)
+                {
+                    routeLongNameArray.add(jArrayAgency.getJSONObject(i).getString(
                             "long_name"));
-                    agencyLongNameArray.add(jArray.getJSONObject(i).getString(
-                            "long_name"));
-                    agencyShortNameArray.add(jArray.getJSONObject(i).getString(
+                    routeShortNameArray.add(jArrayAgency.getJSONObject(i).getString(
                             "short_name"));
-                    agencyIdArray.add(jArray.getJSONObject(i).getString(
-                            "agency_id"));
+                    routeIdArray.add(jArrayAgency.getJSONObject(i).getString(
+                            "route_id"));
                 }
+
+
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -190,7 +205,8 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            sSelectAgency.setAdapter(agencyLongNameArray);
+            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,routeLongNameArray);
+            sSelectRoute.setAdapter(routeArrayAdapter);
         }
 
     }
@@ -246,4 +262,26 @@ public class WidgetConfigurationActivity extends Activity {
 	 * 
 	 * }
 	 */
+
+    private class AgencySpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+            sSelectRoute.setEnabled(true);
+
+            // Get routes
+            PopulateRoutesTask task = new PopulateRoutesTask();
+            task.execute();
+
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
+    }
+
 }
+
+
