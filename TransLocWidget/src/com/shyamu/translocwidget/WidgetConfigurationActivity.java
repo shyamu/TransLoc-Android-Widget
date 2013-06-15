@@ -30,6 +30,10 @@ public class WidgetConfigurationActivity extends Activity {
 	Spinner sSelectAgency, sSelectRoute, sSelectStop;
 	Button bReset, bMakeWidget;
 
+    ArrayAdapter<String> agencyLongNameArray = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item);
+    ArrayList<String> agencyShortNameArray = new ArrayList<String>();
+    ArrayList<String> agencyIdArray = new ArrayList<String>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,6 +49,9 @@ public class WidgetConfigurationActivity extends Activity {
 		// Populate agency spinner
 		PopulateAgenciesTask task = new PopulateAgenciesTask();
 		task.execute(new String[] { "http://api.transloc.com/1.1/agencies.json" });
+
+        // Populate route spinner
+
 
 		// Defining a click event listener for the button "Set Color"
 		OnClickListener setColorClickedListener = new OnClickListener() {
@@ -69,13 +76,6 @@ public class WidgetConfigurationActivity extends Activity {
 
 	private class PopulateAgenciesTask extends AsyncTask<String, Void, Void> {
 
-		ArrayAdapter<String> agencyLongNameArray = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item);
-		ArrayList<String> agencyShortNameArray = new ArrayList<String>();
-		ArrayList<String> agencyIdArray = new ArrayList<String>();
-
-		
-		
-		
 		protected Void doInBackground(String... urls) {
 			String response = "";
 			for (String url : urls) {
@@ -114,6 +114,7 @@ public class WidgetConfigurationActivity extends Activity {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+                Log.e("JSON","ERROR in getting JSON data");
 			}
 			return null;
 
@@ -129,6 +130,70 @@ public class WidgetConfigurationActivity extends Activity {
 		}
 
 	}
+
+    private class PopulateRoutesTask extends AsyncTask<String, Void, Void> {
+
+        ArrayAdapter<String> routeLongNameArray = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item);
+        ArrayList<String> routeShortNameArray = new ArrayList<String>();
+        ArrayList<String> routeIdArray = new ArrayList<String>();
+
+
+
+
+        protected Void doInBackground(String... urls) {
+            String response = "";
+            for (String url : urls) {
+                DefaultHttpClient client = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(url);
+                try {
+                    HttpResponse execute = client.execute(httpGet);
+                    InputStream content = execute.getEntity().getContent();
+
+                    BufferedReader buffer = new BufferedReader(
+                            new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.v("DEBUG", response);
+
+            try {
+                JSONObject jObject = new JSONObject(response);
+                JSONArray jArray = jObject.getJSONArray("data");
+                for (int i = 0; i < jArray.length(); i++) {
+                    Log.v("From jArray",jArray.getJSONObject(i).getString(
+                            "long_name"));
+                    agencyLongNameArray.add(jArray.getJSONObject(i).getString(
+                            "long_name"));
+                    agencyShortNameArray.add(jArray.getJSONObject(i).getString(
+                            "short_name"));
+                    agencyIdArray.add(jArray.getJSONObject(i).getString(
+                            "agency_id"));
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e("JSON","ERROR in getting JSON data");
+            }
+            return null;
+
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            sSelectAgency.setAdapter(agencyLongNameArray);
+        }
+
+    }
 
 	/*
 	 * public void colorPicker() {
