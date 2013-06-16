@@ -27,8 +27,11 @@ import android.widget.Spinner;
 
 public class WidgetConfigurationActivity extends Activity {
 	private int mAppWidgetId = 0;
+    private String agencyId = "";
+    String routeId = "";
 
-	Spinner sSelectAgency, sSelectRoute, sSelectStop;
+
+    Spinner sSelectAgency, sSelectRoute, sSelectStop;
 	Button bReset, bMakeWidget;
 
     ArrayList<String> agencyLongNameArray = new ArrayList<String>();
@@ -38,6 +41,10 @@ public class WidgetConfigurationActivity extends Activity {
     ArrayList<String> routeLongNameArray = new ArrayList<String>();
     ArrayList<String> routeShortNameArray = new ArrayList<String>();
     ArrayList<String> routeIdArray = new ArrayList<String>();
+
+    ArrayList<String> stopLongNameArray = new ArrayList<String>();
+    ArrayList<String> stopShortNameArray = new ArrayList<String>();
+    ArrayList<String> stopIdArray = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +65,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         // Populate agency spinner
 		PopulateAgenciesTask task = new PopulateAgenciesTask();
-		task.execute(new String[] { "http://api.transloc.com/1.1/agencies.json" });
-
-        // Populate route spinner
-
+		task.execute();
 
 		// Defining a click event listener for the button "Set Color"
 		OnClickListener setColorClickedListener = new OnClickListener() {
@@ -84,30 +88,13 @@ public class WidgetConfigurationActivity extends Activity {
 		// btnSetColor.setOnClickListener(setColorClickedListener);
 	}
 
-	private class PopulateAgenciesTask extends AsyncTask<String, Void, Void> {
+	private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
 
-		protected Void doInBackground(String... urls) {
-			String response = "";
-			for (String url : urls) {
-				DefaultHttpClient client = new DefaultHttpClient();
-				HttpGet httpGet = new HttpGet(url);
-				try {
-					HttpResponse execute = client.execute(httpGet);
-					InputStream content = execute.getEntity().getContent();
+		protected Void doInBackground(Void... voids) {
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
-					String s = "";
-					while ((s = buffer.readLine()) != null) {
-						response += s;
-					}
+            String response = getJsonResponse("http://api.transloc.com/1.1/agencies.json");
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			try {
+            try {
 				JSONObject jObject = new JSONObject(response);
 				JSONArray jArray = jObject.getJSONArray("data");
 				for (int i = 0; i < jArray.length(); i++) {
@@ -140,38 +127,25 @@ public class WidgetConfigurationActivity extends Activity {
 
     private class PopulateRoutesTask extends AsyncTask<Void, Void, Void> {
 
-        String agencyId = "";
-
         @Override
         protected void onPreExecute() {
            int position = sSelectAgency.getSelectedItemPosition();
            agencyId = agencyIdArray.get(position);
            Log.v("DEBUG","Selected agency ID is " + agencyId);
+
+
            routeLongNameArray.clear();
            routeIdArray.clear();
            routeShortNameArray.clear();
+           stopShortNameArray.clear();
+           stopLongNameArray.clear();
+           stopIdArray.clear();
         }
 
         protected Void doInBackground(Void... voids) {
-            String response = "";
-            String url = "http://api.transloc.com/1.1/routes.json?agencies=" + agencyId;
 
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            try {
-                HttpResponse execute = client.execute(httpGet);
-                InputStream content = execute.getEntity().getContent();
+            String response = getJsonResponse("http://api.transloc.com/1.1/routes.json?agencies=" + agencyId);
 
-                BufferedReader buffer = new BufferedReader(
-                        new InputStreamReader(content));
-                String s = "";
-                while ((s = buffer.readLine()) != null) {
-                    response += s;
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             Log.v("DEBUG", response);
 
@@ -199,7 +173,63 @@ public class WidgetConfigurationActivity extends Activity {
 
         }
 
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
 
+            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,routeLongNameArray);
+            sSelectRoute.setAdapter(routeArrayAdapter);
+        }
+
+    }
+
+    private class PopulateStopsTask extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected void onPreExecute() {
+            int position = sSelectRoute.getSelectedItemPosition();
+            routeId = routeIdArray.get(position);
+            Log.v("DEBUG","Selected route ID is " + routeId);
+
+            routeLongNameArray.clear();
+            routeIdArray.clear();
+            routeShortNameArray.clear();
+            stopIdArray.clear();
+            stopLongNameArray.clear();
+            stopShortNameArray.clear();
+
+        }
+
+        protected Void doInBackground(Void... voids) {
+
+            String response = getJsonResponse("http://api.transloc.com/1.1/stops.json?agencies=" + agencyId);
+
+            Log.v("DEBUG", response);
+
+            try {
+                JSONObject jObject = new JSONObject(response);
+                JSONObject jObjectData = jObject.getJSONObject("data");
+                JSONArray jArrayAgency = jObjectData.getJSONArray(agencyId);
+                for(int i = 0; i < jArrayAgency.length(); i++)
+                {
+                    routeLongNameArray.add(jArrayAgency.getJSONObject(i).getString(
+                            "long_name"));
+                    routeShortNameArray.add(jArrayAgency.getJSONObject(i).getString(
+                            "short_name"));
+                    routeIdArray.add(jArrayAgency.getJSONObject(i).getString(
+                            "route_id"));
+                }
+
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e("JSON","ERROR in getting JSON data");
+            }
+            return null;
+
+        }
 
         @Override
         protected void onPostExecute(Void result) {
@@ -280,6 +310,30 @@ public class WidgetConfigurationActivity extends Activity {
         public void onNothingSelected(AdapterView<?> parent) {
             // Another interface callback
         }
+    }
+
+    private String getJsonResponse(String url) {
+
+        String response = "";
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(url);
+        try {
+            HttpResponse execute = client.execute(httpGet);
+            InputStream content = execute.getEntity().getContent();
+
+            BufferedReader buffer = new BufferedReader(
+                    new InputStreamReader(content));
+            String s = "";
+            while ((s = buffer.readLine()) != null) {
+                response += s;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
 }
