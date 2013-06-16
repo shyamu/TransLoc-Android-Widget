@@ -26,13 +26,13 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class WidgetConfigurationActivity extends Activity {
-	private int mAppWidgetId = 0;
+    private int mAppWidgetId = 0;
     private String agencyId = "";
     String routeId = "";
 
 
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
-	Button bReset, bMakeWidget;
+    Button bReset, bMakeWidget;
 
     ArrayList<String> agencyLongNameArray = new ArrayList<String>();
     ArrayList<String> agencyShortNameArray = new ArrayList<String>();
@@ -42,104 +42,108 @@ public class WidgetConfigurationActivity extends Activity {
     ArrayList<String> routeShortNameArray = new ArrayList<String>();
     ArrayList<String> routeIdArray = new ArrayList<String>();
 
-    ArrayList<String> stopLongNameArray = new ArrayList<String>();
+    ArrayList<String> stopNameArray = new ArrayList<String>();
     ArrayList<String> stopShortNameArray = new ArrayList<String>();
     ArrayList<String> stopIdArray = new ArrayList<String>();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.configuration_activity);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.configuration_activity);
 
-		// Getting references to Spinners and Buttons
-		sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
-		sSelectRoute = (Spinner) findViewById(R.id.sSelectRoute);
-		sSelectStop = (Spinner) findViewById(R.id.sSelectStop);
-		bReset = (Button) findViewById(R.id.bReset);
-		bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
+        // Getting references to Spinners and Buttons
+        sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
+        sSelectRoute = (Spinner) findViewById(R.id.sSelectRoute);
+        sSelectStop = (Spinner) findViewById(R.id.sSelectStop);
+        bReset = (Button) findViewById(R.id.bReset);
+        bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
 
         // Make agency selected listener
-       AdapterView.OnItemSelectedListener agencySelectedListener = new AgencySpinnerActivity();
-       sSelectAgency.setOnItemSelectedListener(agencySelectedListener);
+        AdapterView.OnItemSelectedListener agencySelectedListener = new AgencySpinnerActivity();
+        sSelectAgency.setOnItemSelectedListener(agencySelectedListener);
+
+        // Make route selected listener
+        AdapterView.OnItemSelectedListener stopSelectedListener = new RouteSpinnerActivity();
+        sSelectRoute.setOnItemSelectedListener(stopSelectedListener);
 
 
         // Populate agency spinner
-		PopulateAgenciesTask task = new PopulateAgenciesTask();
-		task.execute();
+        PopulateAgenciesTask task = new PopulateAgenciesTask();
+        task.execute();
 
-		// Defining a click event listener for the button "Set Color"
-		OnClickListener setColorClickedListener = new OnClickListener() {
+        // Defining a click event listener for the button "Set Color"
+        OnClickListener setColorClickedListener = new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// colorPicker();
-			}
-		};
+            @Override
+            public void onClick(View v) {
+                // colorPicker();
+            }
+        };
 
-		Intent intent = getIntent();
-		Bundle extras = intent.getExtras();
-		if (extras != null) {
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
 
-			mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					AppWidgetManager.INVALID_APPWIDGET_ID);
-		}
+            mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
 
-		// Setting the click listener on the "Set Color" button
-		// btnSetColor.setOnClickListener(setColorClickedListener);
-	}
+        // Setting the click listener on the "Set Color" button
+        // btnSetColor.setOnClickListener(setColorClickedListener);
+    }
 
-	private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
+    private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
 
-		protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/agencies.json");
 
             try {
-				JSONObject jObject = new JSONObject(response);
-				JSONArray jArray = jObject.getJSONArray("data");
-				for (int i = 0; i < jArray.length(); i++) {
-					Log.v("From jArray",jArray.getJSONObject(i).getString(
-							"long_name"));
-					agencyLongNameArray.add(jArray.getJSONObject(i).getString(
-							"long_name"));
-					agencyShortNameArray.add(jArray.getJSONObject(i).getString(
-							"short_name"));
-					agencyIdArray.add(jArray.getJSONObject(i).getString(
-							"agency_id"));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-                Log.e("JSON","ERROR in getting JSON data");
-			}
-			return null;
+                JSONObject jObject = new JSONObject(response);
+                JSONArray jArray = jObject.getJSONArray("data");
+                for (int i = 0; i < jArray.length(); i++) {
+                    Log.v("From jArray", jArray.getJSONObject(i).getString(
+                            "long_name"));
+                    agencyLongNameArray.add(jArray.getJSONObject(i).getString(
+                            "long_name"));
+                    agencyShortNameArray.add(jArray.getJSONObject(i).getString(
+                            "short_name"));
+                    agencyIdArray.add(jArray.getJSONObject(i).getString(
+                            "agency_id"));
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e("JSON", "ERROR in getting JSON data");
+            }
+            return null;
 
-		}
+        }
 
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			ArrayAdapter<String> agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,agencyLongNameArray);
-			sSelectAgency.setAdapter(agencyArrayAdapter);
-		}
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            ArrayAdapter<String> agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, agencyLongNameArray);
+            sSelectAgency.setAdapter(agencyArrayAdapter);
+        }
 
-	}
+    }
 
     private class PopulateRoutesTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
-           int position = sSelectAgency.getSelectedItemPosition();
-           agencyId = agencyIdArray.get(position);
-           Log.v("DEBUG","Selected agency ID is " + agencyId);
+            int position = sSelectAgency.getSelectedItemPosition();
+            agencyId = agencyIdArray.get(position);
+            Log.v("DEBUG", "Selected agency ID is " + agencyId);
 
 
-           routeLongNameArray.clear();
-           routeIdArray.clear();
-           routeShortNameArray.clear();
-           stopShortNameArray.clear();
-           stopLongNameArray.clear();
-           stopIdArray.clear();
+            routeLongNameArray.clear();
+            routeIdArray.clear();
+            routeShortNameArray.clear();
+            stopShortNameArray.clear();
+            stopNameArray.clear();
+            stopIdArray.clear();
         }
 
         protected Void doInBackground(Void... voids) {
@@ -153,8 +157,7 @@ public class WidgetConfigurationActivity extends Activity {
                 JSONObject jObject = new JSONObject(response);
                 JSONObject jObjectData = jObject.getJSONObject("data");
                 JSONArray jArrayAgency = jObjectData.getJSONArray(agencyId);
-                for(int i = 0; i < jArrayAgency.length(); i++)
-                {
+                for (int i = 0; i < jArrayAgency.length(); i++) {
                     routeLongNameArray.add(jArrayAgency.getJSONObject(i).getString(
                             "long_name"));
                     routeShortNameArray.add(jArrayAgency.getJSONObject(i).getString(
@@ -167,7 +170,7 @@ public class WidgetConfigurationActivity extends Activity {
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                Log.e("JSON","ERROR in getting JSON data");
+                Log.e("JSON", "ERROR in getting JSON data");
             }
             return null;
 
@@ -177,7 +180,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,routeLongNameArray);
+            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, routeLongNameArray);
             sSelectRoute.setAdapter(routeArrayAdapter);
         }
 
@@ -185,18 +188,17 @@ public class WidgetConfigurationActivity extends Activity {
 
     private class PopulateStopsTask extends AsyncTask<Void, Void, Void> {
 
-
         @Override
         protected void onPreExecute() {
             int position = sSelectRoute.getSelectedItemPosition();
             routeId = routeIdArray.get(position);
-            Log.v("DEBUG","Selected route ID is " + routeId);
+            Log.v("DEBUG", "Selected route ID is " + routeId);
 
             routeLongNameArray.clear();
             routeIdArray.clear();
             routeShortNameArray.clear();
             stopIdArray.clear();
-            stopLongNameArray.clear();
+            stopNameArray.clear();
             stopShortNameArray.clear();
 
         }
@@ -209,23 +211,26 @@ public class WidgetConfigurationActivity extends Activity {
 
             try {
                 JSONObject jObject = new JSONObject(response);
-                JSONObject jObjectData = jObject.getJSONObject("data");
-                JSONArray jArrayAgency = jObjectData.getJSONArray(agencyId);
-                for(int i = 0; i < jArrayAgency.length(); i++)
+                JSONArray jArrayData = jObject.getJSONArray("data");
+                for(int i = 0; i < jArrayData.length(); i++)
                 {
-                    routeLongNameArray.add(jArrayAgency.getJSONObject(i).getString(
-                            "long_name"));
-                    routeShortNameArray.add(jArrayAgency.getJSONObject(i).getString(
-                            "short_name"));
-                    routeIdArray.add(jArrayAgency.getJSONObject(i).getString(
-                            "route_id"));
-                }
+                    JSONObject jObjectStop = jArrayData.getJSONObject(i);
+                    JSONArray jArrayStopRoutes = jObjectStop.getJSONArray("routes");
+                    for(int j = 0; j < jArrayStopRoutes.length(); j++)
+                    {
+                        if(jArrayStopRoutes.get(j).equals(routeId)) {
+                            stopNameArray.add((String) jObjectStop.get("name"));
+                            stopIdArray.add((String) jObjectStop.get("stop_id"));
+                            break;
+                        }
+                    }
 
+                }
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                Log.e("JSON","ERROR in getting JSON data");
+                Log.e("JSON", "ERROR in getting JSON data");
             }
             return null;
 
@@ -235,14 +240,14 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,routeLongNameArray);
-            sSelectRoute.setAdapter(routeArrayAdapter);
+            ArrayAdapter<String> stopArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, stopNameArray);
+            sSelectRoute.setAdapter(stopArrayAdapter);
         }
 
     }
 
 	/*
-	 * public void colorPicker() {
+     * public void colorPicker() {
 	 * 
 	 * // initialColor is the initially-selected color to be shown in the
 	 * rectangle on the left of the arrow. // for example, 0xff000000 is black,
@@ -303,6 +308,25 @@ public class WidgetConfigurationActivity extends Activity {
 
             // Get routes
             PopulateRoutesTask task = new PopulateRoutesTask();
+            task.execute();
+
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
+    }
+
+    private class RouteSpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+            sSelectRoute.setEnabled(true);
+
+            // Get routes
+            PopulateStopsTask task = new PopulateStopsTask();
             task.execute();
 
         }
