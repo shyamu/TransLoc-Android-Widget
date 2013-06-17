@@ -46,6 +46,10 @@ public class WidgetConfigurationActivity extends Activity {
     ArrayList<String> stopShortNameArray = new ArrayList<String>();
     ArrayList<String> stopIdArray = new ArrayList<String>();
 
+    ArrayAdapter<String> agencyArrayAdapter;
+    ArrayAdapter<String> routeArrayAdapter;
+    ArrayAdapter<String> stopArrayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +75,24 @@ public class WidgetConfigurationActivity extends Activity {
         PopulateAgenciesTask task = new PopulateAgenciesTask();
         task.execute();
 
-        // Defining a click event listener for the button "Set Color"
-        OnClickListener setColorClickedListener = new OnClickListener() {
+        // Defining a click event listener for the button "Reset"
+        OnClickListener setResetClickedListener = new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // colorPicker();
+                doReset();
             }
         };
+
+        // Defining a click event listener for the button "Make Widget"
+        OnClickListener setMakeWidgetClickedListener = new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                doMakeWidget();
+            }
+        };
+
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -88,8 +102,24 @@ public class WidgetConfigurationActivity extends Activity {
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        // Setting the click listener on the "Set Color" button
-        // btnSetColor.setOnClickListener(setColorClickedListener);
+        // Setting the click listener on the buttons
+        bReset.setOnClickListener(setResetClickedListener);
+        bMakeWidget.setOnClickListener(setMakeWidgetClickedListener);
+    }
+
+    private void doReset() {
+        PopulateAgenciesTask task = new PopulateAgenciesTask();
+        task.execute();
+
+        agencyArrayAdapter.notifyDataSetChanged();
+        routeArrayAdapter.notifyDataSetChanged();
+        stopArrayAdapter.notifyDataSetChanged();
+
+
+    }
+
+    private void doMakeWidget() {
+
     }
 
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
@@ -123,7 +153,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            ArrayAdapter<String> agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, agencyLongNameArray);
+            agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, agencyLongNameArray);
             sSelectAgency.setAdapter(agencyArrayAdapter);
         }
 
@@ -180,7 +210,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            ArrayAdapter<String> routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, routeLongNameArray);
+            routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, routeLongNameArray);
             sSelectRoute.setAdapter(routeArrayAdapter);
         }
 
@@ -200,7 +230,7 @@ public class WidgetConfigurationActivity extends Activity {
             routeId = routeIdArray.get(position);
             Log.v("DEBUG", "Selected route ID is " + routeId);
 
-            
+
             stopIdArray.clear();
             stopNameArray.clear();
             stopShortNameArray.clear();
@@ -244,11 +274,12 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            ArrayAdapter<String> stopArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, stopNameArray);
+            stopArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, stopNameArray);
             sSelectStop.setAdapter(stopArrayAdapter);
         }
 
     }
+
 
 	/*
      * public void colorPicker() {
