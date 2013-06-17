@@ -190,13 +190,17 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
+            for(int i = 0; i < routeIdArray.size(); i++)
+            {
+                Log.v("DEBUG", routeLongNameArray.get(i));
+                Log.v("DEBUG", routeIdArray.get(i));
+
+            }
             int position = sSelectRoute.getSelectedItemPosition();
             routeId = routeIdArray.get(position);
             Log.v("DEBUG", "Selected route ID is " + routeId);
 
-            routeLongNameArray.clear();
-            routeIdArray.clear();
-            routeShortNameArray.clear();
+            
             stopIdArray.clear();
             stopNameArray.clear();
             stopShortNameArray.clear();
@@ -241,7 +245,7 @@ public class WidgetConfigurationActivity extends Activity {
             super.onPostExecute(result);
 
             ArrayAdapter<String> stopArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, stopNameArray);
-            sSelectRoute.setAdapter(stopArrayAdapter);
+            sSelectStop.setAdapter(stopArrayAdapter);
         }
 
     }
@@ -323,7 +327,7 @@ public class WidgetConfigurationActivity extends Activity {
                                    int pos, long id) {
             // An item was selected. You can retrieve the selected item using
             // parent.getItemAtPosition(pos)
-            sSelectRoute.setEnabled(true);
+            sSelectStop.setEnabled(true);
 
             // Get routes
             PopulateStopsTask task = new PopulateStopsTask();
