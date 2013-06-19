@@ -28,7 +28,10 @@ import android.widget.Spinner;
 public class WidgetConfigurationActivity extends Activity {
     private int mAppWidgetId = 0;
     private String agencyId = "";
-    String routeId = "";
+    private String routeId = "";
+    private int agencyPosition = -1;
+    private int routePosition = -1;
+    private int stopPosition = -1;
 
 
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
@@ -67,9 +70,12 @@ public class WidgetConfigurationActivity extends Activity {
         sSelectAgency.setOnItemSelectedListener(agencySelectedListener);
 
         // Make route selected listener
-        AdapterView.OnItemSelectedListener stopSelectedListener = new RouteSpinnerActivity();
-        sSelectRoute.setOnItemSelectedListener(stopSelectedListener);
+        AdapterView.OnItemSelectedListener routeSelectedListener = new RouteSpinnerActivity();
+        sSelectRoute.setOnItemSelectedListener(routeSelectedListener);
 
+        // Make stop selected listener
+        AdapterView.OnItemSelectedListener stopSelectedListener = new StopSpinnerActivity();
+        sSelectStop.setOnItemSelectedListener(stopSelectedListener);
 
         // Populate agency spinner
         PopulateAgenciesTask task = new PopulateAgenciesTask();
@@ -119,7 +125,17 @@ public class WidgetConfigurationActivity extends Activity {
     }
 
     private void doMakeWidget() {
+        Log.v("TESTING","Now testing variables");
 
+        Log.v("TESTING","agency ID: " + agencyId);
+        Log.v("TESTING","agency long name:" + agencyLongNameArray.get(agencyPosition));
+        Log.v("TESTING","agency short name:" + agencyShortNameArray.get(agencyPosition));
+        Log.v("TESTING","route ID: + " + routeId);
+        Log.v("TESTING","route long name:" + routeLongNameArray.get(routePosition));
+        Log.v("TESTING","route short name:" + routeShortNameArray.get(routePosition));
+        Log.v("TESTING","stop ID: + " + stopIdArray.get(stopPosition));
+       // Log.v("TESTING","stop long name:" + stopShortNameArray.get(stopPosition));
+        Log.v("TESTING","stop name:" + stopNameArray.get(stopPosition));
     }
 
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
@@ -163,8 +179,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            int position = sSelectAgency.getSelectedItemPosition();
-            agencyId = agencyIdArray.get(position);
+            agencyPosition = sSelectAgency.getSelectedItemPosition();
+            agencyId = agencyIdArray.get(agencyPosition);
             Log.v("DEBUG", "Selected agency ID is " + agencyId);
 
 
@@ -226,8 +242,8 @@ public class WidgetConfigurationActivity extends Activity {
                 Log.v("DEBUG", routeIdArray.get(i));
 
             }
-            int position = sSelectRoute.getSelectedItemPosition();
-            routeId = routeIdArray.get(position);
+            routePosition = sSelectRoute.getSelectedItemPosition();
+            routeId = routeIdArray.get(routePosition);
             Log.v("DEBUG", "Selected route ID is " + routeId);
 
 
@@ -363,6 +379,24 @@ public class WidgetConfigurationActivity extends Activity {
             // Get routes
             PopulateStopsTask task = new PopulateStopsTask();
             task.execute();
+
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
+    }
+
+    private class StopSpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+            sSelectStop.setEnabled(true);
+
+            // assign variables
+            stopPosition = pos;
 
         }
 
