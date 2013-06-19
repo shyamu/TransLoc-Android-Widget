@@ -6,28 +6,34 @@
 
     <Spinner
         android:id="@+id/sSelectAgency"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="52dp" />
+        android:layout_marginTop="52dp"
+        android:prompt="@string/select_agency"
+        android:spinnerMode="dialog"/>
 
     <Spinner
         android:id="@+id/sSelectRoute"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectAgency"
         android:layout_marginTop="24dp"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:prompt="@string/select_route"
+        android:spinnerMode="dialog"/>
 
     <Spinner
         android:id="@+id/sSelectStop"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectRoute"
         android:layout_marginTop="28dp"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:prompt="@string/select_stop"
+        android:spinnerMode="dialog"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
