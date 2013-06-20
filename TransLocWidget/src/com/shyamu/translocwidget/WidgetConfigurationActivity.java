@@ -13,8 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RemoteViews;
 import android.widget.Spinner;
 
 public class WidgetConfigurationActivity extends Activity {
@@ -136,6 +139,37 @@ public class WidgetConfigurationActivity extends Activity {
         Log.v("TESTING","stop ID: + " + stopIdArray.get(stopPosition));
        // Log.v("TESTING","stop long name:" + stopShortNameArray.get(stopPosition));
         Log.v("TESTING","stop name:" + stopNameArray.get(stopPosition));
+
+        Intent intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
+        // Creating a pending intent, which will be invoked when the user
+        // clicks on the widget
+        PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Getting an instance of WidgetManager
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
+
+        // Instantiating the class RemoteViews with widget_layout
+        RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
+
+        //Set the time remaining of the widget
+        //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
+
+        //  Attach an on-click listener to the time to update when clicked
+        views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
+
+        // Tell the AppWidgetManager to perform an update on the app widget
+        appWidgetManager.updateAppWidget(mAppWidgetId, views);
+
+        // Return RESULT_OK from this activity
+        Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, resultValue);
+        finish();
+
+
     }
 
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
