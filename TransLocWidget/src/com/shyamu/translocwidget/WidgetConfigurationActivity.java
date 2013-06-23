@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +40,7 @@ public class WidgetConfigurationActivity extends Activity {
     private int agencyPosition = -1;
     private int routePosition = -1;
     private int stopPosition = -1;
+
 
 
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
@@ -143,34 +146,11 @@ public class WidgetConfigurationActivity extends Activity {
        // Log.v("TESTING","stop long name:" + stopShortNameArray.get(stopPosition));
         Log.v("TESTING","stop name:" + stopNameArray.get(stopPosition));
 
-        Intent intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
-        // Creating a pending intent, which will be invoked when the user
-        // clicks on the widget
-        PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Get arrival time
+        PopulateArrivalTask task = new PopulateArrivalTask();
+        task.execute();
 
-        // Getting an instance of WidgetManager
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
 
-        // Instantiating the class RemoteViews with widget_layout
-        RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
-
-        //Set the time remaining of the widget
-        //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
-
-        //  Attach an on-click listener to the time to update when clicked
-        views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
-
-        // Tell the AppWidgetManager to perform an update on the app widget
-        appWidgetManager.updateAppWidget(mAppWidgetId, views);
-
-        // Return RESULT_OK from this activity
-        Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        setResult(RESULT_OK, resultValue);
-        finish();
 
 
     }
@@ -185,8 +165,6 @@ public class WidgetConfigurationActivity extends Activity {
                 JSONObject jObject = new JSONObject(response);
                 JSONArray jArray = jObject.getJSONArray("data");
                 for (int i = 0; i < jArray.length(); i++) {
-                    Log.v("From jArray", jArray.getJSONObject(i).getString(
-                            "long_name"));
                     agencyLongNameArray.add(jArray.getJSONObject(i).getString(
                             "long_name"));
                     agencyShortNameArray.add(jArray.getJSONObject(i).getString(
@@ -232,10 +210,6 @@ public class WidgetConfigurationActivity extends Activity {
         protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/routes.json?agencies=" + agencyId);
-
-
-            Log.v("DEBUG", response);
-
             try {
                 JSONObject jObject = new JSONObject(response);
                 JSONObject jObjectData = jObject.getJSONObject("data");
@@ -273,12 +247,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            for(int i = 0; i < routeIdArray.size(); i++)
-            {
-                Log.v("DEBUG", routeLongNameArray.get(i));
-                Log.v("DEBUG", routeIdArray.get(i));
 
-            }
             routePosition = sSelectRoute.getSelectedItemPosition();
             routeId = routeIdArray.get(routePosition);
             Log.v("DEBUG", "Selected route ID is " + routeId);
@@ -293,8 +262,6 @@ public class WidgetConfigurationActivity extends Activity {
         protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/stops.json?agencies=" + agencyId);
-
-            Log.v("DEBUG", response);
 
             try {
                 JSONObject jObject = new JSONObject(response);
@@ -338,6 +305,8 @@ public class WidgetConfigurationActivity extends Activity {
         private String currentTimeUTC = "";
         private String arrivalTimeUTC = "";
 
+        private int minutes = -1;
+
         @Override
         protected void onPreExecute() {
 
@@ -351,10 +320,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected Void doInBackground(Void... voids) {
 
-            String response = getJsonResponse("http://api.transloc.com/1.1/stops.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
-
-            Log.v("DEBUG", response);
-
+            String response = getJsonResponse("http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
+            Log.v("DEBUG", "http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
             try {
                 JSONObject jObject = new JSONObject(response);
                 currentTimeUTC = jObject.getString("generated_on");
@@ -369,6 +336,9 @@ public class WidgetConfigurationActivity extends Activity {
                 e.printStackTrace();
                 Log.e("JSON", "ERROR in getting JSON data");
             }
+
+            minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
+
             return null;
 
         }
@@ -377,12 +347,47 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-         
+            Intent intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+            intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
+            // Creating a pending intent, which will be invoked when the user
+            // clicks on the widget
+            PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // Getting an instance of WidgetManager
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
+
+            // Instantiating the class RemoteViews with widget_layout
+            RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
+
+            //Set the time remaining of the widget
+            //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
+            views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
+
+            //  Attach an on-click listener to the time to update when clicked
+            views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
+
+            // Tell the AppWidgetManager to perform an update on the app widget
+            appWidgetManager.updateAppWidget(mAppWidgetId, views);
+
+            // Return RESULT_OK from this activity
+            Intent resultValue = new Intent();
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+            setResult(RESULT_OK, resultValue);
+            finish();
+
         }
 
     }
 
-
+    private int getMinutesBetweenTimes(String currentTime, String futureTime)
+    {
+        DateTime start = new DateTime(currentTime);
+        DateTime end = new DateTime(futureTime);
+        Log.v("DEBUG", "minutes: " + Minutes.minutesBetween(start,end).getMinutes());
+        return Minutes.minutesBetween(start,end).getMinutes();
+    }
 
     private class AgencySpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
