@@ -30,8 +30,11 @@ import android.widget.Spinner;
 
 public class WidgetConfigurationActivity extends Activity {
     private int mAppWidgetId = 0;
+
     private String agencyId = "";
     private String routeId = "";
+    private String stopId = "";
+
     private int agencyPosition = -1;
     private int routePosition = -1;
     private int stopPosition = -1;
@@ -330,58 +333,56 @@ public class WidgetConfigurationActivity extends Activity {
 
     }
 
+    private class PopulateArrivalTask extends AsyncTask<Void, Void, Void> {
 
-	/*
-     * public void colorPicker() {
-	 * 
-	 * // initialColor is the initially-selected color to be shown in the
-	 * rectangle on the left of the arrow. // for example, 0xff000000 is black,
-	 * 0xff0000ff is blue. Please be aware of the initial 0xff which is the
-	 * alpha. AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, 0xff0000ff,
-	 * new OnAmbilWarnaListener() {
-	 * 
-	 * // Executes, when user click Cancel button
-	 * 
-	 * @Override public void onCancel(AmbilWarnaDialog dialog){ }
-	 * 
-	 * // Executes, when user click OK button
-	 * 
-	 * @Override public void onOk(AmbilWarnaDialog dialog, int color) { //
-	 * Create an Intent to launch WidgetConfigurationActivity screen Intent
-	 * intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
-	 * 
-	 * intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-	 * 
-	 * // This is needed to make this intent different from its previous intents
-	 * intent.setData(Uri.parse("tel:/"+ (int)System.currentTimeMillis()));
-	 * 
-	 * // Creating a pending intent, which will be invoked when the user //
-	 * clicks on the widget PendingIntent pendingIntent =
-	 * PendingIntent.getActivity(getBaseContext(), 0, intent,
-	 * PendingIntent.FLAG_UPDATE_CURRENT);
-	 * 
-	 * // Getting an instance of WidgetManager AppWidgetManager appWidgetManager
-	 * = AppWidgetManager.getInstance(getBaseContext());
-	 * 
-	 * // Instantiating the class RemoteViews with widget_layout RemoteViews
-	 * views = new RemoteViews(getBaseContext().getPackageName(),
-	 * R.layout.widget_layout);
-	 * 
-	 * // Setting the background color of the widget
-	 * views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
-	 * 
-	 * // Attach an on-click listener to the clock
-	 * views.setOnClickPendingIntent(R.id.widget_aclock, pendingIntent);
-	 * 
-	 * // Tell the AppWidgetManager to perform an update on the app widget
-	 * appWidgetManager.updateAppWidget(mAppWidgetId, views);
-	 * 
-	 * // Return RESULT_OK from this activity Intent resultValue = new Intent();
-	 * resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-	 * setResult(RESULT_OK, resultValue); finish(); } }); dialog.show();
-	 * 
-	 * }
-	 */
+        private String currentTimeUTC = "";
+        private String arrivalTimeUTC = "";
+
+        @Override
+        protected void onPreExecute() {
+
+            Log.v("DEBUG", "Getting arrival times for following info");
+            Log.v("DEBUG", "agency id: " + agencyId);
+            Log.v("DEBUG", "route id:" + routeId);
+            Log.v("DEBUG", "stop id:" + stopId);
+
+
+        }
+
+        protected Void doInBackground(Void... voids) {
+
+            String response = getJsonResponse("http://api.transloc.com/1.1/stops.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
+
+            Log.v("DEBUG", response);
+
+            try {
+                JSONObject jObject = new JSONObject(response);
+                currentTimeUTC = jObject.getString("generated_on");
+                JSONArray jArrayData = jObject.getJSONArray("data");
+                JSONObject jObjectArrayData = jArrayData.getJSONObject(0);
+                JSONArray jArrayArrivals = jObjectArrayData.getJSONArray("arrivals");
+                JSONObject jObjectArrayArrivals = jArrayArrivals.getJSONObject(0);
+                arrivalTimeUTC = jObjectArrayArrivals.getString("arrival_at");
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e("JSON", "ERROR in getting JSON data");
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+         
+        }
+
+    }
+
+
 
     private class AgencySpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -431,6 +432,7 @@ public class WidgetConfigurationActivity extends Activity {
 
             // assign variables
             stopPosition = pos;
+            stopId = stopIdArray.get(stopPosition);
 
         }
 
