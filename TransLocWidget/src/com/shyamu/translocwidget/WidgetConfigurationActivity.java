@@ -143,7 +143,6 @@ public class WidgetConfigurationActivity extends Activity {
         Log.v("TESTING","route long name:" + routeLongNameArray.get(routePosition));
         Log.v("TESTING","route short name:" + routeShortNameArray.get(routePosition));
         Log.v("TESTING","stop ID: + " + stopIdArray.get(stopPosition));
-       // Log.v("TESTING","stop long name:" + stopShortNameArray.get(stopPosition));
         Log.v("TESTING","stop name:" + stopNameArray.get(stopPosition));
 
         // Get arrival time
@@ -321,7 +320,6 @@ public class WidgetConfigurationActivity extends Activity {
         protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
-            Log.v("DEBUG", "http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
             try {
                 JSONObject jObject = new JSONObject(response);
                 currentTimeUTC = jObject.getString("generated_on");
@@ -364,6 +362,11 @@ public class WidgetConfigurationActivity extends Activity {
             //Set the time remaining of the widget
             //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
             views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
+            Log.v("DEBUG",routeShortNameArray.get(routePosition));
+            Log.v("DEBUG",stopNameArray.get(stopPosition));
+
+            views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
+            views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
 
             //  Attach an on-click listener to the time to update when clicked
             views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
