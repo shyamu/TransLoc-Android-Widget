@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/widget_margin"
-    android:clickable="false">
+    android:clickable="false"
+    android:background="#77010101">
 
     <TextView
         android:id="@+id/tvRoute"
@@ -12,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Route"
-        android:layout_below="@+id/tvRemainingTime"/>
+        android:layout_below="@+id/tvRemainingTime"
+        android:textColor="#ffffff"/>
 
     <TextView
         android:id="@+id/tvRemainingTime"
@@ -23,7 +25,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:textColor="#ffffff"/>
 
     <TextView
         android:id="@+id/tvStop"
@@ -31,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Stop"
-        android:layout_below="@+id/tvRoute"/>
+        android:layout_below="@+id/tvRoute"
+        android:textColor="#ffffff"/>
 
 </RelativeLayout>
