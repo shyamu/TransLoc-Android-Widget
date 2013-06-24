@@ -407,7 +407,12 @@ public class WidgetConfigurationActivity extends Activity {
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
 
-                views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
+                if(routeShortNameArray.get(routePosition).equals("")) {
+                    views.setTextViewText(R.id.tvRoute, routeLongNameArray.get(routePosition));
+                } else {
+                    views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
+                }
+
                 views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
 
                 //  Attach an on-click listener to the time to update when clicked
