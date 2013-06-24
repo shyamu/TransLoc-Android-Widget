@@ -15,9 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -325,6 +327,7 @@ public class WidgetConfigurationActivity extends Activity {
     private class PopulateArrivalTask extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog dialog;
+        int errorCode = -1;
 
         private String currentTimeUTC = "";
         private String arrivalTimeUTC = "";
@@ -354,14 +357,16 @@ public class WidgetConfigurationActivity extends Activity {
                 JSONArray jArrayArrivals = jObjectArrayData.getJSONArray("arrivals");
                 JSONObject jObjectArrayArrivals = jArrayArrivals.getJSONObject(0);
                 arrivalTimeUTC = jObjectArrayArrivals.getString("arrival_at");
+                errorCode = 0;
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+                errorCode = 1;
                 Log.e("JSON", "ERROR in getting JSON data");
             }
+            if(errorCode == 0)  minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
 
-            minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
 
             return null;
 
@@ -371,43 +376,60 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            Intent intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
-            // Creating a pending intent, which will be invoked when the user
-            // clicks on the widget
-            PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if(errorCode == 0) {
+                Intent intent = new Intent(getBaseContext(), WidgetConfigurationActivity.class);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
+                // Creating a pending intent, which will be invoked when the user
+                // clicks on the widget
+                PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            // Getting an instance of WidgetManager
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
+                // Getting an instance of WidgetManager
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
 
-            // Instantiating the class RemoteViews with widget_layout
-            RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
+                // Instantiating the class RemoteViews with widget_layout
+                RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
 
-            //Set the time remaining of the widget
-            //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
-            views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
-            Log.v("DEBUG",routeShortNameArray.get(routePosition));
-            Log.v("DEBUG",stopNameArray.get(stopPosition));
+                //Set the time remaining of the widget
+                //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
+                views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
+                Log.v("DEBUG",routeShortNameArray.get(routePosition));
+                Log.v("DEBUG",stopNameArray.get(stopPosition));
 
-            views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
-            views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
+                views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
+                views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
 
-            //  Attach an on-click listener to the time to update when clicked
-            views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
+                //  Attach an on-click listener to the time to update when clicked
+                views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
 
-            // Tell the AppWidgetManager to perform an update on the app widget
-            appWidgetManager.updateAppWidget(mAppWidgetId, views);
+                // Tell the AppWidgetManager to perform an update on the app widget
+                appWidgetManager.updateAppWidget(mAppWidgetId, views);
 
-            // Return RESULT_OK from this activity
-            Intent resultValue = new Intent();
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            setResult(RESULT_OK, resultValue);
+                // Return RESULT_OK from this activity
+                Intent resultValue = new Intent();
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                setResult(RESULT_OK, resultValue);
 
-            dialog.dismiss();
-            finish();
+                dialog.dismiss();
+                finish();
+            } else if (errorCode == 1) {
+                dialog.dismiss();
+                //Show alert dialog
+                showAlertDialogArrivalsError();
+            }
+        }
 
+        private void showAlertDialogArrivalsError() {
+            new AlertDialog.Builder( WidgetConfigurationActivity.this )
+                    .setTitle( "Error - No arrival times available" )
+                    .setMessage( "No arrival times are available for the route and stop you have selected. Please try again later when buses are running." )
+                    .setNeutralButton( "Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d( "AlertDialog", "Neutral" );
+                        }
+                    })
+                    .show();
         }
 
     }
