@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -156,6 +157,13 @@ public class WidgetConfigurationActivity extends Activity {
 
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+        }
+
         protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/agencies.json");
@@ -185,14 +193,21 @@ public class WidgetConfigurationActivity extends Activity {
             super.onPostExecute(result);
             agencyArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, agencyLongNameArray);
             sSelectAgency.setAdapter(agencyArrayAdapter);
+
+            dialog.dismiss();
         }
 
     }
 
     private class PopulateRoutesTask extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
+
+            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+
             agencyPosition = sSelectAgency.getSelectedItemPosition();
             agencyId = agencyIdArray.get(agencyPosition);
             Log.v("DEBUG", "Selected agency ID is " + agencyId);
@@ -238,14 +253,20 @@ public class WidgetConfigurationActivity extends Activity {
 
             routeArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, routeLongNameArray);
             sSelectRoute.setAdapter(routeArrayAdapter);
+
+            dialog.dismiss();
         }
 
     }
 
     private class PopulateStopsTask extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
+
+            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
 
             routePosition = sSelectRoute.getSelectedItemPosition();
             routeId = routeIdArray.get(routePosition);
@@ -295,11 +316,15 @@ public class WidgetConfigurationActivity extends Activity {
 
             stopArrayAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, stopNameArray);
             sSelectStop.setAdapter(stopArrayAdapter);
+
+            dialog.dismiss();
         }
 
     }
 
     private class PopulateArrivalTask extends AsyncTask<Void, Void, Void> {
+
+        ProgressDialog dialog;
 
         private String currentTimeUTC = "";
         private String arrivalTimeUTC = "";
@@ -308,6 +333,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
+            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
 
             Log.v("DEBUG", "Getting arrival times for following info");
             Log.v("DEBUG", "agency id: " + agencyId);
@@ -378,6 +404,8 @@ public class WidgetConfigurationActivity extends Activity {
             Intent resultValue = new Intent();
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             setResult(RESULT_OK, resultValue);
+
+            dialog.dismiss();
             finish();
 
         }
