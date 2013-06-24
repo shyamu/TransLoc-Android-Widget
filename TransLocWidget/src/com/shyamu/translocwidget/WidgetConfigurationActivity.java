@@ -257,6 +257,10 @@ public class WidgetConfigurationActivity extends Activity {
             sSelectRoute.setAdapter(routeArrayAdapter);
 
             dialog.dismiss();
+
+            if(routeArrayAdapter.isEmpty()) {
+                showAlertDialog("Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+            }
         }
 
     }
@@ -320,7 +324,13 @@ public class WidgetConfigurationActivity extends Activity {
             sSelectStop.setAdapter(stopArrayAdapter);
 
             dialog.dismiss();
+
+            if(stopArrayAdapter.isEmpty()) {
+                showAlertDialog("Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
+            }
         }
+
+
 
     }
 
@@ -416,22 +426,24 @@ public class WidgetConfigurationActivity extends Activity {
             } else if (errorCode == 1) {
                 dialog.dismiss();
                 //Show alert dialog
-                showAlertDialogArrivalsError();
+                showAlertDialog("Error - No Arrival Times","No arrival times are currently available for the route and stop you have selected. Please try again later when buses are running.");
             }
         }
 
-        private void showAlertDialogArrivalsError() {
-            new AlertDialog.Builder( WidgetConfigurationActivity.this )
-                    .setTitle( "Error - No arrival times available" )
-                    .setMessage( "No arrival times are available for the route and stop you have selected. Please try again later when buses are running." )
-                    .setNeutralButton( "Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Log.d( "AlertDialog", "Neutral" );
-                        }
-                    })
-                    .show();
-        }
 
+
+    }
+
+    private void showAlertDialog(String title, String message) {
+        new AlertDialog.Builder( WidgetConfigurationActivity.this )
+                .setTitle( title )
+                .setMessage( message )
+                .setNeutralButton( "Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d( "AlertDialog", "Neutral" );
+                    }
+                })
+                .show();
     }
 
     private int getMinutesBetweenTimes(String currentTime, String futureTime)
