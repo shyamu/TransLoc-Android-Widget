@@ -161,7 +161,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Agencies","Please Wait...");
         }
 
         protected Void doInBackground(Void... voids) {
@@ -206,7 +206,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
 
-            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Routes","Please Wait...");
 
             agencyPosition = sSelectAgency.getSelectedItemPosition();
             agencyId = agencyIdArray.get(agencyPosition);
@@ -266,7 +266,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
 
-            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Stops","Please Wait...");
 
             routePosition = sSelectRoute.getSelectedItemPosition();
             routeId = routeIdArray.get(routePosition);
@@ -333,7 +333,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(getApplicationContext(),"Loading","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Making Widget","Please Wait...");
 
             Log.v("DEBUG", "Getting arrival times for following info");
             Log.v("DEBUG", "agency id: " + agencyId);
