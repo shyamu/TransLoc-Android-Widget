@@ -19,11 +19,14 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -358,7 +361,11 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected Void doInBackground(Void... voids) {
 
-            String response = getJsonResponse("http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WidgetConfigurationActivity.this);
+            String url = "http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId;
+            prefs.edit().putString("url",url).commit();
+
+            String response = getJsonResponse(url);
             try {
                 JSONObject jObject = new JSONObject(response);
                 currentTimeUTC = jObject.getString("generated_on");
