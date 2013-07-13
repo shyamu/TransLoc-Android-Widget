@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -29,6 +30,10 @@ import java.io.InputStreamReader;
 
 public class AnalogClockWidgetProvider extends AppWidgetProvider {
 
+    int widgetId;
+    AppWidgetManager appWidgetManager;
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -38,51 +43,20 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
             Bundle extras = intent.getExtras();
             if(extras!=null) {
                 Log.v("DEBUG", "extras!=null");
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                int widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                appWidgetManager= AppWidgetManager.getInstance(context);
+                widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
                 // do something for the widget that has appWidgetId = widgetId
 
-                int errorCode = -1;
-                String currentTimeUTC = "";
-                String arrivalTimeUTC = "";
 
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                String url = prefs.getString("url", "");
-                Log.v("DEBUG", url);
+                getJsonResponse task = new getJsonResponse(context);
+                task.execute();
 
 
-                RemoteViews newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
 
-                String response = getJsonResponse(url);
-                try {
-                    JSONObject jObject = new JSONObject(response);
-                    currentTimeUTC = jObject.getString("generated_on");
-                    JSONArray jArrayData = jObject.getJSONArray("data");
-                    JSONObject jObjectArrayData = jArrayData.getJSONObject(0);
-                    JSONArray jArrayArrivals = jObjectArrayData.getJSONArray("arrivals");
-                    JSONObject jObjectArrayArrivals = jArrayArrivals.getJSONObject(0);
-                    arrivalTimeUTC = jObjectArrayArrivals.getString("arrival_at");
-                    errorCode = 0;
 
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    errorCode = 1;
-                    Log.e("JSON", "ERROR in getting JSON data");
-                }
-                if(errorCode == 0) {
-                    int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
-                    // update remote views
-                    newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
-                } else if (errorCode == 1) {
-                    // no arrival times found
-                    newView.setTextViewText(R.id.tvRemainingTime,"--");
-                    // show toast
-                    Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
-                }
-                Log.v("DEBUG", "about to call updateAppWidget");
 
-                appWidgetManager.updateAppWidget(widgetId, newView);
+
+
 
             }
         }
@@ -108,28 +82,99 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
         return Minutes.minutesBetween(start,end).getMinutes();
     }
 
-    private static String getJsonResponse(String url) {
 
-        String response = "";
 
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            HttpResponse execute = client.execute(httpGet);
-            InputStream content = execute.getEntity().getContent();
+    private class getJsonResponse extends AsyncTask<Void, Void, String> {
 
-            BufferedReader buffer = new BufferedReader(
-                    new InputStreamReader(content));
-            String s = "";
-            while ((s = buffer.readLine()) != null) {
-                response += s;
-            }
+        int errorCode = -1;
+        String currentTimeUTC = "";
+        String arrivalTimeUTC = "";
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        private Context context;
+
+        RemoteViews newView;
+
+
+        public getJsonResponse(Context context) {
+            this.context = context;
         }
 
-        return response;
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            String url = prefs.getString("url", "");
+
+            Log.v("DEBUG", url);
+            String response = "";
+
+
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            try {
+                HttpResponse execute = client.execute(httpGet);
+                InputStream content = execute.getEntity().getContent();
+
+                BufferedReader buffer = new BufferedReader(
+                        new InputStreamReader(content));
+                String s = "";
+                while ((s = buffer.readLine()) != null) {
+                    response += s;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            String response = result;
+
+            try {
+                JSONObject jObject = new JSONObject(response);
+                currentTimeUTC = jObject.getString("generated_on");
+                JSONArray jArrayData = jObject.getJSONArray("data");
+                JSONObject jObjectArrayData = jArrayData.getJSONObject(0);
+                JSONArray jArrayArrivals = jObjectArrayData.getJSONArray("arrivals");
+                JSONObject jObjectArrayArrivals = jArrayArrivals.getJSONObject(0);
+                arrivalTimeUTC = jObjectArrayArrivals.getString("arrival_at");
+                errorCode = 0;
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                errorCode = 1;
+                Log.e("JSON", "ERROR in getting JSON data");
+            }
+            if(errorCode == 0) {
+                int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
+                // update remote views
+                newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
+            } else if (errorCode == 1) {
+                // no arrival times found
+                newView.setTextViewText(R.id.tvRemainingTime,"--");
+                // show toast
+                Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
+            }
+            Log.v("DEBUG", "about to call updateAppWidget");
+
+
+            appWidgetManager.updateAppWidget(widgetId, newView);
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 
 
