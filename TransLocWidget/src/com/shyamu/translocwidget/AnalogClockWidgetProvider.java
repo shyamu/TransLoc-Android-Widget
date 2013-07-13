@@ -99,9 +99,17 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
             this.context = context;
         }
 
+        @Override
+        protected void onPreExecute() {
+            Toast.makeText(context, "Updating...",Toast.LENGTH_SHORT).show();
+        }
+
 
         @Override
         protected String doInBackground(Void... voids) {
+
+
+
 
             newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
 
@@ -155,6 +163,8 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
             if(errorCode == 0) {
                 int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
                 // update remote views
+                Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away.",Toast.LENGTH_LONG).show();
+
                 newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
             } else if (errorCode == 1) {
                 // no arrival times found
@@ -168,9 +178,7 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(widgetId, newView);
         }
 
-        @Override
-        protected void onPreExecute() {
-        }
+
 
         @Override
         protected void onProgressUpdate(Void... values) {
