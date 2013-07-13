@@ -28,7 +28,10 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
-        <activity android:name=".AgencySpinnerActivity"/>
+
+        <service android:name="com.shyamu.translocwidget.AnalogClockWidgetProvider$UpdateService" />
+
+
 
         <receiver android:name="AnalogClockWidgetProvider" >
             <intent-filter>
