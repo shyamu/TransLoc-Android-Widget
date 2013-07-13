@@ -3,7 +3,6 @@
     android:minWidth="180dp"
     android:minHeight="110dp"
     android:initialLayout="@layout/widget_layout"
-    android:updatePeriodMillis="0"
     android:configure="com.shyamu.translocwidget.WidgetConfigurationActivity"
     android:resizeMode="horizontal|vertical">
 </appwidget-provider>
