@@ -45,18 +45,12 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
                 Log.v("DEBUG", "extras!=null");
                 appWidgetManager= AppWidgetManager.getInstance(context);
                 widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                Log.v("DEBUG","widgetId = " + widgetId);
                 // do something for the widget that has appWidgetId = widgetId
 
 
                 getJsonResponse task = new getJsonResponse(context);
                 task.execute();
-
-
-
-
-
-
-
 
             }
         }
@@ -179,10 +173,6 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
         }
 
 
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
     }
 
 
