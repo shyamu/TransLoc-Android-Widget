@@ -45,7 +45,7 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
                 Log.v("DEBUG", "extras!=null");
                 appWidgetManager= AppWidgetManager.getInstance(context);
                 widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-                Log.v("DEBUG","widgetId = " + widgetId);
+                Log.v("onReceive provider","widgetId = " + widgetId);
                 // do something for the widget that has appWidgetId = widgetId
 
 
@@ -108,7 +108,9 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
             newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            String url = prefs.getString("url", "");
+            String url = prefs.getString("url" + widgetId, "");
+
+            if(url.equals("")) Log.e("ERROR widgetprovider", "URL is empty");
 
             Log.v("DEBUG", url);
             String response = "";
@@ -166,7 +168,7 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
                 // show toast
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
             }
-            Log.v("DEBUG", "about to call updateAppWidget");
+            Log.v("DEBUG", "about to call updateAppWidget with widgetId: " + widgetId);
 
 
             appWidgetManager.updateAppWidget(widgetId, newView);

@@ -363,7 +363,8 @@ public class WidgetConfigurationActivity extends Activity {
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WidgetConfigurationActivity.this);
             String url = "http://api.transloc.com/1.1/arrival-estimates.json?agencies=" + agencyId + "&routes=" + routeId + "&stops=" + stopId;
-            prefs.edit().putString("url",url).commit();
+            // URL is stored as urlXX with XX being the appwidget ID
+            prefs.edit().putString("url" + mAppWidgetId,url).commit();
 
             String response = getJsonResponse(url);
             try {
@@ -402,7 +403,6 @@ public class WidgetConfigurationActivity extends Activity {
                 RemoteViews views = new RemoteViews(getBaseContext().getPackageName(), R.layout.widget_layout);
 
                 //Set the time remaining of the widget
-                //views.setInt(R.id.widget_aclock, "setBackgroundColor", color);
                 views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
@@ -424,6 +424,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 // Tell the AppWidgetManager to perform an update on the app widget
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
+                Log.v("Config activity","mappwidgetid: " + mAppWidgetId);
 
                 // Return RESULT_OK from this activity
                 Intent resultValue = new Intent();
