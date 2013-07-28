@@ -394,13 +394,6 @@ public class WidgetConfigurationActivity extends Activity {
             super.onPostExecute(result);
 
             if(errorCode == 0) {
-               /// Intent intent = new Intent(getBaseContext(), AnalogClockWidgetProvider.class);
-               // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-               // intent.setData(Uri.parse("tel:/" + (int) System.currentTimeMillis()));
-                // Creating a pending intent, which will be invoked when the user
-                // clicks on the widget
-               // PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0,
-               //         intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 // Getting an instance of WidgetManager
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
@@ -422,15 +415,12 @@ public class WidgetConfigurationActivity extends Activity {
 
                 views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
 
-                //  Attach an on-click listener to the time to update when clicked
-             //   views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
-
                 Intent clickIntent = new Intent(getBaseContext(), AnalogClockWidgetProvider.class);
+
                 clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),mAppWidgetId,clickIntent,0);
+
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),mAppWidgetId,clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
                 views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
-
-
 
                 // Tell the AppWidgetManager to perform an update on the app widget
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
