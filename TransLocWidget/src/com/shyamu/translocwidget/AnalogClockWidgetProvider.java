@@ -162,6 +162,7 @@ public class AnalogClockWidgetProvider extends AppWidgetProvider {
                 Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away.",Toast.LENGTH_LONG).show();
 
                 newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
+                if(minutes < 10) newView.setTextViewText(R.id.tvMins, "min away");
             } else if (errorCode == 1) {
                 // no arrival times found
                 newView.setTextViewText(R.id.tvRemainingTime,"--");
