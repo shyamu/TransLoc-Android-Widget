@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.joda.time.DateTime;
@@ -19,11 +20,9 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -373,7 +372,7 @@ public class WidgetConfigurationActivity extends Activity {
             // URL is stored as urlXX with XX being the appwidget ID
             prefs.edit().putString("url" + mAppWidgetId,url).commit();
 
-            Log.v("ConfigActivity","URL: " + url);
+            Log.v("ConfigActivity", "URL: " + url);
 
             String response = getJsonResponse(url);
             try {
@@ -413,7 +412,8 @@ public class WidgetConfigurationActivity extends Activity {
 
                 //Set the time remaining of the widget
                 views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
-                if(minutes < 10) views.setTextViewText(R.id.tvMins, "min away");
+                if(minutes < 1) views.setTextViewText(R.id.tvRemainingTime, "<1");
+                if(minutes < 2) views.setTextViewText(R.id.tvMins, "min away");
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
 
@@ -425,7 +425,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
 
-                Intent clickIntent = new Intent(getBaseContext(), AnalogClockWidgetProvider.class);
+                Intent clickIntent = new Intent(getBaseContext(), TranslocWidgetProvider.class);
 
                 clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
@@ -539,15 +539,18 @@ public class WidgetConfigurationActivity extends Activity {
         HttpGet httpGet = new HttpGet(url);
         try {
             HttpResponse execute = client.execute(httpGet);
-            InputStream content = execute.getEntity().getContent();
-
-            BufferedReader buffer = new BufferedReader(
-                    new InputStreamReader(content));
-            String s = "";
-            while ((s = buffer.readLine()) != null) {
-                response += s;
+            int statusCode = execute.getStatusLine().getStatusCode();
+            if(statusCode != HttpStatus.SC_OK) {
+                throw new Exception();
+            } else {
+                InputStream content = execute.getEntity().getContent();
+                BufferedReader buffer = new BufferedReader(
+                        new InputStreamReader(content));
+                String s = "";
+                while ((s = buffer.readLine()) != null) {
+                    response += s;
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

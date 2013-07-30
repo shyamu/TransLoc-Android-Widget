@@ -29,11 +29,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.shyamu.translocwidget.AnalogClockWidgetProvider$UpdateService" />
 
-
-
-        <receiver android:name="AnalogClockWidgetProvider" >
+        <receiver android:name=".TranslocWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
