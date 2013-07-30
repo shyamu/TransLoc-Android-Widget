@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class WidgetConfigurationActivity extends Activity {
     private int mAppWidgetId = 0;
@@ -50,6 +51,7 @@ public class WidgetConfigurationActivity extends Activity {
 
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
     Button bReset, bMakeWidget;
+    TextView tvHelpMessage;
 
     ArrayList<String> agencyLongNameArray = new ArrayList<String>();
     ArrayList<String> agencyShortNameArray = new ArrayList<String>();
@@ -78,6 +80,7 @@ public class WidgetConfigurationActivity extends Activity {
         sSelectStop = (Spinner) findViewById(R.id.sSelectStop);
         bReset = (Button) findViewById(R.id.bReset);
         bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
+        tvHelpMessage = (TextView) findViewById(R.id.tvHelp);
 
         Log.v("DEBUG","in onCreate");
 
@@ -115,6 +118,14 @@ public class WidgetConfigurationActivity extends Activity {
             }
         };
 
+        // On click listener for help text
+        OnClickListener setHelpClickedListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlertDialog("Why can't I find my agency?", getString(R.string.help_dialog));
+            }
+        };
+
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -127,6 +138,7 @@ public class WidgetConfigurationActivity extends Activity {
         // Setting the click listener on the buttons
         bReset.setOnClickListener(setResetClickedListener);
         bMakeWidget.setOnClickListener(setMakeWidgetClickedListener);
+        tvHelpMessage.setOnClickListener(setHelpClickedListener);
     }
 
     private void doReset() {
