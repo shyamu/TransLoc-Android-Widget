@@ -40,7 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/sSelectStop"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp" >
+        android:layout_marginTop="47dp"
+        android:id="@+id/linearLayout">
 
         <Button
             android:id="@+id/bReset"
@@ -54,5 +55,21 @@
             android:layout_height="wrap_content"
             android:text="Make Widget!" />
     </LinearLayout>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Help! I can't find my transit agency!"
+            android:id="@+id/tvHelp"
+            android:minLines="2"
+            android:maxLines="2"
+            android:gravity="center"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:textColor="#1627ff"/>
 
 </RelativeLayout>
