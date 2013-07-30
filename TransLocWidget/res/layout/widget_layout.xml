@@ -6,7 +6,7 @@
     android:padding="@dimen/widget_margin"
     android:clickable="false"
     android:background="#77010101"
-    android:id="rlWidgetLayout">
+    android:id="@+id/rlWidgetLayout">
 
     <TextView
         android:id="@+id/tvRoute"
