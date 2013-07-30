@@ -414,6 +414,8 @@ public class WidgetConfigurationActivity extends Activity {
                 views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                 if(minutes < 1) views.setTextViewText(R.id.tvRemainingTime, "<1");
                 if(minutes < 2) views.setTextViewText(R.id.tvMins, "min away");
+                else views.setTextViewText(R.id.tvMins, "mins away");
+
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
 

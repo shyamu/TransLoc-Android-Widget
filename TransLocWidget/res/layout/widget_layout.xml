@@ -5,7 +5,8 @@
     android:layout_height="fill_parent"
     android:padding="@dimen/widget_margin"
     android:clickable="false"
-    android:background="#77010101">
+    android:background="#77010101"
+    android:id="rlWidgetLayout">
 
     <TextView
         android:id="@+id/tvRoute"
@@ -45,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="mins away"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:id="@+id/tvMins"
             android:layout_alignBaseline="@+id/tvRemainingTime"
             android:layout_alignBottom="@+id/tvRoute"

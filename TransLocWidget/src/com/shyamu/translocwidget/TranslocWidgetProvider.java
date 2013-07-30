@@ -100,9 +100,6 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
         @Override
         protected String doInBackground(Void... voids) {
 
-
-
-
             newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -160,11 +157,16 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
             if(errorCode == 0) {
                 int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
                 // update remote views
-                Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away.",Toast.LENGTH_LONG).show();
+
+                if(minutes < 1) Toast.makeText(context, "Update success! Next bus is less than 1 minute away!",Toast.LENGTH_LONG).show();
+                else if(minutes == 1) Toast.makeText(context, "Update success! Next bus is 1 minute away!",Toast.LENGTH_LONG).show();
+                else Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away",Toast.LENGTH_LONG).show();
 
                 newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
                 if(minutes < 1) newView.setTextViewText(R.id.tvRemainingTime, "<1");
                 if(minutes < 2) newView.setTextViewText(R.id.tvMins, "min away");
+                else newView.setTextViewText(R.id.tvMins, "mins away");
+
             } else if (errorCode == 1) {
                 // no arrival times found
                 newView.setTextViewText(R.id.tvRemainingTime,"--");
