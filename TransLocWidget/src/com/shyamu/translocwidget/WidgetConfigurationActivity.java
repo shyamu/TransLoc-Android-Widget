@@ -80,6 +80,8 @@ public class WidgetConfigurationActivity extends Activity {
         bReset = (Button) findViewById(R.id.bReset);
         bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
 
+        Log.v("DEBUG","in onCreate");
+
         // Make agency selected listener
         AdapterView.OnItemSelectedListener agencySelectedListener = new AgencySpinnerActivity();
         sSelectAgency.setOnItemSelectedListener(agencySelectedListener);
@@ -167,13 +169,18 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
             dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Agencies","Please Wait...");
+            Log.v("DEBUG","populating agencies");
+
         }
 
         protected Void doInBackground(Void... voids) {
 
             String response = getJsonResponse("http://api.transloc.com/1.1/agencies.json");
+            Log.v("DEBUG",response);
+
 
             try {
+
                 JSONObject jObject = new JSONObject(response);
                 JSONArray jArray = jObject.getJSONArray("data");
                 for (int i = 0; i < jArray.length(); i++) {
@@ -366,6 +373,8 @@ public class WidgetConfigurationActivity extends Activity {
             // URL is stored as urlXX with XX being the appwidget ID
             prefs.edit().putString("url" + mAppWidgetId,url).commit();
 
+            Log.v("ConfigActivity","URL: " + url);
+
             String response = getJsonResponse(url);
             try {
                 JSONObject jObject = new JSONObject(response);
@@ -404,6 +413,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 //Set the time remaining of the widget
                 views.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
+                if(minutes < 10) views.setTextViewText(R.id.tvMins, "min away");
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
 
@@ -524,7 +534,7 @@ public class WidgetConfigurationActivity extends Activity {
     private String getJsonResponse(String url) {
 
         String response = "";
-
+        Log.v("DEBUG", url);
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
         try {

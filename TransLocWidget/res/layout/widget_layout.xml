@@ -11,10 +11,12 @@
         android:id="@+id/tvRoute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Route"
-        android:layout_below="@+id/tvRemainingTime"
+        android:textSize="10sp"
+        android:text="Route Name Here"
         android:textColor="#ffffff"
-        android:layout_centerInParent="true"/>
+        android:layout_toRightOf="@+id/tvRemainingTime"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"/>
 
     <TextView
         android:id="@+id/tvRemainingTime"
@@ -24,17 +26,31 @@
         android:textSize="65sp"
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
-        android:layout_alignParentTop="true"
         android:textColor="#ffffff"
-        android:layout_centerInParent="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"/>
 
     <TextView
         android:id="@+id/tvStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        android:layout_below="@+id/tvRoute"
+        android:textSize="10sp"
+        android:text="Stop Name Here"
         android:textColor="#ffffff"
-        android:layout_centerInParent="true"/>
+        android:layout_below="@+id/tvRoute"
+        android:layout_alignLeft="@+id/tvRoute"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="mins away"
+            android:id="@+id/tvMins"
+            android:layout_alignBaseline="@+id/tvRemainingTime"
+            android:layout_alignBottom="@+id/tvRoute"
+            android:layout_toRightOf="@+id/tvRemainingTime"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="5dp"/>
 
 </RelativeLayout>
