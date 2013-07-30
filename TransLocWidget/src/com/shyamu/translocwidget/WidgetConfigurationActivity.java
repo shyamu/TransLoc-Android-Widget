@@ -432,7 +432,7 @@ public class WidgetConfigurationActivity extends Activity {
                 clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),mAppWidgetId,clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-                views.setOnClickPendingIntent(R.id.tvRemainingTime, pendingIntent);
+                views.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
                 // Tell the AppWidgetManager to perform an update on the app widget
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
