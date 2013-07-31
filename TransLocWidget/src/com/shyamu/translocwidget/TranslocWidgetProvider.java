@@ -180,10 +180,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 else newView.setTextViewText(R.id.tvMins, "mins away");
 
 
-                Intent clickIntent = new Intent(context, TranslocWidgetProvider.class);
-                clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,widgetId,clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-                newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
+
 
             } else if (errorCode == 1) {
                 // no arrival times found
@@ -192,6 +189,11 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 // show toast
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
             }
+
+            Intent clickIntent = new Intent(context, TranslocWidgetProvider.class);
+            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,widgetId,clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
             Log.v("DEBUG", "about to call updateAppWidget with widgetId: " + widgetId);
 
