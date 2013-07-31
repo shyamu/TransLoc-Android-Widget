@@ -1,5 +1,6 @@
 package com.shyamu.translocwidget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -39,7 +40,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
 
         if (intent.getAction()==null) {
             Bundle extras = intent.getExtras();
-           // if(extras!=null) {
+            if(extras!=null) {
                 Log.v("DEBUG", "extras!=null");
                 appWidgetManager= AppWidgetManager.getInstance(context);
                 widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -50,7 +51,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 getJsonResponse task = new getJsonResponse(context);
                 task.execute();
 
-           // }
+            }
         }
         else {
             super.onReceive(context, intent);
@@ -164,6 +165,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 else Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away",Toast.LENGTH_LONG).show();
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                Log.v("DEBUG", "routeName" + widgetId);
                 String routeName = prefs.getString("routeName" + widgetId,"error: route name");
                 String stopName = prefs.getString("stopName" + widgetId,"error: stop name");
                 Log.v("DEBUG", routeName);
@@ -177,6 +179,12 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 if(minutes < 2) newView.setTextViewText(R.id.tvMins, "min away");
                 else newView.setTextViewText(R.id.tvMins, "mins away");
 
+
+                Intent clickIntent = new Intent(context, TranslocWidgetProvider.class);
+                clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,widgetId,clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
+
             } else if (errorCode == 1) {
                 // no arrival times found
                 Log.v("DEBUG" ,"no arrival times error");
@@ -184,6 +192,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 // show toast
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
             }
+
             Log.v("DEBUG", "about to call updateAppWidget with widgetId: " + widgetId);
 
 
