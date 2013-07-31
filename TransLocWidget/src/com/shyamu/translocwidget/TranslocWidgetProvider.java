@@ -39,18 +39,18 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
 
         if (intent.getAction()==null) {
             Bundle extras = intent.getExtras();
-            if(extras!=null) {
+           // if(extras!=null) {
                 Log.v("DEBUG", "extras!=null");
                 appWidgetManager= AppWidgetManager.getInstance(context);
                 widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
                 Log.v("onReceive provider","widgetId = " + widgetId);
                 // do something for the widget that has appWidgetId = widgetId
 
-
+                Log.v("DEBUG" ,"about to call getJsonResponse");
                 getJsonResponse task = new getJsonResponse(context);
                 task.execute();
 
-            }
+           // }
         }
         else {
             super.onReceive(context, intent);
@@ -155,6 +155,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 Log.e("JSON", "ERROR in getting JSON data");
             }
             if(errorCode == 0) {
+                Log.v("DEBUG" ,"no error updating remote view");
                 int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
                 // update remote views
 
@@ -162,13 +163,23 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
                 else if(minutes == 1) Toast.makeText(context, "Update success! Next bus is 1 minute away!",Toast.LENGTH_LONG).show();
                 else Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away",Toast.LENGTH_LONG).show();
 
-                newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                String routeName = prefs.getString("routeName" + widgetId,"error: route name");
+                String stopName = prefs.getString("stopName" + widgetId,"error: stop name");
+                Log.v("DEBUG", routeName);
+                Log.v("DEBUG", stopName);
+                newView.setTextViewText(R.id.tvRoute,routeName);
+                newView.setTextViewText(R.id.tvStop,stopName);
+
+
                 if(minutes < 1) newView.setTextViewText(R.id.tvRemainingTime, "<1");
+                else newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
                 if(minutes < 2) newView.setTextViewText(R.id.tvMins, "min away");
                 else newView.setTextViewText(R.id.tvMins, "mins away");
 
             } else if (errorCode == 1) {
                 // no arrival times found
+                Log.v("DEBUG" ,"no arrival times error");
                 newView.setTextViewText(R.id.tvRemainingTime,"--");
                 // show toast
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();

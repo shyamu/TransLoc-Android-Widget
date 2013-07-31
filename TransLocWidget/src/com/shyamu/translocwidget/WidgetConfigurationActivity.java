@@ -431,13 +431,20 @@ public class WidgetConfigurationActivity extends Activity {
                 Log.v("DEBUG",routeShortNameArray.get(routePosition));
                 Log.v("DEBUG",stopNameArray.get(stopPosition));
 
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WidgetConfigurationActivity.this);
+
                 if(routeShortNameArray.get(routePosition).equals("")) {
+                    prefs.edit().putString("routeName" + mAppWidgetId,routeLongNameArray.get(routePosition));
                     views.setTextViewText(R.id.tvRoute, routeLongNameArray.get(routePosition));
                 } else {
+                    prefs.edit().putString("routeName" + mAppWidgetId,routeShortNameArray.get(routePosition));
                     views.setTextViewText(R.id.tvRoute, routeShortNameArray.get(routePosition));
                 }
 
+                prefs.edit().putString("stopName" + mAppWidgetId, stopNameArray.get(stopPosition));
                 views.setTextViewText(R.id.tvStop, stopNameArray.get(stopPosition));
+
+                prefs.edit().commit();
 
                 Intent clickIntent = new Intent(getBaseContext(), TranslocWidgetProvider.class);
 
