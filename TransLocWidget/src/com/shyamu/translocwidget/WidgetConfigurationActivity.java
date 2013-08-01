@@ -171,7 +171,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Agencies","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading","Please Wait...");
             Log.v("DEBUG","populating agencies");
 
         }
@@ -207,7 +207,7 @@ public class WidgetConfigurationActivity extends Activity {
                         editor.putString("AgencyShortName",agencyShortName);
                         editor.putInt("AgencyID",currentAgencyId);
                         new PopulateRoutesTask().execute();
-                        new PopulateStopsTask().execute();
+
                     }
 
                     @Override
@@ -232,7 +232,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
 
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Routes","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading","Please Wait...");
 
 
         }
@@ -243,10 +243,21 @@ public class WidgetConfigurationActivity extends Activity {
                 Map<String,Object> agencyMap = (Map) routeMap.get("data");
                 List<Map<String,Object>> routeList=(List)agencyMap.get(Integer.toString(currentAgencyId));
                 final ArrayList<TransLocRoute> routesArrayList=new ArrayList<TransLocRoute>();
-                for(Map<String,Object> route:routeList){
-                    routesArrayList.add(new TransLocRoute(Integer.parseInt((String)route.get("route_id")),(String)route.get("short_name"),(String)route.get("long_name")));
+
+                if(routeList == null)
+                {
+                    Log.v("DEBUG", "routelist null");
+                    return null;
+                } else {
+                    Log.v("DEBUG", "routelist not null");
+
+                    for(Map<String,Object> route:routeList){
+                        routesArrayList.add(new TransLocRoute(Integer.parseInt((String)route.get("route_id")),(String)route.get("short_name"),(String)route.get("long_name")));
+                    }
+                    return routesArrayList;
                 }
-                return routesArrayList;
+
+
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -257,7 +268,16 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
-            if(routesArrayList == null) Log.e("JSON", "error in getting list of routes");
+            new PopulateStopsTask().execute();
+            if(routesArrayList == null) {
+                Log.e("JSON", "error in getting list of routes");
+                dialog.dismiss();
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+                // empty routes spinner
+                ArrayList<String> arr = new ArrayList<String >();
+                sSelectRoute.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this,android.R.layout.simple_dropdown_item_1line,arr ));
+
+            }
             else {
                 sSelectRoute.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -265,9 +285,9 @@ public class WidgetConfigurationActivity extends Activity {
                         currentRouteId = routesArrayList.get(pos).id;
                         routeLongName = routesArrayList.get(pos).longName;
                         routeShortName = routesArrayList.get(pos).shortName;
-                        editor.putString("RouteLongName",routeLongName);
-                        editor.putString("RouteShortName",routeShortName);
-                        editor.putInt("RouteID",currentRouteId);
+                        editor.putString("RouteLongName", routeLongName);
+                        editor.putString("RouteShortName", routeShortName);
+                        editor.putInt("RouteID", currentRouteId);
                         new FilterStopListTask().execute(fullStopList);
 
                     }
@@ -283,9 +303,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 dialog.dismiss();
 
-                if(routeArrayAdapter.isEmpty()) {
-                    Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
-                }
+
             }
         }
 
@@ -298,7 +316,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
 
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading Stops","Please Wait...");
+            dialog = ProgressDialog.show(WidgetConfigurationActivity.this,"Loading","Please Wait...");
 
         }
 
@@ -371,9 +389,9 @@ public class WidgetConfigurationActivity extends Activity {
                 }
             });
 
-            if(stopArrayAdapter.isEmpty()) {
-                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
-            }
+            //if(stopArrayAdapter.isEmpty()) {
+            //    Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
+           // }
 
         }
     }
