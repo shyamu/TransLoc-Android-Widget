@@ -122,7 +122,7 @@ public class WidgetConfigurationActivity extends Activity {
         OnClickListener setHelpClickedListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialog("Why can't I find my agency?", getString(R.string.help_dialog));
+                Utils.showAlertDialog(getBaseContext(), "Why can't I find my agency?", getString(R.string.help_dialog));
             }
         };
 
@@ -178,11 +178,9 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected TransLocAgencies doInBackground(Void... voids) {
 
-            //String response = getJsonResponse("http://api.transloc.com/1.1/agencies.json");
-           // Log.v("DEBUG",response);
 
             try {
-                return new ObjectMapper().readValue(getJsonResponse(AGENCIES_URL),TransLocAgencies.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(AGENCIES_URL),TransLocAgencies.class);
             } catch (IOException e) {
                 Log.e("JSON", "ERROR in getting JSON data");
                 e.printStackTrace();
@@ -241,7 +239,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected ArrayList<TransLocRoute> doInBackground(Void... voids) {
             try {
-                Map<String,Object> routeMap = new ObjectMapper().readValue(getJsonResponse(ROUTES_URL+currentAgencyId),Map.class);
+                Map<String,Object> routeMap = new ObjectMapper().readValue(Utils.getJsonResponse(ROUTES_URL+currentAgencyId),Map.class);
                 Map<String,Object> agencyMap = (Map) routeMap.get("data");
                 List<Map<String,Object>> routeList=(List)agencyMap.get(Integer.toString(currentAgencyId));
                 final ArrayList<TransLocRoute> routesArrayList=new ArrayList<TransLocRoute>();
@@ -286,7 +284,7 @@ public class WidgetConfigurationActivity extends Activity {
                 dialog.dismiss();
 
                 if(routeArrayAdapter.isEmpty()) {
-                    showAlertDialog("Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+                    Utils.showAlertDialog(getBaseContext(), "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
                 }
             }
         }
@@ -307,7 +305,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected TransLocStops doInBackground(Void... voids) {
 
             try {
-                return new ObjectMapper().readValue(getJsonResponse(STOPS_URL+currentAgencyId),TransLocStops.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(STOPS_URL+currentAgencyId),TransLocStops.class);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -374,7 +372,7 @@ public class WidgetConfigurationActivity extends Activity {
             });
 
             if(stopArrayAdapter.isEmpty()) {
-                showAlertDialog("Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
+                Utils.showAlertDialog(getBaseContext(), "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
 
         }
@@ -405,7 +403,7 @@ public class WidgetConfigurationActivity extends Activity {
 
 
             try {
-                return new ObjectMapper().readValue(getJsonResponse(url),TransLocArrivalEstimates.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(url),TransLocArrivalEstimates.class);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -421,16 +419,19 @@ public class WidgetConfigurationActivity extends Activity {
             Date currentTimeUTC;
             Date arrivalTimeUTC;
 
-            TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
+            Log.v("DEBUG", "size = " + arrivalEstimatesList.data.size());
 
-            if(arrivalEstimate == null) showAlertDialog("Error - No Arrival Times","No arrival times are currently available for the route and stop you have selected. Please try again later when buses are running.");
-            else {
+            if(arrivalEstimatesList.data.isEmpty() || arrivalEstimatesList == null)
+            {
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Arrival Times","No arrival times are currently available for the route and stop you have selected. Please try again later when buses are running.");
+            } else {
 
+                TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
                 TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
                 currentTimeUTC = arrivalEstimatesList.generatedOn;
                 arrivalTimeUTC = arrival.arrivalAt;
                 Log.v("DEBUG","current time: " + currentTimeUTC + " ... " + "arrival time: " + arrivalTimeUTC);
-                minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
+                minutes = Utils.getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
 
 
                 // Getting an instance of WidgetManager
@@ -497,55 +498,7 @@ public class WidgetConfigurationActivity extends Activity {
     }
 
 
-    private void showAlertDialog(String title, String message) {
-        new AlertDialog.Builder( WidgetConfigurationActivity.this )
-                .setTitle( title )
-                .setMessage( message )
-                .setNeutralButton( "Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d( "AlertDialog", "Neutral" );
-                    }
-                })
-                .show();
-    }
 
-    private int getMinutesBetweenTimes(Date currentTime, Date futureTime)
-    {
-        DateTime start = new DateTime(currentTime);
-        DateTime end = new DateTime(futureTime);
-        Log.v("DEBUG", "minutes: " + Minutes.minutesBetween(start,end).getMinutes());
-        return Minutes.minutesBetween(start,end).getMinutes();
-    }
-
-
-
-    private String getJsonResponse(String url) {
-
-        String response = "";
-        Log.v("DEBUG", url);
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            HttpResponse execute = client.execute(httpGet);
-            int statusCode = execute.getStatusLine().getStatusCode();
-            if(statusCode != HttpStatus.SC_OK) {
-                Log.e("DEBUG", "error in HTTP");
-                throw new Exception();
-            } else {
-                InputStream content = execute.getEntity().getContent();
-                BufferedReader buffer = new BufferedReader(
-                        new InputStreamReader(content));
-                String s = "";
-                while ((s = buffer.readLine()) != null) {
-                    response += s;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return response;
-    }
 
 
 }
