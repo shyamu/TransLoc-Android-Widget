@@ -13,19 +13,19 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shyamu.translocwidget.TransLocJSON.TransLocArrival;
+import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimate;
+import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimates;
+
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.Date;
 
 public class TranslocWidgetProvider extends AppWidgetProvider {
 
@@ -77,11 +77,10 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
 
 
 
-    private class getJsonResponse extends AsyncTask<Void, Void, String> {
+    private class getJsonResponse extends AsyncTask<Void, Void, TransLocArrivalEstimates> {
 
-        int errorCode = -1;
-        String currentTimeUTC = "";
-        String arrivalTimeUTC = "";
+        int minutes = -1;
+
 
         private Context context;
 
@@ -99,7 +98,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
 
 
         @Override
-        protected String doInBackground(Void... voids) {
+        protected TransLocArrivalEstimates doInBackground(Void... voids) {
 
             newView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
 
@@ -109,86 +108,61 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
             if(url.equals("")) Log.e("ERROR widgetprovider", "URL is empty");
 
             Log.v("DEBUG", url);
-            String response = "";
-
-
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
             try {
-                HttpResponse execute = client.execute(httpGet);
-                int statusCode = execute.getStatusLine().getStatusCode();
-                if(statusCode != HttpStatus.SC_OK) {
-                    throw new Exception();
-                } else {
-                    InputStream content = execute.getEntity().getContent();
-                    BufferedReader buffer = new BufferedReader(
-                            new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                }
-            } catch (Exception e) {
+                return new ObjectMapper().readValue(Utils.getJsonResponse(url), TransLocArrivalEstimates.class);
+            } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
 
-            return response;
+
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            String response = result;
+        protected void onPostExecute(TransLocArrivalEstimates arrivalEstimatesList) {
 
-            try {
-                JSONObject jObject = new JSONObject(response);
-                currentTimeUTC = jObject.getString("generated_on");
-                JSONArray jArrayData = jObject.getJSONArray("data");
-                JSONObject jObjectArrayData = jArrayData.getJSONObject(0);
-                JSONArray jArrayArrivals = jObjectArrayData.getJSONArray("arrivals");
-                JSONObject jObjectArrayArrivals = jArrayArrivals.getJSONObject(0);
-                arrivalTimeUTC = jObjectArrayArrivals.getString("arrival_at");
-                errorCode = 0;
+            Date currentTimeUTC;
+            Date arrivalTimeUTC;
 
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                errorCode = 1;
-                Log.e("JSON", "ERROR in getting JSON data");
-            }
-            if(errorCode == 0) {
-                Log.v("DEBUG" ,"no error updating remote view");
-                int minutes = getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
-                // update remote views
+            TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
 
-                if(minutes < 1) Toast.makeText(context, "Update success! Next bus is less than 1 minute away!",Toast.LENGTH_LONG).show();
-                else if(minutes == 1) Toast.makeText(context, "Update success! Next bus is 1 minute away!",Toast.LENGTH_LONG).show();
-                else Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away",Toast.LENGTH_LONG).show();
-
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                Log.v("DEBUG", "routeName" + widgetId);
-                String routeName = prefs.getString("routeName" + widgetId,"error: route name");
-                String stopName = prefs.getString("stopName" + widgetId,"error: stop name");
-                Log.v("DEBUG", routeName);
-                Log.v("DEBUG", stopName);
-                newView.setTextViewText(R.id.tvRoute,routeName);
-                newView.setTextViewText(R.id.tvStop,stopName);
-
-
-                if(minutes < 1) newView.setTextViewText(R.id.tvRemainingTime, "<1");
-                else newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
-                if(minutes < 2) newView.setTextViewText(R.id.tvMins, "min away");
-                else newView.setTextViewText(R.id.tvMins, "mins away");
-
-
-
-
-            } else if (errorCode == 1) {
-                // no arrival times found
+            if(arrivalEstimate == null) {
                 Log.v("DEBUG" ,"no arrival times error");
                 newView.setTextViewText(R.id.tvRemainingTime,"--");
-                // show toast
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
+            } else {
+                TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
+                currentTimeUTC = arrivalEstimatesList.generatedOn;
+                arrivalTimeUTC = arrival.arrivalAt;
+                Log.v("DEBUG","current time: " + currentTimeUTC + " ... " + "arrival time: " + arrivalTimeUTC);
+                minutes = Utils.getMinutesBetweenTimes(currentTimeUTC,arrivalTimeUTC);
+
+                if(minutes < 1) {
+                    Toast.makeText(context, "Update success! Next bus is less than 1 minute away!",Toast.LENGTH_LONG).show();
+                    newView.setTextViewText(R.id.tvRemainingTime, "<1");
+                    newView.setTextViewText(R.id.tvMins, "min away");
+                }
+                else if(minutes == 1) {
+                    Toast.makeText(context, "Update success! Next bus is 1 minute away!",Toast.LENGTH_LONG).show();
+                    newView.setTextViewText(R.id.tvRemainingTime, "1");
+                    newView.setTextViewText(R.id.tvMins, "min away");
+                }
+                else {
+                    Toast.makeText(context, "Update success! Next bus is " + minutes + " minutes away",Toast.LENGTH_LONG).show();
+                    newView.setTextViewText(R.id.tvRemainingTime,Integer.toString(minutes));
+                    newView.setTextViewText(R.id.tvMins, "mins away");
+                }
+
             }
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Log.v("DEBUG", "routeName" + widgetId);
+            String routeName = prefs.getString("routeName" + widgetId,"error: route name");
+            String stopName = prefs.getString("stopName" + widgetId,"error: stop name");
+            Log.v("DEBUG", routeName);
+            Log.v("DEBUG", stopName);
+            newView.setTextViewText(R.id.tvRoute,routeName);
+            newView.setTextViewText(R.id.tvStop,stopName);
 
             Intent clickIntent = new Intent(context, TranslocWidgetProvider.class);
             clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
@@ -196,7 +170,6 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
             newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
             Log.v("DEBUG", "about to call updateAppWidget with widgetId: " + widgetId);
-
 
             appWidgetManager.updateAppWidget(widgetId, newView);
         }
