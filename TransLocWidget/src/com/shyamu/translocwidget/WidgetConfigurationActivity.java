@@ -122,7 +122,7 @@ public class WidgetConfigurationActivity extends Activity {
         OnClickListener setHelpClickedListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.showAlertDialog(getBaseContext(), "Why can't I find my agency?", getString(R.string.help_dialog));
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Why can't I find my agency?", getString(R.string.help_dialog));
             }
         };
 
@@ -284,7 +284,7 @@ public class WidgetConfigurationActivity extends Activity {
                 dialog.dismiss();
 
                 if(routeArrayAdapter.isEmpty()) {
-                    Utils.showAlertDialog(getBaseContext(), "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+                    Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
                 }
             }
         }
@@ -372,7 +372,7 @@ public class WidgetConfigurationActivity extends Activity {
             });
 
             if(stopArrayAdapter.isEmpty()) {
-                Utils.showAlertDialog(getBaseContext(), "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
 
         }
@@ -424,6 +424,7 @@ public class WidgetConfigurationActivity extends Activity {
             if(arrivalEstimatesList.data.isEmpty() || arrivalEstimatesList == null)
             {
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Arrival Times","No arrival times are currently available for the route and stop you have selected. Please try again later when buses are running.");
+                dialog.dismiss();
             } else {
 
                 TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
@@ -486,11 +487,7 @@ public class WidgetConfigurationActivity extends Activity {
                 finish();
 
             }
-            //} else if (errorCode == 1) {
-              //  dialog.dismiss();
-                //Show alert dialog
-             //
-           // }
+
         }
 
 
