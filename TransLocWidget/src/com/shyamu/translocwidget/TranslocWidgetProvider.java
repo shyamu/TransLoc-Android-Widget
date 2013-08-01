@@ -93,7 +93,7 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
 
         @Override
         protected void onPreExecute() {
-            Toast.makeText(context, "Updating...",Toast.LENGTH_SHORT).show();
+
         }
 
 
@@ -124,13 +124,12 @@ public class TranslocWidgetProvider extends AppWidgetProvider {
             Date currentTimeUTC;
             Date arrivalTimeUTC;
 
-            TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
-
-            if(arrivalEstimate == null) {
+            if(arrivalEstimatesList == null || arrivalEstimatesList.data.isEmpty()) {
                 Log.v("DEBUG" ,"no arrival times error");
                 newView.setTextViewText(R.id.tvRemainingTime,"--");
                 Toast.makeText(context, "No arrival times found. Please try again later",Toast.LENGTH_LONG).show();
             } else {
+                TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
                 TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
                 currentTimeUTC = arrivalEstimatesList.generatedOn;
                 arrivalTimeUTC = arrival.arrivalAt;
