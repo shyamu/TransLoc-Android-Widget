@@ -42,7 +42,7 @@ public class Utils {
 
 
 
-    protected static String getJsonResponse(String url) {
+    protected static String getJsonResponse(String url) throws Exception {
 
         String response = "";
         Log.v("DEBUG", url);
@@ -67,7 +67,12 @@ public class Utils {
             e.printStackTrace();
         }
 
-        return response;
+        if(response == "")
+        {
+            throw new Exception();
+        } else {
+            return response;
+        }
     }
 
 
