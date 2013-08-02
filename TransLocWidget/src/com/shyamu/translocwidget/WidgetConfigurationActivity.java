@@ -181,7 +181,7 @@ public class WidgetConfigurationActivity extends Activity {
 
             try {
                 return new ObjectMapper().readValue(Utils.getJsonResponse(AGENCIES_URL),TransLocAgencies.class);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.e("JSON", "ERROR in getting JSON data");
                 e.printStackTrace();
                 return null;
@@ -258,7 +258,7 @@ public class WidgetConfigurationActivity extends Activity {
                 }
 
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -268,7 +268,6 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
-            new PopulateStopsTask().execute();
             if(routesArrayList == null) {
                 Log.e("JSON", "error in getting list of routes");
                 dialog.dismiss();
@@ -288,7 +287,8 @@ public class WidgetConfigurationActivity extends Activity {
                         editor.putString("RouteLongName", routeLongName);
                         editor.putString("RouteShortName", routeShortName);
                         editor.putInt("RouteID", currentRouteId);
-                        new FilterStopListTask().execute(fullStopList);
+                        new PopulateStopsTask().execute();
+
 
                     }
 
@@ -324,7 +324,7 @@ public class WidgetConfigurationActivity extends Activity {
 
             try {
                 return new ObjectMapper().readValue(Utils.getJsonResponse(STOPS_URL+currentAgencyId),TransLocStops.class);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -423,7 +423,7 @@ public class WidgetConfigurationActivity extends Activity {
             try {
                 return new ObjectMapper().readValue(Utils.getJsonResponse(url),TransLocArrivalEstimates.class);
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
