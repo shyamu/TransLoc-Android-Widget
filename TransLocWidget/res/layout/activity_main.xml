@@ -28,20 +28,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="After adding the widget to your home screen,"
+            android:text="After adding the widget to your home screen, tap on the widget to update it."
             android:id="@+id/textView"
             android:layout_below="@+id/tvInstallationComplete"
             android:layout_alignLeft="@+id/tvInstallationComplete"
-            android:layout_marginTop="15dp"/>
-
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="tap on the widget to update it"
-            android:id="@+id/textView2"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true"/>
+            android:layout_marginTop="15dp"
+            android:gravity="center"/>
 
     <TextView
             android:layout_width="wrap_content"
