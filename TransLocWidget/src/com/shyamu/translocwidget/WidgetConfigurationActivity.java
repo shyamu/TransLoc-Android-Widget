@@ -1,11 +1,9 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -31,17 +29,6 @@ import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,6 +82,7 @@ public class WidgetConfigurationActivity extends Activity {
         settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         editor = settings.edit();
 
+        setResult(RESULT_CANCELED);
 
         // Populate agency spinner
         PopulateAgenciesTask task = new PopulateAgenciesTask();
@@ -500,6 +488,7 @@ public class WidgetConfigurationActivity extends Activity {
                 Intent resultValue = new Intent();
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
                 setResult(RESULT_OK, resultValue);
+                prefs.edit().putBoolean("configComplete", true);
 
                 dialog.dismiss();
                 finish();
