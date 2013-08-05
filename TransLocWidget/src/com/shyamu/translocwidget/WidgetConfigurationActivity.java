@@ -30,6 +30,8 @@ import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -165,9 +167,9 @@ public class WidgetConfigurationActivity extends Activity {
                 sSelectAgency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                        currentAgencyId = agencyList.data.get(pos).agencyId;
-                        agencyLongName = agencyList.data.get(pos).longName;
-                        agencyShortName = agencyList.data.get(pos).shortName;
+                        currentAgencyId = agencyList.getData().get(pos).agencyId;
+                        agencyLongName = agencyList.getData().get(pos).longName;
+                        agencyShortName = agencyList.getData().get(pos).shortName;
                         new PopulateRoutesTask().execute();
                     }
 
@@ -176,7 +178,10 @@ public class WidgetConfigurationActivity extends Activity {
                         // do nothing
                     }
                 });
-                ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_list_item_1, agencyList.data);
+                // sort agency list first
+                ArrayList<TransLocAgency> sortedList = (ArrayList<TransLocAgency>) agencyList.getData();
+                Collections.sort(sortedList, getSortObjectClass());
+                ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_list_item_1, agencyList.getData());
                 sSelectAgency.setAdapter(agencyArrayAdapter);
             }
 
@@ -184,6 +189,16 @@ public class WidgetConfigurationActivity extends Activity {
 
         }
 
+    }
+
+    // comparator for sorting agencies
+    public Comparator<TransLocAgency> getSortObjectClass() {
+        return new Comparator<TransLocAgency>() {
+            @Override
+            public int compare(TransLocAgency transLocAgency, TransLocAgency transLocAgency2) {
+                return transLocAgency.longName.compareTo(transLocAgency2.longName);
+            }
+        };
     }
 
     private class PopulateRoutesTask extends AsyncTask<Void, Void, ArrayList<TransLocRoute>> {
@@ -415,6 +430,8 @@ public class WidgetConfigurationActivity extends Activity {
             }
         }
     }
+
+
 }
 
 

@@ -19,9 +19,12 @@ public class TransLocAgencies{
     @JsonProperty("generated_on")
     public Date generatedOn;
 
-    @JsonProperty("data")
-    public List<TransLocAgency> data;
+    @JsonProperty("data")private List<TransLocAgency> data;
 
     @JsonProperty("api_version")
     public Double apiVersion;
-}
+public List<TransLocAgency> getData() {
+        return data;
+    }public void setData(List<TransLocAgency> data) {
+    this.data = data;
+}}
