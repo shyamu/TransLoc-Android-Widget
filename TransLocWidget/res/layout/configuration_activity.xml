@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/sSelectStop"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/linearLayout">
 
         <Button
@@ -67,9 +67,9 @@
             android:gravity="center"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:layout_marginTop="50dp"
+            android:textColor="#1627ff"
             android:layout_below="@+id/linearLayout"
             android:layout_alignParentLeft="true"
-            android:textColor="#1627ff"/>
+            android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

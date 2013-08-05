@@ -6,7 +6,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Installation complete. Add this widget to your home screen from the widget drawer to configure it."
             android:id="@+id/tvInstallationComplete"
             android:layout_alignParentTop="true"
@@ -21,8 +21,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:src="@drawable/tap_to_update"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:adjustViewBounds="false"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
 
     <TextView
             android:layout_width="wrap_content"
