@@ -207,10 +207,22 @@ public class WidgetConfigurationActivity extends Activity {
                         // do nothing
                     }
                 });
+
                 // sort agency list first
                 ArrayList<TransLocAgency> sortedList = (ArrayList<TransLocAgency>) agencyList.getData();
+
+                // remove unwanted agencies (those that don't have arrival times)
+                // 72 = NYU, 104 = CTA, 255 = VTA
+                for(int i = 0; i < sortedList.size(); i++) {
+                    int agencyId = sortedList.get(i).agencyId;
+                    if(agencyId == 72 || agencyId == 104 || agencyId == 255) {
+                        sortedList.remove(i);
+                    }
+                }
+
                 Collections.sort(sortedList, getSortObjectClass());
                 ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_list_item_1, agencyList.getData());
+
                 sSelectAgency.setAdapter(agencyArrayAdapter);
             }
 
