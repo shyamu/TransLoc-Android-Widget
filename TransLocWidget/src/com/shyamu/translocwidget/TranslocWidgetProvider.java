@@ -133,15 +133,15 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
                 // show toasts and update widget view
                 if (minutes < 1) {
-                    Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "<1");
                     newView.setTextViewText(R.id.tvMins, "min away");
                 } else if (minutes == 1) {
-                    Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "1");
                     newView.setTextViewText(R.id.tvMins, "min away");
                 } else {
-                    Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                     newView.setTextViewText(R.id.tvMins, "mins away");
                 }
