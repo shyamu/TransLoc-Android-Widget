@@ -10,5 +10,5 @@
     <string name="select_agency">Select an Agency</string>
     <string name="select_route">Select a Route</string>
     <string name="select_stop">Select a Stop</string>
-    <string name="help_dialog">If TransLoc is available for your transit agency and it is not listed in the dropdown. It may be the case that your agency has not opted-in to enable the TransLoc OpenAPI. Please contact your local transit agency and ask about enabling OpenAPI access for TransLoc to use this application.</string>
+    <string name="help_dialog">If TransLoc is available for your transit agency and it is not listed in the dropdown. It may be the case that your agency has not opted-in to enable the TransLoc OpenAPI. Please contact your local transit agency and ask about enabling OpenAPI access for TransLoc to use this application. It could also be the case that the agency does not support arrival times. </string>
 </resources>
