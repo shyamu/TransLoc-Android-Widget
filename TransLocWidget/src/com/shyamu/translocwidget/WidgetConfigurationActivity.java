@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -72,7 +74,7 @@ public class WidgetConfigurationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "in onCreate");
-        setContentView(R.layout.configuration_activity);
+        setContentView(R.layout.activity_configuration);
 
         // references to Spinners and Buttons
         sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
@@ -132,6 +134,28 @@ public class WidgetConfigurationActivity extends Activity {
         tvHelpMessage.setOnClickListener(setHelpClickedListener);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                // start about activity
+                Log.v(TAG,"menu option selected");
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     private void doReset() {
         // start over
         new PopulateAgenciesTask().execute();
@@ -148,6 +172,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
             dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            bMakeWidget.setEnabled(true);
         }
 
         protected TransLocAgencies doInBackground(Void... voids) {
@@ -162,7 +187,11 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final TransLocAgencies agencyList) {
-            if (agencyList == null) Log.e(TAG, "error in getting list of agencies");
+            if (agencyList == null) {
+                Log.e(TAG, "error in getting list of agencies");
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", "No data connection. Please make sure your data connection is enabled");
+                bMakeWidget.setEnabled(false);
+            }
             else {
                 sSelectAgency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -217,10 +246,8 @@ public class WidgetConfigurationActivity extends Activity {
                 final ArrayList<TransLocRoute> routesArrayList = new ArrayList<TransLocRoute>();
 
                 if (routeList == null) {
-                    Log.v("DEBUG", "routelist null");
                     return null;
                 } else {
-                    Log.v("DEBUG", "routelist not null");
 
                     for (Map<String, Object> route : routeList) {
                         routesArrayList.add(new TransLocRoute(Integer.parseInt((String) route.get("route_id")), (String) route.get("short_name"), (String) route.get("long_name")));
@@ -297,6 +324,7 @@ public class WidgetConfigurationActivity extends Activity {
                 fullStopList.addAll(stopList.data);
             } else {
                 Log.e(TAG, "error in getting stops list");
+                //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
             new FilterStopListTask().execute(fullStopList);
 
@@ -325,20 +353,29 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
-            ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<TransLocStop>(getBaseContext(), android.R.layout.simple_list_item_1, currentRouteStopList);
-            sSelectStop.setAdapter(stopArrayAdapter);
-            sSelectStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                    currentStopId = currentRouteStopList.get(pos).stopId;
-                    stopName = currentRouteStopList.get(pos).name;
-                }
+            if(currentRouteStopList.isEmpty()) {
+                Log.e(TAG, "error in getting stops list");
+                // empty stops spinner
+                ArrayList<String> arr = new ArrayList<String>();
+                sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
+            } else {
+                ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<TransLocStop>(getBaseContext(), android.R.layout.simple_list_item_1, currentRouteStopList);
+                sSelectStop.setAdapter(stopArrayAdapter);
+                sSelectStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                        currentStopId = currentRouteStopList.get(pos).stopId;
+                        stopName = currentRouteStopList.get(pos).name;
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    // do nothing
-                }
-            });
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        // do nothing
+                    }
+                });
+            }
+
         }
     }
 
@@ -417,7 +454,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 // Tell the AppWidgetManager to perform an update on the app widget
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
-                Log.v("Config activity", "mappwidgetid: " + mAppWidgetId);
+                Log.v(TAG, "mappwidgetid: " + mAppWidgetId);
 
                 // Return RESULT_OK from this activity
                 Intent resultValue = new Intent();

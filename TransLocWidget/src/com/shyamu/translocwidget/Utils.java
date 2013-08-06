@@ -36,7 +36,6 @@ public class Utils {
     {
         DateTime start = new DateTime(currentTime);
         DateTime end = new DateTime(futureTime);
-        Log.v("DEBUG", "minutes: " + Minutes.minutesBetween(start, end).getMinutes());
         return Minutes.minutesBetween(start,end).getMinutes();
     }
 
@@ -45,14 +44,13 @@ public class Utils {
     protected static String getJsonResponse(String url) throws Exception {
 
         String response = "";
-        Log.v("DEBUG", url);
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
         try {
             HttpResponse execute = client.execute(httpGet);
             int statusCode = execute.getStatusLine().getStatusCode();
             if(statusCode != HttpStatus.SC_OK) {
-                Log.e("DEBUG", "error in HTTP");
+                Log.e("Utils", "error in HTTP");
                 throw new Exception();
             } else {
                 InputStream content = execute.getEntity().getContent();
