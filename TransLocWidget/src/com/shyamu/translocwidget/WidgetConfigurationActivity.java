@@ -202,7 +202,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(final TransLocAgencies agencyList) {
             if (agencyList == null) {
                 Log.e(TAG, "error in getting list of agencies");
-                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", "No data connection. Please make sure your data connection is enabled");
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 bMakeWidget.setEnabled(false);
             }
             else {
@@ -271,7 +271,8 @@ public class WidgetConfigurationActivity extends Activity {
                 final ArrayList<TransLocRoute> routesArrayList = new ArrayList<TransLocRoute>();
 
                 if (routeList == null) {
-                    return null;
+                    // returns empty list
+                    return routesArrayList;
                 } else {
 
                     for (Map<String, Object> route : routeList) {
@@ -291,15 +292,21 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
-            if (routesArrayList == null) {
-                Log.e(TAG, "error in getting list of routes");
-                dialog.dismiss();
-                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+            ArrayList<String> arr = new ArrayList<String>();
+
+            if(routesArrayList == null) {
+                // no connection
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 // empty routes and stops spinner (set to empty array)
-                ArrayList<String> arr = new ArrayList<String>();
                 sSelectRoute.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
                 sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
-
+            }
+            else if (routesArrayList.isEmpty()) {
+                Log.e(TAG, "error in getting list of routes - empty list");
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
+                // empty routes and stops spinner (set to empty array)
+                sSelectRoute.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
+                sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
 
             } else {
                 sSelectRoute.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -319,8 +326,8 @@ public class WidgetConfigurationActivity extends Activity {
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getBaseContext(), android.R.layout.simple_list_item_1, routesArrayList);
                 sSelectRoute.setAdapter(routeArrayAdapter);
 
-                dialog.dismiss();
             }
+            dialog.dismiss();
         }
 
     }
@@ -349,6 +356,8 @@ public class WidgetConfigurationActivity extends Activity {
                 fullStopList.addAll(stopList.data);
             } else {
                 Log.e(TAG, "error in getting stops list");
+                // no connection
+                //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
             new FilterStopListTask().execute(fullStopList);
@@ -362,7 +371,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected ArrayList<TransLocStop> doInBackground(ArrayList<TransLocStop>... fullStopList) {
             if (fullStopList.length == 1) {
                 if (fullStopList[0] == null) {
-                    System.out.println("Null!");
+                    return null;
                 }
                 ArrayList<TransLocStop> currentRouteStopList = new ArrayList<TransLocStop>();
                 for (int i = fullStopList[0].size() - 1; i >= 0; i--) {
@@ -372,16 +381,20 @@ public class WidgetConfigurationActivity extends Activity {
                 }
                 return currentRouteStopList;
             } else {
-                throw new IllegalArgumentException("Sorry, one arg only.");
+                return null;
             }
         }
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
-            if(currentRouteStopList.isEmpty()) {
+            ArrayList<String> arr = new ArrayList<String>();
+            if(currentRouteStopList == null) {
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
+                sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
+            }
+            else if(currentRouteStopList.isEmpty()) {
                 Log.e(TAG, "error in getting stops list");
                 // empty stops spinner
-                ArrayList<String> arr = new ArrayList<String>();
                 sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             } else {
@@ -435,10 +448,11 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(TransLocArrivalEstimates arrivalEstimatesList) {
             Date currentTimeUTC;
             Date arrivalTimeUTC;
-
-            if (arrivalEstimatesList.data.isEmpty() || arrivalEstimatesList == null) {
+            if(arrivalEstimatesList == null) {
+                // no connection
+                Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
+            } else if (arrivalEstimatesList.data.isEmpty()) {
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Arrival Times", "No arrival times are currently available for the route and stop you have selected. Please try again later when buses are running.");
-                dialog.dismiss();
             } else {
                 TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
                 TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
@@ -487,9 +501,12 @@ public class WidgetConfigurationActivity extends Activity {
                 setResult(RESULT_OK, resultValue);
                 editor.putBoolean("configComplete", true);
 
-                dialog.dismiss();
                 finish();
+
+
             }
+            dialog.dismiss();
+
         }
     }
 
