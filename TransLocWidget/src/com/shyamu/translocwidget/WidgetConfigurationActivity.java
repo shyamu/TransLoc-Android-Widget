@@ -40,6 +40,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static android.widget.AdapterView.OnItemSelectedListener;
+
 public class WidgetConfigurationActivity extends Activity {
 
     private static final String AGENCIES_URL = "http://api.transloc.com/1.1/agencies.json";
@@ -58,8 +60,6 @@ public class WidgetConfigurationActivity extends Activity {
     private int currentRouteId;
     private int currentStopId;
 
-    private String agencyLongName;
-    private String agencyShortName;
     private String routeShortName;
     private String routeLongName;
     private String stopName;
@@ -206,12 +206,10 @@ public class WidgetConfigurationActivity extends Activity {
                 bMakeWidget.setEnabled(false);
             }
             else {
-                sSelectAgency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                sSelectAgency.setOnItemSelectedListener(new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                         currentAgencyId = agencyList.getData().get(pos).agencyId;
-                        agencyLongName = agencyList.getData().get(pos).longName;
-                        agencyShortName = agencyList.getData().get(pos).shortName;
                         new PopulateRoutesTask().execute();
                     }
 
@@ -262,7 +260,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPreExecute() {
             dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
         }
-
+        @SuppressWarnings("unchecked")
         protected ArrayList<TransLocRoute> doInBackground(Void... voids) {
             try {
                 Map<String, Object> routeMap = new ObjectMapper().readValue(Utils.getJsonResponse(ROUTES_URL + currentAgencyId), Map.class);
@@ -309,7 +307,7 @@ public class WidgetConfigurationActivity extends Activity {
                 sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
 
             } else {
-                sSelectRoute.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                sSelectRoute.setOnItemSelectedListener(new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                         currentRouteId = routesArrayList.get(pos).id;
@@ -349,6 +347,7 @@ public class WidgetConfigurationActivity extends Activity {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected void onPostExecute(TransLocStops stopList) {
 
             fullStopList.clear();
@@ -360,6 +359,7 @@ public class WidgetConfigurationActivity extends Activity {
                 //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
+
             new FilterStopListTask().execute(fullStopList);
 
             dialog.dismiss();
@@ -400,7 +400,7 @@ public class WidgetConfigurationActivity extends Activity {
             } else {
                 ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<TransLocStop>(getBaseContext(), android.R.layout.simple_list_item_1, currentRouteStopList);
                 sSelectStop.setAdapter(stopArrayAdapter);
-                sSelectStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                sSelectStop.setOnItemSelectedListener(new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                         currentStopId = currentRouteStopList.get(pos).stopId;
@@ -492,6 +492,7 @@ public class WidgetConfigurationActivity extends Activity {
                 views.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
                 // Tell the AppWidgetManager to perform an update on the app widget
+
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
                 Log.v(TAG, "mappwidgetid: " + mAppWidgetId);
 
