@@ -31,6 +31,8 @@ import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -89,6 +91,17 @@ public class WidgetConfigurationActivity extends Activity {
 
         // Set result initially as cancelled in case user cancels configuration
         setResult(RESULT_CANCELED);
+
+        // show warning dialog if weekend or outside business hours
+        DateTime currentTime = new DateTime(System.currentTimeMillis());
+        // day of of week 6 and 7 = Saturday and Sunday
+        Log.v(TAG,"day= " + currentTime.getDayOfWeek());
+        Log.v(TAG,"hour= " + currentTime.getHourOfDay());
+        if(currentTime.getDayOfWeek() > 5 || currentTime.getHourOfDay() > 18 || currentTime.getHourOfDay() < 6) {
+            Log.v(TAG,"true");
+            // show warning dialog
+            Utils.showAlertDialog(WidgetConfigurationActivity.this,"Warning", "Based on the current time and day of week, many routes may not be running at this time. You can continue to try and make a widget but be advised you may get better results during normal business hours.");
+        }
 
         // Populate agency spinner
         new PopulateAgenciesTask().execute();
