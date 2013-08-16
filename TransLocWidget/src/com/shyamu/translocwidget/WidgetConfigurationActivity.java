@@ -150,7 +150,9 @@ public class WidgetConfigurationActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-
+        // prevents force close when device rotates or app is paused while inside asynctask
+        if(dialog != null) dialog.dismiss();
+        dialog = null;
     }
 
     @Override
