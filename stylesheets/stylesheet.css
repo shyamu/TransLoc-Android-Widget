@@ -100,6 +100,7 @@ header h2 {
 
 #downloads {
   margin-bottom: 40px;
+
 }
 
 a.button {
@@ -161,9 +162,13 @@ a.button span {
 #view-on-github span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
-#view-on-github {
-  margin-right: 0;
+#download-app span {
+  background: transparent url(../images/google-play-icon.png) 12px 50% no-repeat;
 }
+#view-on-github {
+  margin-left: 10%;
+}
+
 
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
@@ -357,6 +362,10 @@ footer a:hover {
   }
   #download-zip, #download-tar-gz {
     display: none;
+  }
+  #download-app {
+    margin-left: 10%;
+    margin-top: 10px;
   }
   .inner {
     width: 94%;
