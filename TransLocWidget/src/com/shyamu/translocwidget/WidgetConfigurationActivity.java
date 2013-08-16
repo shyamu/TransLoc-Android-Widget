@@ -65,7 +65,7 @@ public class WidgetConfigurationActivity extends Activity {
     private String stopName;
 
     private int mAppWidgetId = 0;
-
+    ProgressDialog dialog = null;
 
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
     Button bReset, bMakeWidget;
@@ -148,6 +148,12 @@ public class WidgetConfigurationActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -179,13 +185,23 @@ public class WidgetConfigurationActivity extends Activity {
         new PopulateArrivalTask().execute();
     }
 
+    private void doErrorMiscHandling() {
+        bMakeWidget.setEnabled(false);
+        if(dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
+
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, TransLocAgencies> {
-        ProgressDialog dialog;
+
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
-            bMakeWidget.setEnabled(true);
+            // show dialog
+            if(dialog == null) {
+                dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            }
         }
 
         protected TransLocAgencies doInBackground(Void... voids) {
@@ -202,6 +218,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(final TransLocAgencies agencyList) {
             if (agencyList == null) {
                 Log.e(TAG, "error in getting list of agencies");
+                doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 bMakeWidget.setEnabled(false);
             }
@@ -237,14 +254,13 @@ public class WidgetConfigurationActivity extends Activity {
                 sSelectAgency.setAdapter(agencyArrayAdapter);
             }
 
-            dialog.dismiss();
 
         }
 
     }
 
     // comparator for sorting agencies
-    public Comparator<TransLocAgency> getSortObjectClass() {
+    private Comparator<TransLocAgency> getSortObjectClass() {
         return new Comparator<TransLocAgency>() {
             @Override
             public int compare(TransLocAgency transLocAgency, TransLocAgency transLocAgency2) {
@@ -253,12 +269,15 @@ public class WidgetConfigurationActivity extends Activity {
         };
     }
 
+
+
     private class PopulateRoutesTask extends AsyncTask<Void, Void, ArrayList<TransLocRoute>> {
-        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            if(dialog == null) {
+                dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            }
         }
         @SuppressWarnings("unchecked")
         protected ArrayList<TransLocRoute> doInBackground(Void... voids) {
@@ -294,6 +313,7 @@ public class WidgetConfigurationActivity extends Activity {
 
             if(routesArrayList == null) {
                 // no connection
+                doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 // empty routes and stops spinner (set to empty array)
                 sSelectRoute.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
@@ -301,6 +321,7 @@ public class WidgetConfigurationActivity extends Activity {
             }
             else if (routesArrayList.isEmpty()) {
                 Log.e(TAG, "error in getting list of routes - empty list");
+                doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
                 // empty routes and stops spinner (set to empty array)
                 sSelectRoute.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
@@ -325,16 +346,16 @@ public class WidgetConfigurationActivity extends Activity {
                 sSelectRoute.setAdapter(routeArrayAdapter);
 
             }
-            dialog.dismiss();
         }
 
     }
 
     private class PopulateStopsTask extends AsyncTask<Void, Void, TransLocStops> {
-        ProgressDialog dialog;
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            if(dialog == null) {
+                dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+            }
         }
 
         protected TransLocStops doInBackground(Void... voids) {
@@ -355,6 +376,8 @@ public class WidgetConfigurationActivity extends Activity {
                 fullStopList.addAll(stopList.data);
             } else {
                 Log.e(TAG, "error in getting stops list");
+                doErrorMiscHandling();
+
                 // no connection
                 //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
@@ -362,7 +385,6 @@ public class WidgetConfigurationActivity extends Activity {
 
             new FilterStopListTask().execute(fullStopList);
 
-            dialog.dismiss();
         }
     }
 
@@ -389,11 +411,14 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
             ArrayList<String> arr = new ArrayList<String>();
             if(currentRouteStopList == null) {
+                doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
                 sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
+
             }
             else if(currentRouteStopList.isEmpty()) {
                 Log.e(TAG, "error in getting stops list");
+                doErrorMiscHandling();
                 // empty stops spinner
                 sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
@@ -412,6 +437,13 @@ public class WidgetConfigurationActivity extends Activity {
                         // do nothing
                     }
                 });
+                bMakeWidget.setEnabled(true);
+
+            }
+
+            if(dialog != null) {
+                dialog.dismiss();
+                dialog = null;
             }
 
         }
@@ -419,13 +451,13 @@ public class WidgetConfigurationActivity extends Activity {
 
 
     private class PopulateArrivalTask extends AsyncTask<Void, Void, TransLocArrivalEstimates> {
-        ProgressDialog dialog;
+        ProgressDialog makeWidgetDialog;
 
         private int minutes = -1;
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Making Widget", "Please Wait...");
+            makeWidgetDialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Making Widget", "Please Wait...");
         }
 
         protected TransLocArrivalEstimates doInBackground(Void... voids) {
@@ -506,7 +538,7 @@ public class WidgetConfigurationActivity extends Activity {
 
 
             }
-            dialog.dismiss();
+            makeWidgetDialog.dismiss();
 
         }
     }
