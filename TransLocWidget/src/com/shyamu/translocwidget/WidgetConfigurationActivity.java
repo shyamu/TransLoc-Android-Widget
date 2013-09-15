@@ -250,7 +250,7 @@ public class WidgetConfigurationActivity extends Activity {
                     }
                 }
 
-                Collections.sort(sortedList, getSortObjectClass());
+                Collections.sort(sortedList, sortTransLocAgency());
                 ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_list_item_1, agencyList.getData());
 
                 sSelectAgency.setAdapter(agencyArrayAdapter);
@@ -262,7 +262,7 @@ public class WidgetConfigurationActivity extends Activity {
     }
 
     // comparator for sorting agencies
-    private Comparator<TransLocAgency> getSortObjectClass() {
+    private Comparator<TransLocAgency> sortTransLocAgency() {
         return new Comparator<TransLocAgency>() {
             @Override
             public int compare(TransLocAgency transLocAgency, TransLocAgency transLocAgency2) {
@@ -270,6 +270,26 @@ public class WidgetConfigurationActivity extends Activity {
             }
         };
     }
+
+
+    private Comparator<TransLocRoute> sortTransLocRoute() {
+        return new Comparator<TransLocRoute>() {
+            @Override
+            public int compare(TransLocRoute transLocRoute, TransLocRoute transLocRoute2) {
+                Log.v(TAG, "comparing: "+ transLocRoute.longName + " and " + transLocRoute2.longName);
+                if(Character.isDigit(transLocRoute.shortName.charAt(0)) && Character.isDigit(transLocRoute2.shortName.charAt(0))) {
+                    int route1 = Integer.valueOf(transLocRoute.shortName);
+                    int route2 = Integer.valueOf(transLocRoute2.shortName);
+                    if(route1 < route2) return -1;
+                    else if(route1 > route2) return 1;
+                    else return 0;
+                } else {
+                    return transLocRoute.longName.compareTo(transLocRoute2.longName);
+                }
+            }
+        };
+    }
+
 
 
 
@@ -344,6 +364,8 @@ public class WidgetConfigurationActivity extends Activity {
                         // do nothing
                     }
                 });
+
+                Collections.sort(routesArrayList, sortTransLocRoute());
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getBaseContext(), android.R.layout.simple_list_item_1, routesArrayList);
                 sSelectRoute.setAdapter(routeArrayAdapter);
 
