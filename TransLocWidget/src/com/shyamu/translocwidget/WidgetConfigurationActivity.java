@@ -278,7 +278,9 @@ public class WidgetConfigurationActivity extends Activity {
             @Override
             public int compare(TransLocRoute transLocRoute, TransLocRoute transLocRoute2) {
                 Log.v(TAG, "comparing: "+ transLocRoute.longName + " and " + transLocRoute2.longName);
-                if(Character.isDigit(transLocRoute.shortName.charAt(0)) && Character.isDigit(transLocRoute2.shortName.charAt(0))) {
+                if(Character.isDigit(transLocRoute.shortName.charAt(0)) || Character.isDigit(transLocRoute2.shortName.charAt(0))) {
+                    if(Character.isLetter(transLocRoute.shortName.charAt(0))) return -1;
+                    else if(Character.isLetter(transLocRoute2.shortName.charAt(0))) return 1;
                     int route1 = Integer.valueOf(transLocRoute.shortName);
                     int route2 = Integer.valueOf(transLocRoute2.shortName);
                     if(route1 < route2) return -1;
