@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="15dp"
         android:prompt="@string/select_agency"
         android:spinnerMode="dialog"/>
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectAgency"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:enabled="false"
         android:prompt="@string/select_route"
         android:spinnerMode="dialog"/>
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectRoute"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="10dp"
         android:enabled="false"
         android:prompt="@string/select_stop"
         android:spinnerMode="dialog"/>
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/sSelectStop"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/linearLayout">
 
         <Button
@@ -70,6 +70,78 @@
             android:textColor="#1627ff"
             android:layout_below="@+id/linearLayout"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tap on preview below to customize widget colors"
+        android:id="@+id/tvPreview"
+        android:minLines="1"
+        android:maxLines="2"
+        android:gravity="center"
+        android:layout_below="@+id/tvHelp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="15dp"/>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="#77010101"
+        android:id="@+id/rlPreview">
+
+        <TextView
+            android:id="@+id/tvRoute_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Route Name"
+            android:textColor="#ffffff"
+            android:layout_toRightOf="@+id/tvRemainingTime_preview"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tvRemainingTime_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12"
+            android:textSize="65sp"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false"
+            android:textColor="#ffffff"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tvStop_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Stop Name"
+            android:textColor="#ffffff"
+            android:layout_below="@+id/tvRoute_preview"
+            android:layout_alignLeft="@+id/tvRoute_preview"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mins away"
+            android:textSize="18sp"
+            android:id="@+id/tvMins_preview"
+            android:layout_alignBaseline="@+id/tvRemainingTime_preview"
+            android:layout_alignBottom="@+id/tvRoute_preview"
+            android:layout_toRightOf="@+id/tvRemainingTime_preview"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="5dp"/>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
