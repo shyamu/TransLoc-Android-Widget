@@ -75,9 +75,6 @@ public class WidgetConfigurationActivity extends Activity {
     TextView tvHelpMessage;
     TextView tvRoutePreview, tvRemainingTimePreview, tvStopPreview, tvMinsPreview;
 
-    String strTextColor;
-    String strBackgroundColor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +95,6 @@ public class WidgetConfigurationActivity extends Activity {
         tvRemainingTimePreview = (TextView) findViewById(R.id.tvRemainingTime_preview);
         tvRoutePreview = (TextView) findViewById(R.id.tvRoute_preview);
         tvStopPreview = (TextView) findViewById(R.id.tvStop_preview);
-
 
         settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         editor = settings.edit();
@@ -185,17 +181,13 @@ public class WidgetConfigurationActivity extends Activity {
         super.onResume();
         int textColor = settings.getInt("textColor", -1);
         int backgroundColor = settings.getInt("backgroundColor",1996554497);
-        strTextColor = String.format("#%06X", 0xFFFFFF & textColor);
-        strBackgroundColor = String.format("#%06X", 0xFFFFFF & backgroundColor);
-        Log.v(TAG,strTextColor);
-        Log.v(TAG,strBackgroundColor);
 
         // change colors in preview
-        rlPreview.setBackgroundColor(Color.parseColor(strBackgroundColor));
-        tvStopPreview.setTextColor(Color.parseColor(strTextColor));
-        tvRoutePreview.setTextColor(Color.parseColor(strTextColor));
-        tvRemainingTimePreview.setTextColor(Color.parseColor(strTextColor));
-        tvMinsPreview.setTextColor(Color.parseColor(strTextColor));
+        rlPreview.setBackgroundColor(backgroundColor);
+        tvStopPreview.setTextColor(textColor);
+        tvRoutePreview.setTextColor(textColor);
+        tvRemainingTimePreview.setTextColor(textColor);
+        tvMinsPreview.setTextColor(textColor);
 
     }
 
@@ -561,6 +553,15 @@ public class WidgetConfigurationActivity extends Activity {
                 }
                 editor.putString("stopName" + mAppWidgetId, stopName).commit();
                 views.setTextViewText(R.id.tvStop, stopName);
+
+                // set colors for widget
+                int backgroundColor = settings.getInt("backgroundColor",1996554497);
+                int textColor = settings.getInt("textColor",-1);
+                views.setInt(R.id.rlWidgetLayout,"setBackgroundColor",backgroundColor);
+                views.setTextColor(R.id.tvRemainingTime,textColor);
+                views.setTextColor(R.id.tvMins,textColor);
+                views.setTextColor(R.id.tvRoute,textColor);
+                views.setTextColor(R.id.tvStop,textColor);
 
                 // setup intent for tap on widget
                 Intent clickIntent = new Intent(getBaseContext(), TransLocWidgetProvider.class);
