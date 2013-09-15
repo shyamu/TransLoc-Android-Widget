@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyamu.translocwidget.TransLocJSON.TransLocAgencies;
@@ -563,7 +564,7 @@ public class WidgetConfigurationActivity extends Activity {
 
             }
             makeWidgetDialog.dismiss();
-
+            Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
         }
     }
 
