@@ -533,13 +533,15 @@ public class WidgetConfigurationActivity extends Activity {
                 else views.setTextViewText(R.id.tvMins, "mins away");
 
                 // commit widget info to preferences and set text on remoteview
-                if (routeShortName.equals("")) {
+                // if short name is less than 5 characters, use long name
+                if (routeShortName.length() < 5) {
                     editor.putString("routeName" + mAppWidgetId, routeLongName).commit();
                     views.setTextViewText(R.id.tvRoute, routeLongName);
                 } else {
                     editor.putString("routeName" + mAppWidgetId, routeShortName).commit();
                     views.setTextViewText(R.id.tvRoute, routeShortName);
                 }
+
                 editor.putString("stopName" + mAppWidgetId, stopName).commit();
                 views.setTextViewText(R.id.tvStop, stopName);
 
