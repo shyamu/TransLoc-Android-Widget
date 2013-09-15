@@ -365,8 +365,8 @@ public class WidgetConfigurationActivity extends Activity {
                         // do nothing
                     }
                 });
-
-                Collections.sort(routesArrayList, sortTransLocRoute());
+                // sort only if agency is 116 (UF)
+                if(currentAgencyId == 116) Collections.sort(routesArrayList, sortTransLocRoute());
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getBaseContext(), android.R.layout.simple_list_item_1, routesArrayList);
                 sSelectRoute.setAdapter(routeArrayAdapter);
 
