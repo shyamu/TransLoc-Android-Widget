@@ -8,10 +8,10 @@
         android:id="@+id/sSelectAgency"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="15dp"
         android:prompt="@string/select_agency"
-        android:spinnerMode="dialog"/>
+        android:spinnerMode="dialog"
+        android:layout_below="@+id/tvHelp"
+        android:layout_alignParentLeft="true" />
 
     <Spinner
         android:id="@+id/sSelectRoute"
@@ -35,27 +35,6 @@
         android:prompt="@string/select_stop"
         android:spinnerMode="dialog"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sSelectStop"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:id="@+id/linearLayout">
-
-        <Button
-            android:id="@+id/bReset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset" />
-
-        <Button
-            android:id="@+id/bMakeWidget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Make Widget!" />
-    </LinearLayout>
-
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -68,32 +47,20 @@
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             android:textColor="#1627ff"
-            android:layout_below="@+id/linearLayout"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"/>
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Tap on preview below to customize widget colors"
-        android:id="@+id/tvPreview"
-        android:minLines="1"
-        android:maxLines="2"
-        android:gravity="center"
-        android:layout_below="@+id/tvHelp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="5dp" />
 
     <RelativeLayout
         android:orientation="horizontal"
-        android:layout_width="180dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPreview"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
         android:background="#77010101"
-        android:id="@+id/rlPreview">
+        android:id="@+id/rlPreview"
+        android:layout_alignParentEnd="false"
+        android:layout_below="@+id/tvPreview"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:layout_alignRight="@+id/linearLayout">
 
         <TextView
             android:id="@+id/tvRoute_preview"
@@ -143,5 +110,49 @@
 
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Preview:"
+        android:id="@+id/tvPreview"
+        android:layout_below="@+id/sSelectStop"
+        android:layout_alignLeft="@+id/rlPreview"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_below="@+id/tvPreviewHelp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/bReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset" />
+
+        <Button
+            android:id="@+id/bMakeWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Make Widget!" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tap on preview above to change colors"
+        android:id="@+id/tvPreviewHelp"
+        android:minLines="1"
+        android:maxLines="2"
+        android:gravity="center"
+        android:layout_below="@+id/rlPreview"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="2dp"/>
 
 </RelativeLayout>
