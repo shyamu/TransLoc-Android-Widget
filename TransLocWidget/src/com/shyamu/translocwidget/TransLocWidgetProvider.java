@@ -38,6 +38,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
         if (intent.getAction() == null) {
             // action is from tap of widget
+            Log.v(TAG, "in onReceive with intent action: null");
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 // widget Id is Id of tapped widget
@@ -51,15 +52,14 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
             for(int i = 0; i<appWidgetIds.length; i++)
             {
+                Log.v(TAG,"widget id: " + appWidgetIds[i]);
                 new getJsonResponse(context,appWidgetIds[i]).execute();
             }
         } else {
             // do nothing
+            Log.v(TAG, "did nothing in onRecieve");
         }
     }
-
-    
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
@@ -161,14 +161,14 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
             // reset colors for widget
-            int backgroundColor = prefs.getInt("textColor-" + widgetId, -1);
-            int textColor = prefs.getInt("backgroundColor-" + widgetId, -1);
+            int textColor = prefs.getInt("textColor-" + widgetId, -1);
+            int backgroundColor = prefs.getInt("backgroundColor-" + widgetId, -1);
 
-            newView.setInt(R.id.rlWidgetLayout,"setBackgroundColor",backgroundColor);
-            newView.setTextColor(R.id.tvRemainingTime,textColor);
-            newView.setTextColor(R.id.tvMins,textColor);
-            newView.setTextColor(R.id.tvRoute,textColor);
-            newView.setTextColor(R.id.tvStop,textColor);
+            newView.setInt(R.id.rlWidgetLayout, "setBackgroundColor", backgroundColor);
+            newView.setTextColor(R.id.tvRemainingTime, textColor);
+            newView.setTextColor(R.id.tvMins, textColor);
+            newView.setTextColor(R.id.tvRoute, textColor);
+            newView.setTextColor(R.id.tvStop, textColor);
 
             Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
             appWidgetManager.updateAppWidget(widgetId, newView);
