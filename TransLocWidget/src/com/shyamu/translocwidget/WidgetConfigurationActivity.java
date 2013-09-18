@@ -149,6 +149,7 @@ public class WidgetConfigurationActivity extends Activity {
             public void onClick(View view) {
                 // launch customization activity
                 Intent intent = new Intent(WidgetConfigurationActivity.this, CustomizeWidgetActivity.class);
+                intent.putExtra("widgetId",mAppWidgetId);
                 startActivity(intent);
             }
         };
@@ -182,6 +183,12 @@ public class WidgetConfigurationActivity extends Activity {
         super.onResume();
         int textColor = settings.getInt("textColor", -1);
         int backgroundColor = settings.getInt("backgroundColor",1996554497);
+
+        editor.putInt("textColor-" + mAppWidgetId, textColor).commit();
+        editor.putInt("backgroundColor-" + mAppWidgetId, backgroundColor).commit();
+
+        Log.v(TAG,Integer.toString(settings.getInt("textColor-" + mAppWidgetId, -2)));
+        Log.v(TAG,Integer.toString(settings.getInt("backgroundColor-" + mAppWidgetId, -2)));
 
         // change colors in preview
         rlPreview.setBackgroundColor(backgroundColor);
