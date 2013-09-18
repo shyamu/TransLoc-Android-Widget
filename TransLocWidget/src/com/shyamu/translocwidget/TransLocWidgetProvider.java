@@ -58,6 +58,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         }
     }
 
+    
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
@@ -71,8 +73,6 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 new getJsonResponse(context,appWidgetIds[i]).execute();
             }
         }
-
-
     }
 
     private class getJsonResponse extends AsyncTask<Void, Void, TransLocArrivalEstimates> {
@@ -159,6 +159,16 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, widgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
+
+            // reset colors for widget
+            int backgroundColor = prefs.getInt("textColor-" + widgetId, -1);
+            int textColor = prefs.getInt("backgroundColor-" + widgetId, -1);
+
+            newView.setInt(R.id.rlWidgetLayout,"setBackgroundColor",backgroundColor);
+            newView.setTextColor(R.id.tvRemainingTime,textColor);
+            newView.setTextColor(R.id.tvMins,textColor);
+            newView.setTextColor(R.id.tvRoute,textColor);
+            newView.setTextColor(R.id.tvStop,textColor);
 
             Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
             appWidgetManager.updateAppWidget(widgetId, newView);
