@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -68,10 +70,11 @@ public class WidgetConfigurationActivity extends Activity {
     private int mAppWidgetId = 0;
     ProgressDialog dialog = null;
 
+    RelativeLayout rlPreview;
     Spinner sSelectAgency, sSelectRoute, sSelectStop;
     Button bReset, bMakeWidget;
     TextView tvHelpMessage;
-
+    TextView tvRoutePreview, tvRemainingTimePreview, tvStopPreview, tvMinsPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,13 @@ public class WidgetConfigurationActivity extends Activity {
         bReset = (Button) findViewById(R.id.bReset);
         bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
         tvHelpMessage = (TextView) findViewById(R.id.tvHelp);
+
+        // preview elements
+        rlPreview = (RelativeLayout) findViewById(R.id.rlPreview);
+        tvMinsPreview = (TextView) findViewById(R.id.tvMins_preview);
+        tvRemainingTimePreview = (TextView) findViewById(R.id.tvRemainingTime_preview);
+        tvRoutePreview = (TextView) findViewById(R.id.tvRoute_preview);
+        tvStopPreview = (TextView) findViewById(R.id.tvStop_preview);
 
         settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         editor = settings.edit();
@@ -133,6 +143,17 @@ public class WidgetConfigurationActivity extends Activity {
             }
         };
 
+        // On click listener for preview layout
+        OnClickListener setPreviewClickedListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // launch customization activity
+                Intent intent = new Intent(WidgetConfigurationActivity.this, CustomizeWidgetActivity.class);
+                intent.putExtra("widgetId",mAppWidgetId);
+                startActivity(intent);
+            }
+        };
+
         // Get widgetId from appwidgetmanager
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -146,6 +167,7 @@ public class WidgetConfigurationActivity extends Activity {
         bReset.setOnClickListener(setResetClickedListener);
         bMakeWidget.setOnClickListener(setMakeWidgetClickedListener);
         tvHelpMessage.setOnClickListener(setHelpClickedListener);
+        rlPreview.setOnClickListener(setPreviewClickedListener);
     }
 
     @Override
@@ -154,6 +176,27 @@ public class WidgetConfigurationActivity extends Activity {
         // prevents force close when device rotates or app is paused while inside asynctask
         if(dialog != null) dialog.dismiss();
         dialog = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int textColor = settings.getInt("textColor", -1);
+        int backgroundColor = settings.getInt("backgroundColor",1996554497);
+
+        editor.putInt("textColor-" + mAppWidgetId, textColor).commit();
+        editor.putInt("backgroundColor-" + mAppWidgetId, backgroundColor).commit();
+
+        Log.v(TAG,Integer.toString(settings.getInt("textColor-" + mAppWidgetId, -2)));
+        Log.v(TAG,Integer.toString(settings.getInt("backgroundColor-" + mAppWidgetId, -2)));
+
+        // change colors in preview
+        rlPreview.setBackgroundColor(backgroundColor);
+        tvStopPreview.setTextColor(textColor);
+        tvRoutePreview.setTextColor(textColor);
+        tvRemainingTimePreview.setTextColor(textColor);
+        tvMinsPreview.setTextColor(textColor);
+
     }
 
     @Override
@@ -545,6 +588,15 @@ public class WidgetConfigurationActivity extends Activity {
 
                 editor.putString("stopName" + mAppWidgetId, stopName).commit();
                 views.setTextViewText(R.id.tvStop, stopName);
+
+                // set colors for widget
+                int backgroundColor = settings.getInt("backgroundColor",1996554497);
+                int textColor = settings.getInt("textColor",-1);
+                views.setInt(R.id.rlWidgetLayout,"setBackgroundColor",backgroundColor);
+                views.setTextColor(R.id.tvRemainingTime,textColor);
+                views.setTextColor(R.id.tvMins,textColor);
+                views.setTextColor(R.id.tvRoute,textColor);
+                views.setTextColor(R.id.tvStop,textColor);
 
                 // setup intent for tap on widget
                 Intent clickIntent = new Intent(getBaseContext(), TransLocWidgetProvider.class);

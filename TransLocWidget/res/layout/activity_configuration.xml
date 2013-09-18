@@ -8,10 +8,10 @@
         android:id="@+id/sSelectAgency"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="52dp"
         android:prompt="@string/select_agency"
-        android:spinnerMode="dialog"/>
+        android:spinnerMode="dialog"
+        android:layout_below="@+id/tvHelp"
+        android:layout_alignParentLeft="true" />
 
     <Spinner
         android:id="@+id/sSelectRoute"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectAgency"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:enabled="false"
         android:prompt="@string/select_route"
         android:spinnerMode="dialog"/>
@@ -30,31 +30,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectRoute"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="10dp"
         android:enabled="false"
         android:prompt="@string/select_stop"
         android:spinnerMode="dialog"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sSelectStop"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:id="@+id/linearLayout">
-
-        <Button
-            android:id="@+id/bReset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset" />
-
-        <Button
-            android:id="@+id/bMakeWidget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Make Widget!" />
-    </LinearLayout>
 
     <TextView
             android:layout_width="fill_parent"
@@ -68,8 +47,112 @@
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             android:textColor="#1627ff"
-            android:layout_below="@+id/linearLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#77010101"
+        android:id="@+id/rlPreview"
+        android:layout_alignParentEnd="false"
+        android:layout_below="@+id/tvPreview"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:layout_alignRight="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/tvRoute_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Route Name"
+            android:textColor="#ffffff"
+            android:layout_toRightOf="@+id/tvRemainingTime_preview"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tvRemainingTime_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12"
+            android:textSize="65sp"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false"
+            android:textColor="#ffffff"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tvStop_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Stop Name"
+            android:textColor="#ffffff"
+            android:layout_below="@+id/tvRoute_preview"
+            android:layout_alignLeft="@+id/tvRoute_preview"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mins away"
+            android:textSize="18sp"
+            android:id="@+id/tvMins_preview"
+            android:layout_alignBaseline="@+id/tvRemainingTime_preview"
+            android:layout_alignBottom="@+id/tvRoute_preview"
+            android:layout_toRightOf="@+id/tvRemainingTime_preview"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="5dp"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Preview:"
+        android:id="@+id/tvPreview"
+        android:layout_below="@+id/sSelectStop"
+        android:layout_alignLeft="@+id/rlPreview"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_below="@+id/tvPreviewHelp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/bReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset" />
+
+        <Button
+            android:id="@+id/bMakeWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Make Widget!" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tap on preview above to change colors"
+        android:id="@+id/tvPreviewHelp"
+        android:minLines="1"
+        android:maxLines="2"
+        android:gravity="center"
+        android:layout_below="@+id/rlPreview"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="2dp"/>
 
 </RelativeLayout>

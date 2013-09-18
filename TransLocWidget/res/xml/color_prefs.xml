@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="textColor"
+        android:title="Text Color"
+        android:summary="Set color for widget text"
+        android:defaultValue="@color/white"
+        alphaSlider="false"
+        />
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="backgroundColor"
+        android:title="Background Color"
+        android:summary="Set color and transparency for widget background"
+        android:defaultValue="@color/trans_gray"
+        alphaSlider="true"
+        />
+    <Preference
+        android:title="Press Back to Save" />
+
+
+</PreferenceScreen>
