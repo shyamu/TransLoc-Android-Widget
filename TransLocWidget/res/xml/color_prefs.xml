@@ -15,8 +15,4 @@
         android:defaultValue="@color/trans_gray"
         alphaSlider="true"
         />
-    <Preference
-        android:title="Press Back to Save" />
-
-
 </PreferenceScreen>
