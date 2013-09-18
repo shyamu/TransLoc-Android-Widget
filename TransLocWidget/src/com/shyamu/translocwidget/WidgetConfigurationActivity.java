@@ -581,6 +581,9 @@ public class WidgetConfigurationActivity extends Activity {
                     String widgetRouteName = routeShortName + " - " + routeLongName;
                     editor.putString("routeName" + mAppWidgetId, widgetRouteName).commit();
                     views.setTextViewText(R.id.tvRoute, widgetRouteName);
+                } else if(routeShortName.length() == 0) {
+                    editor.putString("routeName" + mAppWidgetId, routeLongName).commit();
+                    views.setTextViewText(R.id.tvRoute, routeLongName);
                 } else {
                     editor.putString("routeName" + mAppWidgetId, routeShortName).commit();
                     views.setTextViewText(R.id.tvRoute, routeShortName);
