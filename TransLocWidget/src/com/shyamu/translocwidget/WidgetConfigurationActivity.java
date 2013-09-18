@@ -577,7 +577,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 // commit widget info to preferences and set text on remoteview
                 // if short name is less than 5 characters, use short name + long name
-                if (routeShortName.length() < 5) {
+                if (routeShortName.length() < 5 && routeShortName.length() > 0) {
                     String widgetRouteName = routeShortName + " - " + routeLongName;
                     editor.putString("routeName" + mAppWidgetId, widgetRouteName).commit();
                     views.setTextViewText(R.id.tvRoute, widgetRouteName);
