@@ -11,5 +11,7 @@ public class CustomizeWidgetActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.color_prefs);
+        Toast.makeText(CustomizeWidgetActivity.this,"Go 'Back' to save",Toast.LENGTH_LONG).show();
+
     }
 }
