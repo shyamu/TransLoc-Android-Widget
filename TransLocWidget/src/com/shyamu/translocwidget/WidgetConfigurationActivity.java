@@ -617,13 +617,11 @@ public class WidgetConfigurationActivity extends Activity {
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
                 setResult(RESULT_OK, resultValue);
                 editor.putBoolean("configComplete", true);
-
+                Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
                 finish();
-
 
             }
             makeWidgetDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
         }
     }
 
