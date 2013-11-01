@@ -43,7 +43,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             if (extras != null) {
                 // widget Id is Id of tapped widget
                 int receivedWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-                new getJsonResponse(context, receivedWidgetId).execute();
+                new getJsonResponse(context, receivedWidgetId, false).execute();
 
             }
         } else if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
@@ -53,7 +53,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             for(int i = 0; i<appWidgetIds.length; i++)
             {
                 Log.v(TAG,"widget id: " + appWidgetIds[i]);
-                new getJsonResponse(context,appWidgetIds[i]).execute();
+                new getJsonResponse(context,appWidgetIds[i],true).execute();
             }
         } else {
             // do nothing
@@ -70,7 +70,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         if(configComplete) {
             for(int i = 0; i<appWidgetIds.length; i++)
             {
-                new getJsonResponse(context,appWidgetIds[i]).execute();
+                new getJsonResponse(context,appWidgetIds[i],false).execute();
             }
         }
     }
@@ -80,18 +80,20 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         private int minutes = -1;
         private Context context;
         private int widgetId;
+        private boolean onReboot;
 
         private SharedPreferences prefs;
 
-        public getJsonResponse(Context context, int widgetId) {
+        public getJsonResponse(Context context, int widgetId, boolean onReboot) {
             this.context = context;
             this.widgetId = widgetId;
             prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            this.onReboot = onReboot;
         }
 
         @Override
         protected void onPreExecute() {
-            Toast.makeText(context,"Updating...",Toast.LENGTH_SHORT).show();
+            if(!onReboot) Toast.makeText(context,"Updating...",Toast.LENGTH_SHORT).show();
             Log.v(TAG, "currently updating widget with widgetID: " + widgetId);
         }
 
@@ -103,7 +105,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             Log.v(TAG,"widget update url: " + url);
 
             try {
-                return new ObjectMapper().readValue(Utils.getJsonResponse(url), TransLocArrivalEstimates.class);
+                if(onReboot) return null;
+                else return new ObjectMapper().readValue(Utils.getJsonResponse(url), TransLocArrivalEstimates.class);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -122,7 +125,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             if (arrivalEstimatesList == null || arrivalEstimatesList.data.isEmpty()) {
                 Log.e(TAG, "no arrival times error");
                 newView.setTextViewText(R.id.tvRemainingTime, "--");
-                Toast.makeText(context, "No arrival times found. Please try again later", Toast.LENGTH_LONG).show();
+                if(!onReboot) Toast.makeText(context, "No arrival times found. Please try again later", Toast.LENGTH_LONG).show();
             } else {
                 TransLocArrivalEstimate arrivalEstimate = arrivalEstimatesList.data.get(0);
                 TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
@@ -133,15 +136,15 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
                 // show toasts and update widget view
                 if (minutes < 1) {
-                    Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
+                    if(!onReboot) Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "<1");
                     newView.setTextViewText(R.id.tvMins, "min away");
                 } else if (minutes == 1) {
-                    Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
+                    if(!onReboot) Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "1");
                     newView.setTextViewText(R.id.tvMins, "min away");
                 } else {
-                    Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
+                    if(!onReboot) Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                     newView.setTextViewText(R.id.tvMins, "mins away");
                 }
