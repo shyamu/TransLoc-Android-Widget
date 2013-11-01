@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TransLocStop{
 
     @JsonProperty("code")
-    public int code;
+    public String code;
 
     @JsonProperty("description")
     public String description;
