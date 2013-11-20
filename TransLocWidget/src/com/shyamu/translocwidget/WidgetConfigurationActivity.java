@@ -285,10 +285,10 @@ public class WidgetConfigurationActivity extends Activity {
                 ArrayList<TransLocAgency> sortedList = (ArrayList<TransLocAgency>) agencyList.getData();
 
                 // remove unwanted agencies (those that don't have arrival times)
-                // 72 = NYU, 104 = CTA, 255 = VTA
+                // 72 = NYU, 104 = CTA
                 for(int i = 0; i < sortedList.size(); i++) {
                     int agencyId = sortedList.get(i).agencyId;
-                    if(agencyId == 72 || agencyId == 104 || agencyId == 255) {
+                    if(agencyId == 72 || agencyId == 104) {
                         sortedList.remove(i);
                     }
                 }
