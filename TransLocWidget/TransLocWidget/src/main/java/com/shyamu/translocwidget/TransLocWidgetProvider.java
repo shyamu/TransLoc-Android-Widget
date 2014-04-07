@@ -46,15 +46,16 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 new getJsonResponse(context, receivedWidgetId, false).execute();
 
             }
-        } else if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            // device has been rebooted, update all existing widgets
+        } else if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED") || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) {
+            // device has been rebooted or app has been updated, update all existing widgets
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TransLocWidgetProvider.class.getName());
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
             for(int i = 0; i<appWidgetIds.length; i++)
             {
-                Log.v(TAG,"widget id: " + appWidgetIds[i]);
+               // Log.v(TAG,"widget id: " + appWidgetIds[i]);
                 new getJsonResponse(context,appWidgetIds[i],true).execute();
             }
+
         } else {
             // do nothing
             Log.v(TAG, "did nothing in onRecieve");
@@ -123,7 +124,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             Date arrivalTimeUTC;
 
             if (arrivalEstimatesList == null || arrivalEstimatesList.data.isEmpty()) {
-                Log.e(TAG, "no arrival times error");
+               // Log.e(TAG, "no arrival times error");
                 newView.setTextViewText(R.id.tvRemainingTime, "--");
                 if(!onReboot) Toast.makeText(context, "No arrival times found. Please try again later", Toast.LENGTH_LONG).show();
             } else {
@@ -131,7 +132,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 TransLocArrival arrival = arrivalEstimate.arrivals.get(0);
                 currentTimeUTC = arrivalEstimatesList.generatedOn;
                 arrivalTimeUTC = arrival.arrivalAt;
-                Log.v(TAG, "current time: " + currentTimeUTC + " ... " + "arrival time: " + arrivalTimeUTC);
+              //  Log.v(TAG, "current time: " + currentTimeUTC + " ... " + "arrival time: " + arrivalTimeUTC);
                 minutes = Utils.getMinutesBetweenTimes(currentTimeUTC, arrivalTimeUTC);
 
                 // show toasts and update widget view
