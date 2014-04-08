@@ -39,8 +39,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
        // newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         appWidgetManager = AppWidgetManager.getInstance(context);
-
-        if (intent.getAction() == null) {
+        String action = intent.getAction();
+        if (action == null) {
             // action is from tap of widget
             Log.v(TAG, "in onReceive with intent action: null");
             Bundle extras = intent.getExtras();
@@ -48,24 +48,20 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 // widget Id is Id of tapped widget
                 int receivedWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
                 new getJsonResponse(context, receivedWidgetId, false).execute();
-
             }
-        } else if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED") || intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) {
+        } else if(action.equals("android.intent.action.BOOT_COMPLETED") || action.equals("android.appwidget.action.APPWIDGET_UPDATE")) {
             // device has been rebooted or app has been updated, update all existing widgets
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TransLocWidgetProvider.class.getName());
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            for(int i = 0; i<appWidgetIds.length; i++)
-            {
-               // Log.v(TAG,"widget id: " + appWidgetIds[i]);
-                new getJsonResponse(context,appWidgetIds[i],true).execute();
+            for (int appWidgetId : appWidgetIds) {
+                new getJsonResponse(context, appWidgetId, true).execute();
             }
-        } else if(intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+        } else if(action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+            // widget is resized
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TransLocWidgetProvider.class.getName());
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            for(int i = 0; i<appWidgetIds.length; i++)
-            {
-                 Log.v(TAG,"widget id: " + appWidgetIds[i]);
-                new getJsonResponse(context,appWidgetIds[i],true).execute();
+            for (int appWidgetId : appWidgetIds) {
+                new getJsonResponse(context, appWidgetId, true).execute();
             }
         } else {
             // do nothing
@@ -75,8 +71,6 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
-        Log.v(TAG, "in onUpdate with " + appWidgetIds.length + " existing widgets");
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean configComplete = prefs.getBoolean("configComplete", false);
         if(configComplete) {
@@ -85,49 +79,35 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 new getJsonResponse(context,appWidgetIds[i],false).execute();
             }
         }
-
-
     }
-
-
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void drawWidgetForJellyBean(Context context, int appWidgetId) {
         Log.v(TAG, "in drawWidget");
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        Resources res = context.getResources();
         Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
 
         if(widgetOptions != null) {
-            int minWidthDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_WIDTH);
-            int minHeightDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_HEIGHT);
+            int minWidthDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+            int minHeightDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
             if(minWidthDp <= 72) widgetSize = 1;
             else if(minWidthDp <= 160) widgetSize = 2;
             else if(minWidthDp <= 248) widgetSize = 3;
             else widgetSize = 4;
-
-            Log.v(TAG, "right now vars minWidgthDp = " + minWidthDp + " minheightDP= " + minHeightDp);
-            Log.v(TAG, "right now vars widgetsize = " + widgetSize);
         } else {
             Log.e(TAG, "widget options is null");
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-
         newView.removeAllViews(R.id.rlWidgetLayout);
-       // newView.addView();
+
         if(widgetSize == 3) {
-            Log.v(TAG,"widget size = 3");
             RemoteViews threeWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
             newView.addView(R.id.rlWidgetLayout,threeWidget);
         } else if (widgetSize == 2) {
-            Log.v(TAG,"widget size = 2");
             RemoteViews twoWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_two);
             newView.addView(R.id.rlWidgetLayout,twoWidget);
         } else if (widgetSize == 1) {
-            Log.v(TAG,"widget size = 1");
             RemoteViews oneWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_one);
             newView.addView(R.id.rlWidgetLayout,oneWidget);
         } else {
@@ -135,15 +115,9 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             RemoteViews fourWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
             newView.addView(R.id.rlWidgetLayout,fourWidget);
         }
-
-        //Log.v(TAG, "about to call updateAppWidget with widgetId: " + appWidgetId);
-        //appWidgetManager.updateAppWidget(appWidgetId, newView);
-
     }
 
-
     private class getJsonResponse extends AsyncTask<Void, Void, TransLocArrivalEstimates> {
-
         private int minutes = -1;
         private Context context;
         private int widgetId;
@@ -169,7 +143,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             String url = prefs.getString("url" + widgetId, "");
 
             if (url.equals("")) Log.e("ERROR widgetprovider", "URL is empty");
-            Log.v(TAG,"widget update url: " + url);
+            //Log.v(TAG,"widget update url: " + url);
 
             try {
                 if(onReboot) return null;
@@ -186,6 +160,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(TransLocArrivalEstimates arrivalEstimatesList) {
 
+            // for resizable widgets
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 drawWidgetForJellyBean(context, widgetId);
             } else {
@@ -220,9 +195,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                     if(!onReboot) Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                     if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "mins away");
-
                 }
-
             }
 
             String routeName = prefs.getString("routeName" + widgetId, "error: route name not found");
@@ -258,11 +231,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
             Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
             appWidgetManager.updateAppWidget(widgetId, newView);
-
         }
     }
-
-
 }
 
 
