@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -63,7 +64,6 @@ public class CustomizeWidgetActivity extends Activity implements ColorPicker.OnC
                 picker.setOldCenterColor(picker.getColor());
                 currentBackgroundColor.setBackgroundColor(picker.getColor());
                 editor.putInt("backgroundColor", picker.getColor()).commit();
-
             }
         });
 
