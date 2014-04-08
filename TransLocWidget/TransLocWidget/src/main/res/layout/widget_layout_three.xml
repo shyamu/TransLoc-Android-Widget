@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="@dimen/widget_margin"
+    android:clickable="false"
+    android:background="#77010101"
+    android:id="@+id/rlWidgetLayoutThree">
+
+    <TextView
+        android:id="@+id/tvRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="Error:"
+        android:textColor="#ffffff"
+        android:layout_toRightOf="@+id/tvRemainingTime"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"/>
+
+    <TextView
+        android:id="@+id/tvRemainingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        android:textSize="65sp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:textColor="#ffffff"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"/>
+
+    <TextView
+        android:id="@+id/tvStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="Please recreate widget"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/tvRoute"
+        android:layout_alignLeft="@+id/tvRoute"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="mins away"
+        android:textSize="18sp"
+        android:id="@+id/tvMins"
+        android:layout_alignBaseline="@+id/tvRemainingTime"
+        android:layout_alignBottom="@+id/tvRoute"
+        android:layout_toRightOf="@+id/tvRemainingTime"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="5dp"/>
+
+</RelativeLayout>
