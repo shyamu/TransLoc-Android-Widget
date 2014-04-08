@@ -103,9 +103,10 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         if(widgetOptions != null) {
             int minWidthDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_WIDTH);
             int minHeightDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_HEIGHT);
-            if(minWidthDp <= 64) widgetSize = 1;
-            else if(minWidthDp <= 144) widgetSize = 2;
-            else if(minWidthDp <= 224) widgetSize = 3;
+            if(minWidthDp <= 72) widgetSize = 1;
+            else if(minWidthDp <= 160) widgetSize = 2;
+            else if(minWidthDp <= 248) widgetSize = 3;
+            else widgetSize = 4;
 
             Log.v(TAG, "right now vars minWidgthDp = " + minWidthDp + " minheightDP= " + minHeightDp);
             Log.v(TAG, "right now vars widgetsize = " + widgetSize);
@@ -131,7 +132,9 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             RemoteViews oneWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_one);
             newView.addView(R.id.rlWidgetLayout,oneWidget);
         } else {
-            Log.e(TAG,"error in widget sizes");
+            Log.v(TAG,"widget size not found");
+            RemoteViews fourWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
+            newView.addView(R.id.rlWidgetLayout,fourWidget);
         }
 
         //Log.v(TAG, "about to call updateAppWidget with widgetId: " + appWidgetId);
