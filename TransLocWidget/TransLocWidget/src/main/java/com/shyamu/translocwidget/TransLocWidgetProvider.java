@@ -1,5 +1,6 @@
 package com.shyamu.translocwidget;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,7 +8,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -55,7 +58,14 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                // Log.v(TAG,"widget id: " + appWidgetIds[i]);
                 new getJsonResponse(context,appWidgetIds[i],true).execute();
             }
-
+        } else if(intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TransLocWidgetProvider.class.getName());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+            for(int i = 0; i<appWidgetIds.length; i++)
+            {
+                 Log.v(TAG,"widget id: " + appWidgetIds[i]);
+                new getJsonResponse(context,appWidgetIds[i],true).execute();
+            }
         } else {
             // do nothing
             Log.v(TAG, "did nothing in onRecieve");
@@ -74,7 +84,59 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 new getJsonResponse(context,appWidgetIds[i],false).execute();
             }
         }
+
+
     }
+
+
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void drawWidget(Context context, int appWidgetId) {
+        Log.v(TAG, "in drawWidget");
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        Resources res = context.getResources();
+        Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
+        int widgetSize = 0;
+        if(widgetOptions != null) {
+            int minWidthDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_WIDTH);
+            int minHeightDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_HEIGHT);
+            if(minWidthDp <= 64) widgetSize = 1;
+            else if(minWidthDp <= 144) widgetSize = 2;
+            else if(minWidthDp <= 224) widgetSize = 3;
+
+            Log.v(TAG, "right now vars minWidgthDp = " + minWidthDp + " minheightDP= " + minHeightDp);
+            Log.v(TAG, "right now vars widgetsize = " + widgetSize);
+        } else {
+            Log.e(TAG, "widget options is null");
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        RemoteViews newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+
+        newView.removeAllViews(R.id.rlWidgetLayout);
+       // newView.addView();
+        if(widgetSize == 3) {
+            Log.v(TAG,"widget size = 3");
+            RemoteViews threeWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
+            newView.addView(R.id.rlWidgetLayout,threeWidget);
+        } else if (widgetSize == 2) {
+            Log.v(TAG,"widget size = 2");
+            RemoteViews twoWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_two);
+            newView.addView(R.id.rlWidgetLayout,twoWidget);
+        } else if (widgetSize == 1) {
+            Log.v(TAG,"widget size = 1");
+            RemoteViews oneWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_one);
+            newView.addView(R.id.rlWidgetLayout,oneWidget);
+        } else {
+            Log.e(TAG,"error in widget sizes");
+        }
+
+        Log.v(TAG, "about to call updateAppWidget with widgetId: " + appWidgetId);
+        appWidgetManager.updateAppWidget(appWidgetId, newView);
+
+    }
+
 
     private class getJsonResponse extends AsyncTask<Void, Void, TransLocArrivalEstimates> {
 
@@ -120,6 +182,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(TransLocArrivalEstimates arrivalEstimatesList) {
 
+
+            /*
             Date currentTimeUTC;
             Date arrivalTimeUTC;
 
@@ -174,8 +238,18 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             newView.setTextColor(R.id.tvRoute, textColor);
             newView.setTextColor(R.id.tvStop, textColor);
 
-            Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
+             Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
             appWidgetManager.updateAppWidget(widgetId, newView);
+            */
+
+            drawWidget(context,widgetId);
+
+
+
         }
     }
+
+
 }
+
+
