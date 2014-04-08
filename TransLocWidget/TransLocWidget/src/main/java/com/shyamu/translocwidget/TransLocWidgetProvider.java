@@ -29,6 +29,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
     private AppWidgetManager appWidgetManager;
     private RemoteViews newView = null;
+    private int widgetSize = 4;
 
     private static final String TAG = "WidgetProvider";
 
@@ -36,7 +37,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         Log.v(TAG, "in onReceive with intent action: " + intent.getAction());
 
-        newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+       // newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         appWidgetManager = AppWidgetManager.getInstance(context);
 
         if (intent.getAction() == null) {
@@ -92,12 +93,12 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void drawWidget(Context context, int appWidgetId) {
+    private void drawWidgetForJellyBean(Context context, int appWidgetId) {
         Log.v(TAG, "in drawWidget");
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         Resources res = context.getResources();
         Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
-        int widgetSize = 0;
+
         if(widgetOptions != null) {
             int minWidthDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_WIDTH);
             int minHeightDp = widgetOptions.getInt(manager.OPTION_APPWIDGET_MIN_HEIGHT);
@@ -112,7 +113,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        RemoteViews newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
         newView.removeAllViews(R.id.rlWidgetLayout);
        // newView.addView();
@@ -132,8 +133,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             Log.e(TAG,"error in widget sizes");
         }
 
-        Log.v(TAG, "about to call updateAppWidget with widgetId: " + appWidgetId);
-        appWidgetManager.updateAppWidget(appWidgetId, newView);
+        //Log.v(TAG, "about to call updateAppWidget with widgetId: " + appWidgetId);
+        //appWidgetManager.updateAppWidget(appWidgetId, newView);
 
     }
 
@@ -182,8 +183,12 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(TransLocArrivalEstimates arrivalEstimatesList) {
 
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                drawWidgetForJellyBean(context, widgetId);
+            } else {
+                newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            }
 
-            /*
             Date currentTimeUTC;
             Date arrivalTimeUTC;
 
@@ -203,30 +208,22 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 if (minutes < 1) {
                     if(!onReboot) Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "<1");
-                    newView.setTextViewText(R.id.tvMins, "min away");
+                    if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "min away");
                 } else if (minutes == 1) {
                     if(!onReboot) Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "1");
-                    newView.setTextViewText(R.id.tvMins, "min away");
+                    if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "min away");
                 } else {
                     if(!onReboot) Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
-                    newView.setTextViewText(R.id.tvMins, "mins away");
-                }
+                    if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "mins away");
 
+                }
 
             }
 
             String routeName = prefs.getString("routeName" + widgetId, "error: route name not found");
             String stopName = prefs.getString("stopName" + widgetId, "error: stop name not found");
-            newView.setTextViewText(R.id.tvRoute, routeName);
-            newView.setTextViewText(R.id.tvStop, stopName);
-
-            // reset pendingintent for widget tap
-            Intent clickIntent = new Intent(context, TransLocWidgetProvider.class);
-            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, widgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
 
             // reset colors for widget
             int textColor = prefs.getInt("textColor-" + widgetId, -1);
@@ -234,17 +231,26 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
             newView.setInt(R.id.rlWidgetLayout, "setBackgroundColor", backgroundColor);
             newView.setTextColor(R.id.tvRemainingTime, textColor);
-            newView.setTextColor(R.id.tvMins, textColor);
-            newView.setTextColor(R.id.tvRoute, textColor);
-            newView.setTextColor(R.id.tvStop, textColor);
 
-             Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
+            if(widgetSize >= 3) {
+                newView.setTextViewText(R.id.tvRoute, routeName);
+                newView.setTextViewText(R.id.tvStop, stopName);
+                newView.setTextColor(R.id.tvRoute, textColor);
+                newView.setTextColor(R.id.tvStop, textColor);
+                newView.setTextColor(R.id.tvMins, textColor);
+            } else if(widgetSize == 2) {
+                newView.setTextViewText(R.id.tvRouteShortName, routeName);
+                newView.setTextViewText(R.id.tvStopName, stopName);
+            }
+
+            // reset pendingintent for widget tap
+            Intent clickIntent = new Intent(context, TransLocWidgetProvider.class);
+            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, widgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            newView.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
+
+            Log.v(TAG, "about to call updateAppWidget with widgetId: " + widgetId);
             appWidgetManager.updateAppWidget(widgetId, newView);
-            */
-
-            drawWidget(context,widgetId);
-
-
 
         }
     }
