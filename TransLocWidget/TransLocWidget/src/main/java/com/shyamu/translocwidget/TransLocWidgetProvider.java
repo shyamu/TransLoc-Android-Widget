@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -239,8 +240,10 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 newView.setTextColor(R.id.tvStop, textColor);
                 newView.setTextColor(R.id.tvMins, textColor);
             } else if(widgetSize == 2) {
-                newView.setTextViewText(R.id.tvRouteShortName, routeName);
-                newView.setTextViewText(R.id.tvStopName, stopName);
+                newView.setTextViewText(R.id.tvRoute, routeName);
+                newView.setTextViewText(R.id.tvStop, stopName);
+            } else if(widgetSize == 1) {
+                newView.setTextViewText(R.id.tvRouteAndStop, routeName + " - " + stopName);
             }
 
             // reset pendingintent for widget tap
