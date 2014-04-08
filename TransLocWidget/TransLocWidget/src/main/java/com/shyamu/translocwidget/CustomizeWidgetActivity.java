@@ -26,9 +26,6 @@ public class CustomizeWidgetActivity extends Activity implements ColorPicker.OnC
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
 
-
-
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customize_widget);

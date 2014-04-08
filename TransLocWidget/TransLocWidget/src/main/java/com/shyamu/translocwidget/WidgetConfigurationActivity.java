@@ -629,8 +629,6 @@ public class WidgetConfigurationActivity extends Activity {
             makeWidgetDialog.dismiss();
         }
     }
-
-
 }
 
 
