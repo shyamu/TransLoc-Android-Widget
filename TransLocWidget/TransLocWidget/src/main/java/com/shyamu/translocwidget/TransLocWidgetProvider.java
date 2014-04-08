@@ -241,9 +241,12 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
                 newView.setTextColor(R.id.tvMins, textColor);
             } else if(widgetSize == 2) {
                 newView.setTextViewText(R.id.tvRoute, routeName);
+                newView.setTextColor(R.id.tvRoute, textColor);
                 newView.setTextViewText(R.id.tvStop, stopName);
+                newView.setTextColor(R.id.tvStop, textColor);
             } else if(widgetSize == 1) {
                 newView.setTextViewText(R.id.tvRouteAndStop, routeName + " - " + stopName);
+                newView.setTextColor(R.id.tvRouteAndStop, textColor);
             }
 
             // reset pendingintent for widget tap
