@@ -5,7 +5,6 @@
     android:layout_height="fill_parent"
     android:padding="@dimen/widget_margin"
     android:clickable="false"
-    android:background="#77010101"
     android:id="@+id/rlWidgetLayoutTwo">
 
     <TextView
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="10sp"
         android:text="Route Short Name"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:layout_toRightOf="@+id/tvRemainingTime"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="5dp"/>
@@ -27,7 +26,7 @@
         android:textSize="65sp"
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="5dp"/>
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:textSize="10sp"
         android:text="Stop Name"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:layout_alignBaseline="@+id/tvRemainingTime"
         android:layout_alignBottom="@+id/tvRemainingTime"
         android:layout_alignLeft="@+id/tvRoute"

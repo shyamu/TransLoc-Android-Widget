@@ -597,6 +597,7 @@ public class WidgetConfigurationActivity extends Activity {
 
                 // set colors for widget
                 int backgroundColor = settings.getInt("backgroundColor",1996554497);
+                editor.putInt("backgroundColor-" + mAppWidgetId, backgroundColor);
                 int textColor = settings.getInt("textColor",-1);
                 views.setInt(R.id.rlWidgetLayout,"setBackgroundColor",backgroundColor);
                 views.setTextColor(R.id.tvRemainingTime,textColor);

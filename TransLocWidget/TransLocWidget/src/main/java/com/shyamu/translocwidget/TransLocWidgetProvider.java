@@ -229,7 +229,6 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             // reset colors for widget
             int textColor = prefs.getInt("textColor-" + widgetId, -1);
             int backgroundColor = prefs.getInt("backgroundColor-" + widgetId, -1);
-
             newView.setInt(R.id.rlWidgetLayout, "setBackgroundColor", backgroundColor);
             newView.setTextColor(R.id.tvRemainingTime, textColor);
 
