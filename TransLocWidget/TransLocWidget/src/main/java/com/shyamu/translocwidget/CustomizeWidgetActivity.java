@@ -3,14 +3,10 @@ package com.shyamu.translocwidget;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
@@ -36,7 +32,6 @@ public class CustomizeWidgetActivity extends Activity implements ColorPicker.OnC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customize_widget);
-        Toast.makeText(CustomizeWidgetActivity.this,"Go 'Back' to save",Toast.LENGTH_LONG).show();
 
         settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         editor = settings.edit();

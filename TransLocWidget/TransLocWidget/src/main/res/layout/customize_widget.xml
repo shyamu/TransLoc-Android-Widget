@@ -4,7 +4,7 @@
     android:id="@+id/LinearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff9d9d9d"
+    android:background="#e3e3e3"
     android:orientation="vertical"
     tools:context=".Main" >
 
@@ -30,12 +30,11 @@
         android:layout_gravity="center"
         android:layout_margin="8dip"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:measureWithLargestChild="false"
-        android:gravity="center_horizontal"
-        android:layout_margin="5dp">
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
 
         <Button
             android:id="@+id/bChangeBackgroundColor"
@@ -48,34 +47,41 @@
             android:orientation="horizontal"
             android:id="@+id/llCurrentBackgroundColor"
             android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:background="@color/trans_gray"
-            android:layout_marginLeft="10dp"
-            android:measureWithLargestChild="false" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:measureWithLargestChild="false"
-        android:gravity="center_horizontal"
-        android:layout_margin="5dp">
+            android:measureWithLargestChild="false"
+            android:layout_alignBottom="@+id/bChangeBackgroundColor"
+            android:layout_alignLeft="@+id/llCurrentTextColor"
+            android:layout_alignStart="@+id/llCurrentTextColor" />
 
         <Button
             android:id="@+id/bChangeTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Set Text Color"
-             />
+            android:layout_below="@+id/bChangeBackgroundColor"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:id="@+id/llCurrentTextColor"
             android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:background="@android:color/white"
-            android:layout_marginLeft="10dp" />
+            android:layout_alignTop="@+id/bChangeTextColor"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Press 'Back' to Save"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff0099cc"
+        android:layout_marginTop="10dp" />
+
 </LinearLayout>
