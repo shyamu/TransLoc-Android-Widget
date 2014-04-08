@@ -9,7 +9,7 @@
     android:id="@+id/rlWidgetLayoutTwo">
 
     <TextView
-        android:id="@+id/tvRouteShortName"
+        android:id="@+id/tvRoute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10sp"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="5dp"/>
 
     <TextView
-        android:id="@+id/tvStopName"
+        android:id="@+id/tvStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10sp"
@@ -41,7 +41,7 @@
         android:textColor="#ffffff"
         android:layout_alignBaseline="@+id/tvRemainingTime"
         android:layout_alignBottom="@+id/tvRemainingTime"
-        android:layout_alignLeft="@+id/tvRouteShortName"
-        android:layout_alignStart="@+id/tvRouteShortName" />
+        android:layout_alignLeft="@+id/tvRoute"
+        android:layout_alignStart="@+id/tvRoute" />
 
 </RelativeLayout>

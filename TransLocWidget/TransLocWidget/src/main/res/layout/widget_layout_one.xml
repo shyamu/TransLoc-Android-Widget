@@ -13,12 +13,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="13"
-        android:textSize="65sp"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
+        android:textSize="45dp"
         android:textColor="#ffffff"
+        android:singleLine="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="5dp"/>
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Route and Stop Name"
+        android:id="@+id/tvRouteAndStop"
+        android:layout_below="@+id/tvRemainingTime"
+        android:layout_centerHorizontal="true"
+        android:textSize="10dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:focusable = "true"
+        android:focusableInTouchMode = "true"
+        android:marqueeRepeatLimit ="marquee_forever"
+        android:scrollHorizontally="true"
+        android:textColor="#ffffff" >
+        <requestFocus android:focusable="true" android:focusableInTouchMode="true"
+            android:duplicateParentState="true" />
+    </TextView>
+
 
 </RelativeLayout>
