@@ -39,6 +39,9 @@ public class Utils {
         return Minutes.minutesBetween(start,end).getMinutes();
     }
 
+    protected static String removeTrailingChars(String str, int num) {
+        return str.substring(0,str.length()-num);
+    }
 
 
     protected static String getJsonResponse(String url) throws Exception {
