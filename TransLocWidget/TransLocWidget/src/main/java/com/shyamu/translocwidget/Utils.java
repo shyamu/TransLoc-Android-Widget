@@ -39,16 +39,17 @@ public class Utils {
         return Minutes.minutesBetween(start,end).getMinutes();
     }
 
-    protected static String getJsonResponse(String url) throws Exception {
-
+    protected static String getJsonResponse(String url, String key) throws Exception {
         String response = "";
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
+        httpGet.setHeader("X-Mashape-Authorization",key);
         try {
             HttpResponse execute = client.execute(httpGet);
             int statusCode = execute.getStatusLine().getStatusCode();
             if(statusCode != HttpStatus.SC_OK) {
                 Log.e("Utils", "error in HTTP");
+                Log.e("Utils", "Did you rememember to put the API_KEY from mashape.com into res/values/strings.xml? :) ");
                 throw new Exception();
             } else {
                 InputStream content = execute.getEntity().getContent();

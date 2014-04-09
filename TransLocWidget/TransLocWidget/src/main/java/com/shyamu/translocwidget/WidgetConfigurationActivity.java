@@ -46,10 +46,10 @@ import static android.widget.AdapterView.OnItemSelectedListener;
 
 public class WidgetConfigurationActivity extends Activity {
 
-    private static final String AGENCIES_URL = "http://api.transloc.com/1.1/agencies.json";
-    private static final String ROUTES_URL = "http://api.transloc.com/1.1/routes.json?agencies=";
-    private static final String STOPS_URL = "http://api.transloc.com/1.1/stops.json?agencies=";
-    private static final String ARRIVALS_URL = "http://api.transloc.com/1.1/arrival-estimates.json?agencies=";
+    private static final String AGENCIES_URL = "https://transloc-api-1-2.p.mashape.com/agencies.json";
+    private static final String ROUTES_URL = "https://transloc-api-1-2.p.mashape.com/routes.json?agencies=";
+    private static final String STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
+    private static final String ARRIVALS_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
 
     private static final String TAG = "ConfigActivity";
 
@@ -251,7 +251,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected TransLocAgencies doInBackground(Void... voids) {
             try {
-                return new ObjectMapper().readValue(Utils.getJsonResponse(AGENCIES_URL), TransLocAgencies.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(AGENCIES_URL, getString(R.string.mashape_key)), TransLocAgencies.class);
             } catch (Exception e) {
                 Log.e(TAG, "ERROR in getting JSON data for agencies");
                 e.printStackTrace();
@@ -353,7 +353,7 @@ public class WidgetConfigurationActivity extends Activity {
         @SuppressWarnings("unchecked")
         protected ArrayList<TransLocRoute> doInBackground(Void... voids) {
             try {
-                Map<String, Object> routeMap = new ObjectMapper().readValue(Utils.getJsonResponse(ROUTES_URL + currentAgencyId), Map.class);
+                Map<String, Object> routeMap = new ObjectMapper().readValue(Utils.getJsonResponse(ROUTES_URL + currentAgencyId,  getString(R.string.mashape_key)), Map.class);
                 Map<String, Object> agencyMap = (Map) routeMap.get("data");
                 List<Map<String, Object>> routeList = (List) agencyMap.get(Integer.toString(currentAgencyId));
                 final ArrayList<TransLocRoute> routesArrayList = new ArrayList<TransLocRoute>();
@@ -433,7 +433,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         protected TransLocStops doInBackground(Void... voids) {
             try {
-                return new ObjectMapper().readValue(Utils.getJsonResponse(STOPS_URL + currentAgencyId), TransLocStops.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(STOPS_URL + currentAgencyId,  getString(R.string.mashape_key)), TransLocStops.class);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -542,7 +542,7 @@ public class WidgetConfigurationActivity extends Activity {
             Log.v(TAG, "arrival estimates URL: " + url);
 
             try {
-                return new ObjectMapper().readValue(Utils.getJsonResponse(url), TransLocArrivalEstimates.class);
+                return new ObjectMapper().readValue(Utils.getJsonResponse(url,  getString(R.string.mashape_key)), TransLocArrivalEstimates.class);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
