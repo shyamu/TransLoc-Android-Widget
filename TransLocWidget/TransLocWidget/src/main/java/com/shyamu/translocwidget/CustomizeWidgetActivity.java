@@ -2,6 +2,9 @@ package com.shyamu.translocwidget;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -66,6 +69,22 @@ public class CustomizeWidgetActivity extends Activity implements ColorPicker.OnC
                 picker.setOldCenterColor(picker.getColor());
                 currentTextColor.setBackgroundColor(picker.getColor());
                 editor.putInt("textColor", picker.getColor()).commit();
+            }
+        });
+
+        currentBackgroundColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorDrawable d = (ColorDrawable) currentBackgroundColor.getBackground();
+                picker.setColor(d.getColor());
+            }
+        });
+
+        currentTextColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorDrawable d = (ColorDrawable) currentTextColor.getBackground();
+                picker.setColor(d.getColor());
             }
         });
 
