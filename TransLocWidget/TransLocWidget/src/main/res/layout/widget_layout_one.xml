@@ -7,35 +7,42 @@
     android:clickable="false"
     android:id="@+id/rlWidgetLayoutOne">
 
-    <TextView
-        android:id="@+id/tvRemainingTime"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="13"
-        android:textSize="45dp"
-        android:textColor="#000000"
-        android:singleLine="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Route and Stop Name"
-        android:id="@+id/tvRouteAndStop"
-        android:layout_below="@+id/tvRemainingTime"
-        android:layout_centerHorizontal="true"
-        android:textSize="10dp"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:focusable = "true"
-        android:focusableInTouchMode = "true"
-        android:marqueeRepeatLimit ="marquee_forever"
-        android:scrollHorizontally="true"
-        android:textColor="#000000" >
-        <requestFocus android:focusable="true" android:focusableInTouchMode="true"
-            android:duplicateParentState="true" />
-    </TextView>
+        <TextView
+            android:id="@+id/tvRemainingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13"
+            android:textSize="45dp"
+            android:textColor="#000000"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route and Stop Name"
+            android:id="@+id/tvRouteAndStop"
+            android:layout_below="@+id/tvRemainingTime"
+            android:layout_centerHorizontal="true"
+            android:textSize="10dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:focusable = "true"
+            android:focusableInTouchMode = "true"
+            android:marqueeRepeatLimit ="marquee_forever"
+            android:scrollHorizontally="true"
+            android:textColor="#000000" >
+            <requestFocus android:focusable="true" android:focusableInTouchMode="true"
+                android:duplicateParentState="true" />
+        </TextView>
+    </RelativeLayout>
 
 
 </RelativeLayout>
