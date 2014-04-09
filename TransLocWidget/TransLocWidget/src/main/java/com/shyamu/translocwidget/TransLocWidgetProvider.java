@@ -58,10 +58,11 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
             }
         } else if(action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
             // widget is resized
-            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TransLocWidgetProvider.class.getName());
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            for (int appWidgetId : appWidgetIds) {
-                new getJsonResponse(context, appWidgetId, true).execute();
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                // widget Id is Id of tapped widget
+                int receivedWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                new getJsonResponse(context, receivedWidgetId, false).execute();
             }
         } else {
             // do nothing
@@ -74,9 +75,8 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean configComplete = prefs.getBoolean("configComplete", false);
         if(configComplete) {
-            for(int i = 0; i<appWidgetIds.length; i++)
-            {
-                new getJsonResponse(context,appWidgetIds[i],false).execute();
+            for (int appWidgetId : appWidgetIds) {
+                new getJsonResponse(context, appWidgetId, false).execute();
             }
         }
     }

@@ -15,8 +15,8 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
-    compileSdkVersion 18
-    buildToolsVersion "18.1.1"
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
 
     defaultConfig {
         minSdkVersion 8
