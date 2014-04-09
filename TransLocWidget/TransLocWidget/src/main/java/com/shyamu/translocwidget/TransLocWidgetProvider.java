@@ -134,7 +134,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
         @Override
         protected void onPreExecute() {
-            if(!onReboot) Toast.makeText(context,"Updating...",Toast.LENGTH_SHORT).show();
+            //if(!onReboot) Toast.makeText(context,"Updating...",Toast.LENGTH_SHORT).show();
             Log.v(TAG, "currently updating widget with widgetID: " + widgetId);
         }
 
@@ -184,15 +184,15 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
                 // show toasts and update widget view
                 if (minutes < 1) {
-                    if(!onReboot) Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
+                   // if(!onReboot) Toast.makeText(context, "Next bus is less than 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "<1");
                     if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "min away");
                 } else if (minutes == 1) {
-                    if(!onReboot) Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
+                   // if(!onReboot) Toast.makeText(context, "Next bus is 1 minute away!", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, "1");
                     if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "min away");
                 } else {
-                    if(!onReboot) Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
+                   // if(!onReboot) Toast.makeText(context, "Next bus is " + minutes + " minutes away", Toast.LENGTH_SHORT).show();
                     newView.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutes));
                     if(widgetSize >= 3) newView.setTextViewText(R.id.tvMins, "mins away");
                 }
