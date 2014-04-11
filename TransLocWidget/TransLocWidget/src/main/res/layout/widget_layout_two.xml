@@ -21,6 +21,7 @@
             android:text="Route Short Name"
             android:textColor="#000000"
             android:layout_below="@+id/tvRemainingTime"
+            android:singleLine="true"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -41,7 +42,8 @@
             android:text="Stop Name"
             android:textColor="#000000"
             android:layout_below="@+id/tvRoute"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"/>
     </RelativeLayout>
 
 </RelativeLayout>
