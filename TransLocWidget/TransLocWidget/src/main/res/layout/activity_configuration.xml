@@ -15,25 +15,25 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <Spinner
+    <Button
         android:id="@+id/sSelectRoute"
+        android:text="@string/select_route"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectAgency"
         android:layout_marginTop="10dp"
-        android:enabled="false"
-        android:prompt="@string/select_route"/>
+        android:enabled="false" />
 
     <Spinner
         android:id="@+id/sSelectStop"
+        android:text="@string/select_stop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sSelectRoute"
         android:layout_marginTop="10dp"
-        android:enabled="false"
-        android:prompt="@string/select_stop"/>
+        android:enabled="false" />
 
     <TextView
         android:layout_width="fill_parent"
