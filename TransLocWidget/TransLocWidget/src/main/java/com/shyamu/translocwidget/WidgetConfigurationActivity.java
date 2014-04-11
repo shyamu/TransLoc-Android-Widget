@@ -237,6 +237,7 @@ public class WidgetConfigurationActivity extends Activity {
             currentStopId= -1;
             stopName = null;
             sSelectStop.setEnabled(false);
+            bMakeWidget.setEnabled(false);
         }
         if(type <= 1) {
             sSelectRoute.setText(R.string.select_route);
@@ -244,6 +245,7 @@ public class WidgetConfigurationActivity extends Activity {
             routeShortName = null;
             routeLongName = null;
             sSelectRoute.setEnabled(false);
+            bMakeWidget.setEnabled(false);
         }
         if(type == 0) {
             sSelectAgency.setText(R.string.select_agency);
@@ -272,13 +274,10 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            // show dialog
             progressBar.setVisibility(View.VISIBLE);
             sSelectAgency.setText("Loading agencies...");
             doReset(1);
-            if(dialog == null) {
-               // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
-            }
+
         }
 
         protected TransLocAgencies doInBackground(Void... voids) {
@@ -302,8 +301,6 @@ public class WidgetConfigurationActivity extends Activity {
                 bMakeWidget.setEnabled(false);
             }
             else {
-
-
                 // sort agency list first
                 ArrayList<TransLocAgency> sortedList = (ArrayList<TransLocAgency>) agencyList.getData();
 
@@ -382,6 +379,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
             sSelectRoute.setText("Loading routes...");
+            bMakeWidget.setEnabled(false);
             doReset(2);
             sSelectRoute.setEnabled(false);
             if(dialog == null) {
@@ -558,6 +556,7 @@ public class WidgetConfigurationActivity extends Activity {
                                         stopName = currentRouteStopList.get(pos).name;
                                         sSelectStop.setText(stopName);
                                         bMakeWidget.setEnabled(true);
+                                        Log.v("DEBUG","make widger enabled");
                                         dialog.dismiss();
                                     }
                                 }).create().show();
