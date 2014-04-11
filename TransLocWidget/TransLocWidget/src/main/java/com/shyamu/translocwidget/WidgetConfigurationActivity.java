@@ -1,9 +1,11 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -70,7 +72,8 @@ public class WidgetConfigurationActivity extends Activity {
     ProgressDialog dialog = null;
 
     RelativeLayout rlPreview;
-    Spinner sSelectAgency, sSelectRoute, sSelectStop;
+    Spinner sSelectRoute, sSelectStop;
+    Button sSelectAgency;
     Button bReset, bMakeWidget;
     TextView tvHelpMessage;
     TextView tvRoutePreview, tvRemainingTimePreview, tvStopPreview, tvMinsPreview;
@@ -82,7 +85,8 @@ public class WidgetConfigurationActivity extends Activity {
         setContentView(R.layout.activity_configuration);
 
         // references to Spinners and Buttons
-        sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
+        //sSelectAgency = (Spinner) findViewById(R.id.sSelectAgency);
+        sSelectAgency = (Button) findViewById(R.id.sSelectAgency);
         sSelectRoute = (Spinner) findViewById(R.id.sSelectRoute);
         sSelectStop = (Spinner) findViewById(R.id.sSelectStop);
         bReset = (Button) findViewById(R.id.bReset);
@@ -115,6 +119,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         // Populate agency spinner
         new PopulateAgenciesTask().execute();
+
+
 
         // Defining a click event listener for the button "Reset"
         OnClickListener setResetClickedListener = new OnClickListener() {
@@ -245,7 +251,7 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPreExecute() {
             // show dialog
             if(dialog == null) {
-                dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
+               // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
             }
         }
 
@@ -268,18 +274,7 @@ public class WidgetConfigurationActivity extends Activity {
                 bMakeWidget.setEnabled(false);
             }
             else {
-                sSelectAgency.setOnItemSelectedListener(new OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                        currentAgencyId = agencyList.getData().get(pos).agencyId;
-                        new PopulateRoutesTask().execute();
-                    }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        // do nothing
-                    }
-                });
 
                 // sort agency list first
                 ArrayList<TransLocAgency> sortedList = (ArrayList<TransLocAgency>) agencyList.getData();
@@ -294,9 +289,27 @@ public class WidgetConfigurationActivity extends Activity {
                 }
 
                 Collections.sort(sortedList, sortTransLocAgency());
-                ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_list_item_1, agencyList.getData());
+                final ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, agencyList.getData());
 
-                sSelectAgency.setAdapter(agencyArrayAdapter);
+                // set button spinner click listeners
+                sSelectAgency.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new AlertDialog.Builder(WidgetConfigurationActivity.this)
+                                .setTitle("Select an Agency")
+                                .setAdapter(agencyArrayAdapter, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int pos) {
+                                        currentAgencyId = agencyList.getData().get(pos).agencyId;
+                                        sSelectAgency.setText(agencyList.getData().get(pos).longName);
+                                        new PopulateRoutesTask().execute();
+                                        dialog.dismiss();
+                                    }
+
+                                }).create().show();
+                    }
+                });
+               // sSelectAgency.setAdapter(agencyArrayAdapter);
             }
 
 

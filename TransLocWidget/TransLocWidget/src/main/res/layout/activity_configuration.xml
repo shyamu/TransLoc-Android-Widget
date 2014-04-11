@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Spinner
+    <Button
         android:id="@+id/sSelectAgency"
-        android:layout_width="fill_parent"
+        android:text="@string/select_agency"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:prompt="@string/select_agency"
-        android:spinnerMode="dialog"
         android:layout_below="@+id/tvHelp"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Spinner
         android:id="@+id/sSelectRoute"
@@ -21,8 +23,7 @@
         android:layout_below="@+id/sSelectAgency"
         android:layout_marginTop="10dp"
         android:enabled="false"
-        android:prompt="@string/select_route"
-        android:spinnerMode="dialog"/>
+        android:prompt="@string/select_route"/>
 
     <Spinner
         android:id="@+id/sSelectStop"
@@ -32,20 +33,19 @@
         android:layout_below="@+id/sSelectRoute"
         android:layout_marginTop="10dp"
         android:enabled="false"
-        android:prompt="@string/select_stop"
-        android:spinnerMode="dialog"/>
+        android:prompt="@string/select_stop"/>
 
     <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Help! I can't find my transit agency!"
-            android:id="@+id/tvHelp"
-            android:minLines="2"
-            android:maxLines="2"
-            android:gravity="center"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Help! I can't find my transit agency!"
+        android:id="@+id/tvHelp"
+        android:minLines="2"
+        android:maxLines="2"
+        android:gravity="center"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="5dp"
