@@ -16,13 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +42,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import static android.widget.AdapterView.OnItemSelectedListener;
 
 public class WidgetConfigurationActivity extends Activity {
 
@@ -70,7 +66,6 @@ public class WidgetConfigurationActivity extends Activity {
     private String stopName;
 
     private int mAppWidgetId = 0;
-    ProgressDialog dialog = null;
 
     RelativeLayout rlPreview;
     Button sSelectAgency, sSelectRoute, sSelectStop;
@@ -113,10 +108,7 @@ public class WidgetConfigurationActivity extends Activity {
         // show warning dialog if weekend or outside business hours
         DateTime currentTime = new DateTime(System.currentTimeMillis());
         // day of of week 6 and 7 = Saturday and Sunday
-        Log.v(TAG,"day= " + currentTime.getDayOfWeek());
-        Log.v(TAG,"hour= " + currentTime.getHourOfDay());
         if(currentTime.getDayOfWeek() > 5 || currentTime.getHourOfDay() > 18 || currentTime.getHourOfDay() < 6) {
-            Log.v(TAG,"true");
             // show warning dialog
             Utils.showAlertDialog(WidgetConfigurationActivity.this,"Warning", "Based on the current time and day of week, many routes may not be running at this time. You can continue to try and make a widget but be advised you may get better results during normal business hours.");
         }
@@ -179,9 +171,6 @@ public class WidgetConfigurationActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        // prevents force close when device rotates or app is paused while inside asynctask
-        if(dialog != null) dialog.dismiss();
-        dialog = null;
     }
 
     @Override
@@ -193,16 +182,12 @@ public class WidgetConfigurationActivity extends Activity {
         editor.putInt("textColor-" + mAppWidgetId, textColor).commit();
         editor.putInt("backgroundColor-" + mAppWidgetId, backgroundColor).commit();
 
-        Log.v(TAG,Integer.toString(settings.getInt("textColor-" + mAppWidgetId, -2)));
-        Log.v(TAG,Integer.toString(settings.getInt("backgroundColor-" + mAppWidgetId, -2)));
-
         // change colors in preview
         rlPreview.setBackgroundColor(backgroundColor);
         tvStopPreview.setTextColor(textColor);
         tvRoutePreview.setTextColor(textColor);
         tvRemainingTimePreview.setTextColor(textColor);
         tvMinsPreview.setTextColor(textColor);
-
     }
 
     @Override
@@ -263,10 +248,6 @@ public class WidgetConfigurationActivity extends Activity {
 
     private void doErrorMiscHandling() {
         bMakeWidget.setEnabled(false);
-        if(dialog != null) {
-            dialog.dismiss();
-            dialog = null;
-        }
     }
 
     private class PopulateAgenciesTask extends AsyncTask<Void, Void, TransLocAgencies> {
@@ -382,9 +363,6 @@ public class WidgetConfigurationActivity extends Activity {
             bMakeWidget.setEnabled(false);
             doReset(2);
             sSelectRoute.setEnabled(false);
-            if(dialog == null) {
-               // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
-            }
         }
         @SuppressWarnings("unchecked")
         protected ArrayList<TransLocRoute> doInBackground(Void... voids) {
@@ -398,41 +376,33 @@ public class WidgetConfigurationActivity extends Activity {
                     // returns empty list
                     return routesArrayList;
                 } else {
-
                     for (Map<String, Object> route : routeList) {
                         routesArrayList.add(new TransLocRoute(Integer.parseInt((String) route.get("route_id")), (String) route.get("short_name"), (String) route.get("long_name")));
                     }
                     return routesArrayList;
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
-
-
         }
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
             progressBar.setVisibility(View.INVISIBLE);
             sSelectRoute.setText(R.string.select_route);
-            ArrayList<String> arr = new ArrayList<String>();
-            sSelectRoute.setEnabled(true);
             if(routesArrayList == null) {
                 // no connection
                 doErrorMiscHandling();
+                sSelectRoute.setEnabled(false);
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
-                // empty routes and stops spinner (set to empty array)
             }
             else if (routesArrayList.isEmpty()) {
                 Log.e(TAG, "error in getting list of routes - empty list");
                 doErrorMiscHandling();
+                sSelectRoute.setEnabled(false);
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Routes Available", "No routes are currently available for the agency you have selected. Please try again later when buses are running.");
-
             } else {
-
                 // sort only if agency is 116 (UF)
                 if(currentAgencyId == 116) Collections.sort(routesArrayList, sortTransLocRoute());
                 final ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getBaseContext(), android.R.layout.simple_list_item_1, routesArrayList);
@@ -442,25 +412,24 @@ public class WidgetConfigurationActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         new AlertDialog.Builder(WidgetConfigurationActivity.this)
-                                .setTitle(R.string.select_route)
-                                .setAdapter(routeArrayAdapter, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int pos) {
-                                        currentRouteId = routesArrayList.get(pos).id;
-                                        routeLongName = routesArrayList.get(pos).longName;
-                                        routeShortName = routesArrayList.get(pos).shortName;
-                                        sSelectRoute.setText(routeShortName + " " + routeLongName);
-                                        sSelectStop.setText(R.string.select_stop);
-                                        new PopulateStopsTask().execute();
-                                        dialog.dismiss();
-                                    }
-                                }).create().show();
+                        .setTitle(R.string.select_route)
+                        .setAdapter(routeArrayAdapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int pos) {
+                                currentRouteId = routesArrayList.get(pos).id;
+                                routeLongName = routesArrayList.get(pos).longName;
+                                routeShortName = routesArrayList.get(pos).shortName;
+                                sSelectRoute.setText(routeShortName + " " + routeLongName);
+                                sSelectStop.setText(R.string.select_stop);
+                                new PopulateStopsTask().execute();
+                                dialog.dismiss();
+                            }
+                        }).create().show();
                     }
                 });
 
             }
         }
-
     }
 
     private class PopulateStopsTask extends AsyncTask<Void, Void, TransLocStops> {
@@ -469,9 +438,6 @@ public class WidgetConfigurationActivity extends Activity {
             progressBar.setVisibility(View.VISIBLE);
             sSelectStop.setText("Loading stops...");
             sSelectStop.setEnabled(false);
-            if(dialog == null) {
-               // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
-            }
         }
 
         protected TransLocStops doInBackground(Void... voids) {
@@ -493,14 +459,8 @@ public class WidgetConfigurationActivity extends Activity {
             } else {
                 Log.e(TAG, "error in getting stops list");
                 doErrorMiscHandling();
-
-                // no connection
-                //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
-                //Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             }
-
             new FilterStopListTask().execute(fullStopList);
-
         }
     }
 
@@ -527,19 +487,15 @@ public class WidgetConfigurationActivity extends Activity {
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
             progressBar.setVisibility(View.INVISIBLE);
             sSelectStop.setText(R.string.select_stop);
-            ArrayList<String> arr = new ArrayList<String>();
-            sSelectStop.setEnabled(true);
             if(currentRouteStopList == null) {
                 doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
-               // sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
-
+                sSelectStop.setEnabled(false);
             }
             else if(currentRouteStopList.isEmpty()) {
                 Log.e(TAG, "error in getting stops list");
                 doErrorMiscHandling();
-                // empty stops spinner
-                //sSelectStop.setAdapter(new ArrayAdapter<String>(WidgetConfigurationActivity.this, android.R.layout.simple_dropdown_item_1line, arr));
+                sSelectStop.setEnabled(false);
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Stops Available", "No stops are currently available for the route you have selected. Please try again later when buses are running.");
             } else {
                 final ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<TransLocStop>(getBaseContext(), android.R.layout.simple_list_item_1, currentRouteStopList);
@@ -548,28 +504,20 @@ public class WidgetConfigurationActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         new AlertDialog.Builder(WidgetConfigurationActivity.this)
-                                .setTitle(R.string.select_stop)
-                                .setAdapter(stopArrayAdapter, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int pos) {
-                                        currentStopId = currentRouteStopList.get(pos).stopId;
-                                        stopName = currentRouteStopList.get(pos).name;
-                                        sSelectStop.setText(stopName);
-                                        bMakeWidget.setEnabled(true);
-                                        Log.v("DEBUG","make widger enabled");
-                                        dialog.dismiss();
-                                    }
-                                }).create().show();
+                        .setTitle(R.string.select_stop)
+                        .setAdapter(stopArrayAdapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int pos) {
+                                currentStopId = currentRouteStopList.get(pos).stopId;
+                                stopName = currentRouteStopList.get(pos).name;
+                                sSelectStop.setText(stopName);
+                                bMakeWidget.setEnabled(true);
+                                dialog.dismiss();
+                            }
+                        }).create().show();
                     }
                 });
-
             }
-
-            if(dialog != null) {
-                dialog.dismiss();
-                dialog = null;
-            }
-
         }
     }
 
