@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
@@ -77,6 +78,7 @@ public class WidgetConfigurationActivity extends Activity {
     TextView tvHelpMessage;
     TextView tvRoutePreview, tvRemainingTimePreview, tvStopPreview, tvMinsPreview;
 
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,9 @@ public class WidgetConfigurationActivity extends Activity {
         bReset = (Button) findViewById(R.id.bReset);
         bMakeWidget = (Button) findViewById(R.id.bMakeWidget);
         tvHelpMessage = (TextView) findViewById(R.id.tvHelp);
+
+        // progress bar
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         // preview elements
         rlPreview = (RelativeLayout) findViewById(R.id.rlPreview);
@@ -268,6 +273,8 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
             // show dialog
+            progressBar.setVisibility(View.VISIBLE);
+            sSelectAgency.setText("Loading agencies...");
             doReset(1);
             if(dialog == null) {
                // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
@@ -286,6 +293,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final TransLocAgencies agencyList) {
+            progressBar.setVisibility(View.INVISIBLE);
+            sSelectAgency.setText(R.string.select_agency);
             if (agencyList == null) {
                 Log.e(TAG, "error in getting list of agencies");
                 doErrorMiscHandling();
@@ -371,6 +380,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            sSelectRoute.setText("Loading routes...");
             doReset(2);
             sSelectRoute.setEnabled(false);
             if(dialog == null) {
@@ -407,6 +418,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
+            progressBar.setVisibility(View.INVISIBLE);
+            sSelectRoute.setText(R.string.select_route);
             ArrayList<String> arr = new ArrayList<String>();
             sSelectRoute.setEnabled(true);
             if(routesArrayList == null) {
@@ -455,6 +468,8 @@ public class WidgetConfigurationActivity extends Activity {
     private class PopulateStopsTask extends AsyncTask<Void, Void, TransLocStops> {
         @Override
         protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            sSelectStop.setText("Loading stops...");
             sSelectStop.setEnabled(false);
             if(dialog == null) {
                // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
@@ -512,6 +527,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
+            progressBar.setVisibility(View.INVISIBLE);
+            sSelectStop.setText(R.string.select_stop);
             ArrayList<String> arr = new ArrayList<String>();
             sSelectStop.setEnabled(true);
             if(currentRouteStopList == null) {
