@@ -77,6 +77,7 @@ public class WidgetConfigurationActivity extends Activity {
     TextView tvHelpMessage;
     TextView tvRoutePreview, tvRemainingTimePreview, tvStopPreview, tvMinsPreview;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +123,7 @@ public class WidgetConfigurationActivity extends Activity {
         OnClickListener setResetClickedListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                doReset();
+                doReset(0);
             }
         };
 
@@ -220,10 +221,32 @@ public class WidgetConfigurationActivity extends Activity {
         }
         return true;
     }
-
-    private void doReset() {
+    // type mapping
+    // type = 0 --> full reset (bReset)
+    // type = 1 --> reset only route and stops (agency changed)
+    // type = 2 --> reset only stop (route changed)
+    private void doReset(int type) {
         // start over
-        new PopulateAgenciesTask().execute();
+        if(type <= 2) {
+            sSelectStop.setText(R.string.select_stop);
+            currentStopId= -1;
+            stopName = null;
+            sSelectStop.setEnabled(false);
+        }
+        if(type <= 1) {
+            sSelectRoute.setText(R.string.select_route);
+            currentRouteId = -1;
+            routeShortName = null;
+            routeLongName = null;
+            sSelectRoute.setEnabled(false);
+        }
+        if(type == 0) {
+            sSelectAgency.setText(R.string.select_agency);
+            currentAgencyId = -1;
+            bMakeWidget.setEnabled(false);
+            new PopulateAgenciesTask().execute();
+        }
+
     }
 
     private void doMakeWidget() {
@@ -245,6 +268,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPreExecute() {
             // show dialog
+            doReset(1);
             if(dialog == null) {
                // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
             }
@@ -347,7 +371,8 @@ public class WidgetConfigurationActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-
+            doReset(2);
+            sSelectRoute.setEnabled(false);
             if(dialog == null) {
                // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
             }
@@ -383,7 +408,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPostExecute(final ArrayList<TransLocRoute> routesArrayList) {
             ArrayList<String> arr = new ArrayList<String>();
-
+            sSelectRoute.setEnabled(true);
             if(routesArrayList == null) {
                 // no connection
                 doErrorMiscHandling();
@@ -406,7 +431,7 @@ public class WidgetConfigurationActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         new AlertDialog.Builder(WidgetConfigurationActivity.this)
-                                .setTitle("Select an Route")
+                                .setTitle(R.string.select_route)
                                 .setAdapter(routeArrayAdapter, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int pos) {
@@ -430,6 +455,7 @@ public class WidgetConfigurationActivity extends Activity {
     private class PopulateStopsTask extends AsyncTask<Void, Void, TransLocStops> {
         @Override
         protected void onPreExecute() {
+            sSelectStop.setEnabled(false);
             if(dialog == null) {
                // dialog = ProgressDialog.show(WidgetConfigurationActivity.this, "Loading", "Please Wait...");
             }
@@ -487,6 +513,7 @@ public class WidgetConfigurationActivity extends Activity {
         @Override
         protected void onPostExecute(final ArrayList<TransLocStop> currentRouteStopList) {
             ArrayList<String> arr = new ArrayList<String>();
+            sSelectStop.setEnabled(true);
             if(currentRouteStopList == null) {
                 doErrorMiscHandling();
                 Utils.showAlertDialog(WidgetConfigurationActivity.this, "Error - No Data", getString(R.string.error_no_data));
@@ -506,7 +533,7 @@ public class WidgetConfigurationActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         new AlertDialog.Builder(WidgetConfigurationActivity.this)
-                                .setTitle("Select an Route")
+                                .setTitle(R.string.select_stop)
                                 .setAdapter(stopArrayAdapter, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int pos) {
