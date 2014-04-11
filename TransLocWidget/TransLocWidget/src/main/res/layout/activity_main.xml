@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Stop! This is not a regular application. You need to add the widget to your home screen to configure it. Consult your phone's documentation for directions on how to add Android Widgets"
+            android:id="@+id/tvInstallationComplete"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+        android:textColor="#ff0014"
+        android:background="#d2d2d2" />
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/tap_to_update"
+            android:adjustViewBounds="false"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="After adding the widget to your home screen, tap on the widget to update it."
+            android:id="@+id/textView"
+            android:layout_below="@+id/tvInstallationComplete"
+            android:layout_alignLeft="@+id/tvInstallationComplete"
+            android:layout_marginTop="15dp"
+            android:gravity="center"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="You can also add multiple widgets for different agencies, routes and stops."
+            android:id="@+id/textView3"
+            android:gravity="center"
+            android:layout_below="@+id/imageView"
+            android:layout_alignLeft="@+id/textView"
+            android:layout_marginTop="11dp"
+            android:layout_alignRight="@+id/tvInstallationComplete"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Note: Your route and stop won't show up unless buses are currently running on the route. For best results, only try to add the widget at the time when buses are actually running."
+            android:id="@+id/textView4"
+            android:gravity="center"
+            android:layout_marginTop="14dp"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentLeft="true"
+            android:textColor="#ff0014"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hide Launcher Icon from App Drawer"
+        android:id="@+id/bHideAppIcon"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
