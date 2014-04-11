@@ -1,0 +1,87 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/LinearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e3e3e3"
+    android:orientation="vertical"
+    tools:context=".Main" >
+
+    <com.larswerkman.holocolorpicker.ColorPicker
+        android:id="@+id/picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center"/>
+
+
+    <com.larswerkman.holocolorpicker.OpacityBar
+        android:id="@+id/opacitybar"
+        android:layout_width="322dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center"
+        android:layout_margin="8dip"/>
+
+    <com.larswerkman.holocolorpicker.SVBar
+        android:id="@+id/svbar"
+        android:layout_width="322dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center"
+        android:layout_margin="8dip"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
+
+        <Button
+            android:id="@+id/bChangeBackgroundColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Background Color"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/llCurrentBackgroundColor"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/trans_gray"
+            android:measureWithLargestChild="false"
+            android:layout_alignBottom="@+id/bChangeBackgroundColor"
+            android:layout_alignLeft="@+id/llCurrentTextColor"
+            android:layout_alignStart="@+id/llCurrentTextColor" />
+
+        <Button
+            android:id="@+id/bChangeTextColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Text Color"
+            android:layout_below="@+id/bChangeBackgroundColor"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/llCurrentTextColor"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:layout_alignTop="@+id/bChangeTextColor"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Press 'Back' to Save"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textColor="#ff0099cc" />
+
+</LinearLayout>

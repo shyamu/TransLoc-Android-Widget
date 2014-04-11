@@ -31,3 +31,5 @@ proguard/
 out/
 
 
+TransLocWidget/TransLocWidget/src/main/res/values/strings.xml
+
