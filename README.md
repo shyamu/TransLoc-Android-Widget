@@ -20,9 +20,13 @@ The source may be useful as reference for the following..
 
 # Building
 1) Clone project
+
 2) Get an API key from [Mashape](https://www.mashape.com) for the TransLoc API
+
 3) Go to root of repo and add your API key to line 17 of strings.xml
+
 4) Move the strings.xml file from the repo root and put into TransLocWidget/src/main/res/values
+
 5) Import project into Android Studio and build
 
 # Acknowledgements
