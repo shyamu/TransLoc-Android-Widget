@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TransLoc Widget</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Widget Demo</string>
+    <string name="str_tv_widget">TransLoc Widget</string>
+    <string name="select_agency">Select an Agency</string>
+    <string name="select_route">Select a Route</string>
+    <string name="select_stop">Select a Stop</string>
+    <string name="help_dialog">If TransLoc is available for your transit agency and it is not listed in the dropdown. It may be the case that your agency has not opted-in to enable the TransLoc OpenAPI. Please contact your local transit agency and ask about enabling OpenAPI access for TransLoc to use this application. It could also be the case that the agency does not support arrival times. </string>
+    <string name="error_no_data">No data connection. Please make sure your data connection is enabled and try again.</string>
+
+    <!-- GET API KEY FROM https://www.mashape.com AND PUT BELOW -->
+    <string name="mashape_key">PUT API KEY HERE</string>
+
+</resources>
+
