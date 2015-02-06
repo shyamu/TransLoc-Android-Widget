@@ -29,7 +29,8 @@ proguard/
 .idea/
 
 out/
-
+*.properties
 
 TransLocWidget/TransLocWidget/src/main/res/values/strings.xml
 
+TransLocWidget/TransLocWidget/src/main/res/xml/strings.xml

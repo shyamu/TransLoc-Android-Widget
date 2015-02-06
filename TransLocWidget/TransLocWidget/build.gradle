@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
 
@@ -15,25 +15,24 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.2"
 
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 7
         versionName "2.0"
     }
     buildTypes {
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+
         }
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.larswerkman:HoloColorPicker:1.1'
     compile 'joda-time:joda-time:2.3'
     compile 'com.fasterxml.jackson.core:jackson-core:2.3.1'
