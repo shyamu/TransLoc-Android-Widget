@@ -16,15 +16,16 @@ android {
     }
 
     compileSdkVersion 21
-    buildToolsVersion "21.0.2"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 21
-        versionCode 7
-        versionName "2.0"
+        versionCode 8
+        versionName "3.0"
     }
     buildTypes {
+        //noinspection GroovyMissingReturnStatement
         release {
 
         }
@@ -32,7 +33,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.larswerkman:HoloColorPicker:1.1'
     compile 'joda-time:joda-time:2.3'
     compile 'com.fasterxml.jackson.core:jackson-core:2.3.1'
