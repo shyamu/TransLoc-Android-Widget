@@ -1,16 +1,18 @@
 package com.shyamu.translocwidget.TransLocJSON;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class TransLocRoute{
 
-    public TransLocRoute(int id, String shortName, String longName){
-        this.id=id;
-        this.shortName=shortName;
-        this.longName=longName;
-    }
-
-    public int id;
+    @JsonProperty("route_id")
+    public int routeID;
+    @JsonProperty("short_name")
     public String shortName;
+    @JsonProperty("long_name")
     public String longName;
+    @JsonProperty("color")
+    public String color;
 
     public String toString(){
         return shortName+" "+longName;

@@ -377,7 +377,7 @@ public class WidgetConfigurationActivity extends Activity {
                     return routesArrayList;
                 } else {
                     for (Map<String, Object> route : routeList) {
-                        routesArrayList.add(new TransLocRoute(Integer.parseInt((String) route.get("route_id")), (String) route.get("short_name"), (String) route.get("long_name")));
+                        //routesArrayList.add(new TransLocRoute(Integer.parseInt((String) route.get("route_id")), (String) route.get("short_name"), (String) route.get("long_name")));
                     }
                     return routesArrayList;
                 }
@@ -416,7 +416,7 @@ public class WidgetConfigurationActivity extends Activity {
                         .setAdapter(routeArrayAdapter, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int pos) {
-                                currentRouteId = routesArrayList.get(pos).id;
+                               // currentRouteId = routesArrayList.get(pos).id;
                                 routeLongName = routesArrayList.get(pos).longName;
                                 routeShortName = routesArrayList.get(pos).shortName;
                                 sSelectRoute.setText(routeShortName + " " + routeLongName);
