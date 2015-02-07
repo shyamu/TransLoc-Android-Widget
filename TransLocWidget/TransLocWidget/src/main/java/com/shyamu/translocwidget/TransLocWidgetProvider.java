@@ -146,7 +146,7 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
             try {
                 if(onReboot) return null;
-                else return new ObjectMapper().readValue(Utils.getJsonResponse(url,context.getString(R.string.mashape_key)), TransLocArrivalEstimates.class);
+                else return new ObjectMapper().readValue(Utils.getJsonResponse(url, context.getString(R.string.mashape_key)), TransLocArrivalEstimates.class);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

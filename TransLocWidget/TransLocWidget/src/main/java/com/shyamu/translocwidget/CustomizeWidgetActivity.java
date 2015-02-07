@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
+import com.shyamu.translocwidget.R;
 
 
 public class CustomizeWidgetActivity extends Activity implements ColorPicker.OnColorChangedListener {

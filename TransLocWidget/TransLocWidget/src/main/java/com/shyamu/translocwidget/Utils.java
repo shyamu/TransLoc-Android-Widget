@@ -20,6 +20,8 @@ import java.util.Date;
 
 public class Utils {
 
+    public static final String GET_AGENCIES_URL = "https://transloc-api-1-2.p.mashape.com/agencies.json";
+
     protected static void showAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder( context )
                 .setTitle( title )

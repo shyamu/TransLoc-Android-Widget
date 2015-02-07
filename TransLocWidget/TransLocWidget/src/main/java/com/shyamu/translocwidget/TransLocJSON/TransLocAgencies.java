@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import java.util.List;
 
-public class TransLocAgencies{
+public class TransLocAgencies {
 
     @JsonProperty("rate_limit")
     public int rateLimit;
@@ -19,12 +19,13 @@ public class TransLocAgencies{
     @JsonProperty("generated_on")
     public Date generatedOn;
 
-    @JsonProperty("data")private List<TransLocAgency> data;
+    @JsonProperty("data")
+    private List<TransLocAgency> data;
 
     @JsonProperty("api_version")
     public Double apiVersion;
-public List<TransLocAgency> getData() {
+
+    public List<TransLocAgency> getData() {
         return data;
-    }public void setData(List<TransLocAgency> data) {
-    this.data = data;
-}}
+    }
+}
