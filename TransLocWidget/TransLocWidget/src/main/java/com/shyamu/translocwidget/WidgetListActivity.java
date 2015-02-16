@@ -1,6 +1,7 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.app.FragmentManager;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,6 +28,7 @@ import com.shyamu.translocwidget.TransLocJSON.TransLocAgency;
 import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
+import com.shyamu.translocwidget.fragments.WidgetListFragment;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class WidgetListActivity extends ActionBarActivity {
+public class WidgetListActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
     private static final String TAG = "WidgetListActivity";
 
@@ -85,38 +88,9 @@ public class WidgetListActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private static ArrayList<ArrivalTimeWidget> getListViewArrayFromStorage(Context context) {
-        try {
-            return Utils.getArrivalTimeWidgetsFromStorage(context, FILE_NAME);
-        } catch (IOException e) {
-            Log.e(TAG, "Error in getting " + FILE_NAME, e);
-            return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class WidgetListFragment extends Fragment {
-
-        private final String TAG = this.getTag();
-
-        public WidgetListFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
-            ListView widgetListView = (ListView) rootView.findViewById(R.id.lvWidgetList);
-            ListViewAdapter widgetListViewAdapter = new ListViewAdapter(getActivity());
-            ArrayList<ArrivalTimeWidget> listViewArray = getListViewArrayFromStorage(getActivity());
-            if(listViewArray != null) widgetListViewAdapter.setWidgetList(listViewArray);
-            widgetListView.setAdapter(widgetListViewAdapter);
-            widgetListViewAdapter.notifyDataSetChanged();
-            return rootView;
-        }
+    @Override
+    public void onFragmentInteraction(String id) {
+        Toast.makeText(getApplicationContext(), id, Toast.LENGTH_LONG).show();
     }
 
     public static class AddAgencyFragment extends Fragment {
@@ -329,21 +303,21 @@ public class WidgetListActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             ObjectMapper mapper = new ObjectMapper();
-                            ArrayList<ArrivalTimeWidget> listViewArray = WidgetListActivity.getListViewArrayFromStorage(mContext);
-
-
+                            ArrayList<ArrivalTimeWidget> listViewArray = null;
+                            try {
+                                listViewArray = Utils.getArrivalTimeWidgetsFromStorage(mContext);
+                            } catch (IOException e) {
+                                Log.e(TAG, "Error in getting previous widget list", e);
+                                listViewArray = new ArrayList<>();
+                            }
                             TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
                             atw.setStopID((Integer.toString(selectedStop.stopId)));
                             atw.setStopName(selectedStop.toString());
-                            if(listViewArray == null) {
-                                listViewArray = new ArrayList<>();
-                            }
                             listViewArray.add(atw);
-                            Log.v(TAG, "ListViewArray size after adding: " + listViewArray.size());
                             try {
                                 String value = mapper.writeValueAsString(listViewArray);
                                 Log.v(TAG, value);
-                                Utils.writeData(mContext, FILE_NAME, value);
+                                Utils.writeData(mContext, value);
                             } catch (Exception e) {
                                 Log.e(TAG, "Error in writing widget list to storage");
                                 Log.e(TAG, e.getMessage());
@@ -357,7 +331,7 @@ public class WidgetListActivity extends ActionBarActivity {
                         }
                     });
                 } else {
-                    Log.e(TAG, "Routes data was null or empty!");
+                    Log.e(TAG, "Stops data was null or empty!");
                 }
             }
         }

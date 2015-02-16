@@ -33,6 +33,7 @@ public class Utils {
     public static final String GET_STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
     public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
 
+    public static final String FILE_NAME = "WidgetList";
 
     protected static void showAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder( context )
@@ -86,17 +87,17 @@ public class Utils {
         }
     }
 
-    protected static void writeData(Context context, String fileName, String data) throws IOException {
-        FileOutputStream fOut = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+    protected static void writeData(Context context, String data) throws IOException {
+        FileOutputStream fOut = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
         OutputStreamWriter osw = new OutputStreamWriter(fOut);
         osw.write(data);
         osw.flush();
         osw.close();
     }
 
-    protected static String readSavedData(Context context, String fileName) throws IOException {
+    protected static String readSavedData(Context context) throws IOException {
         StringBuffer datax = new StringBuffer("");
-        FileInputStream fin = context.openFileInput(fileName);
+        FileInputStream fin = context.openFileInput(FILE_NAME);
         InputStreamReader isr = new InputStreamReader(fin);
         BufferedReader reader = new BufferedReader(isr);
 
@@ -109,9 +110,9 @@ public class Utils {
         return datax.toString();
     }
 
-    protected static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context, String fileName) throws FileNotFoundException, IOException {
+    public static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context) throws FileNotFoundException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        String widgetListJsonStr = Utils.readSavedData(context, fileName);
+        String widgetListJsonStr = Utils.readSavedData(context);
         return mapper.readValue(widgetListJsonStr, mapper.getTypeFactory().constructCollectionType(ArrayList.class, ArrivalTimeWidget.class));
     }
 

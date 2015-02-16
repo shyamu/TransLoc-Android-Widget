@@ -20,9 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".WidgetConfigurationActivity" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".AboutActivity" />
         <activity android:name=".CustomizeWidgetActivity" />
@@ -47,6 +45,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.shyamu.translocwidget.WidgetListActivity" />
+        </activity>
+        <activity
+            android:name=".WidgetConfigurationPopupActivity"
+            android:label="@string/title_activity_widget_configuration_popup"
+            android:theme="@android:style/Theme.Dialog" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -72,7 +72,7 @@ public class ArrivalTimeWidget {
         if(isValidWidget()) {
             return Utils.GET_ARRIVAL_ESTIMATES_URL + getAgencyID() + "&routes=" + getRouteID() + "&stops=" + getStopID();
         } else {
-            return null;
+            return "ERROR: NULL URL";
         }
     }
 
