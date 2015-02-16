@@ -1,10 +1,10 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,34 +13,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.shyamu.translocwidget.TransLocJSON.TransLocAgencies;
 import com.shyamu.translocwidget.TransLocJSON.TransLocAgency;
 import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
-import com.shyamu.translocwidget.TransLocJSON.TransLocRoutes;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
 public class WidgetListActivity extends ActionBarActivity {
+    private static final String FILE_NAME = "WidgetList";
+    private static final String TAG = "WidgetListActivity";
 
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
 
@@ -50,7 +49,7 @@ public class WidgetListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_widget_list);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new WidgetListFragment())
                     .addToBackStack(null)
                     .commit();
         }
@@ -86,12 +85,24 @@ public class WidgetListActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private static ArrayList<ArrivalTimeWidget> getListViewArrayFromStorage(Context context) {
+        try {
+            return Utils.getArrivalTimeWidgetsFromStorage(context, FILE_NAME);
+        } catch (IOException e) {
+            Log.e(TAG, "Error in getting " + FILE_NAME, e);
+            return null;
+        }
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class WidgetListFragment extends Fragment {
 
-        public PlaceholderFragment() {
+        private final String TAG = this.getTag();
+
+        public WidgetListFragment() {
         }
 
         @Override
@@ -100,7 +111,10 @@ public class WidgetListActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
             ListView widgetListView = (ListView) rootView.findViewById(R.id.lvWidgetList);
             ListViewAdapter widgetListViewAdapter = new ListViewAdapter(getActivity());
+            ArrayList<ArrivalTimeWidget> listViewArray = getListViewArrayFromStorage(getActivity());
+            if(listViewArray != null) widgetListViewAdapter.setWidgetList(listViewArray);
             widgetListView.setAdapter(widgetListViewAdapter);
+            widgetListViewAdapter.notifyDataSetChanged();
             return rootView;
         }
     }
@@ -314,11 +328,32 @@ public class WidgetListActivity extends ActionBarActivity {
                     stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            ObjectMapper mapper = new ObjectMapper();
+                            ArrayList<ArrivalTimeWidget> listViewArray = WidgetListActivity.getListViewArrayFromStorage(mContext);
+
+
                             TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
                             atw.setStopID((Integer.toString(selectedStop.stopId)));
                             atw.setStopName(selectedStop.toString());
+                            if(listViewArray == null) {
+                                listViewArray = new ArrayList<>();
+                            }
+                            listViewArray.add(atw);
+                            Log.v(TAG, "ListViewArray size after adding: " + listViewArray.size());
+                            try {
+                                String value = mapper.writeValueAsString(listViewArray);
+                                Log.v(TAG, value);
+                                Utils.writeData(mContext, FILE_NAME, value);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error in writing widget list to storage");
+                                Log.e(TAG, e.getMessage());
+                            }
 
-                            Toast.makeText(mContext, atw.getStopName(), Toast.LENGTH_LONG).show();
+                            // Insert the fragment by replacing any existing fragment
+                            FragmentManager fragmentManager = mContext.getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.container, new WidgetListFragment())
+                                    .commit();
                         }
                     });
                 } else {

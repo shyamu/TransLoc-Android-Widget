@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -13,8 +15,14 @@ import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -23,6 +31,7 @@ public class Utils {
     public static final String GET_AGENCIES_URL = "https://transloc-api-1-2.p.mashape.com/agencies.json";
     public static final String GET_ROUTES_URL = "https://transloc-api-1-2.p.mashape.com/routes.json?agencies=";
     public static final String GET_STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
+    public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
 
 
     protected static void showAlertDialog(Context context, String title, String message) {
@@ -77,6 +86,34 @@ public class Utils {
         }
     }
 
+    protected static void writeData(Context context, String fileName, String data) throws IOException {
+        FileOutputStream fOut = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+        OutputStreamWriter osw = new OutputStreamWriter(fOut);
+        osw.write(data);
+        osw.flush();
+        osw.close();
+    }
+
+    protected static String readSavedData(Context context, String fileName) throws IOException {
+        StringBuffer datax = new StringBuffer("");
+        FileInputStream fin = context.openFileInput(fileName);
+        InputStreamReader isr = new InputStreamReader(fin);
+        BufferedReader reader = new BufferedReader(isr);
+
+        String readString = reader.readLine();
+        while (readString != null) {
+            datax.append(readString);
+            readString = reader.readLine();
+        }
+        isr.close();
+        return datax.toString();
+    }
+
+    protected static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context, String fileName) throws FileNotFoundException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String widgetListJsonStr = Utils.readSavedData(context, fileName);
+        return mapper.readValue(widgetListJsonStr, mapper.getTypeFactory().constructCollectionType(ArrayList.class, ArrivalTimeWidget.class));
+    }
 
 }
 

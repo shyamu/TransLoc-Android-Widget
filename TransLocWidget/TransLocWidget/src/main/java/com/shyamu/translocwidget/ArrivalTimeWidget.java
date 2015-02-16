@@ -10,6 +10,7 @@ public class ArrivalTimeWidget {
     private String agencyLongName;
     private String routeName;
     private String stopName;
+    private String arrivalTimesUrl;
 
     public ArrivalTimeWidget() {
     }
@@ -61,4 +62,18 @@ public class ArrivalTimeWidget {
     public String getStopName() {
         return stopName;
     }
+
+    private boolean isValidWidget() {
+        return agencyID != null && routeID != null && stopID != null &&
+               agencyLongName != null && routeName != null && stopName != null;
+    }
+
+    public String getArrivalTimesUrl() {
+        if(isValidWidget()) {
+            return Utils.GET_ARRIVAL_ESTIMATES_URL + getAgencyID() + "&routes=" + getRouteID() + "&stops=" + getStopID();
+        } else {
+            return null;
+        }
+    }
+
 }
