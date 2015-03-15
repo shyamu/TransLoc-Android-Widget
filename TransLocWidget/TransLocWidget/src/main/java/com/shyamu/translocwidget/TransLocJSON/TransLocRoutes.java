@@ -1,6 +1,7 @@
 package com.shyamu.translocwidget.TransLocJSON;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shyamu.translocwidget.rest.model.TransLocRoute;
 
 import java.util.List;
 

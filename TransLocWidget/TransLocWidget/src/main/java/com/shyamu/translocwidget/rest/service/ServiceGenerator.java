@@ -17,9 +17,9 @@ public class ServiceGenerator {
     private ServiceGenerator() {
     }
 
-    public static <S> S createService(Class<S> serviceClass, String baseUrl, final String key) {
+    public static <S> S createService(Class<S> serviceClass, String baseUrl, final String key, String agencyId) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapterFactory(new ItemTypeAdapterFactory()) // This is the important line ;)
+                .registerTypeAdapterFactory(new ItemTypeAdapterFactory(agencyId))
                 .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
                 .create();
 
@@ -27,12 +27,7 @@ public class ServiceGenerator {
                 .setEndpoint(baseUrl)
                 .setClient(new OkClient(new OkHttpClient()))
                 .setConverter(new GsonConverter(gson))
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-                        request.addHeader("X-Mashape-Authorization", key);
-                    }
-                });
+                .setRequestInterceptor(request -> request.addHeader("X-Mashape-Authorization", key));
 
         RestAdapter adapter = builder.build();
         return adapter.create(serviceClass);

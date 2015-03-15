@@ -18,6 +18,12 @@ import java.io.IOException;
  */
 public class ItemTypeAdapterFactory implements TypeAdapterFactory {
 
+    private String agencyId;
+
+    public ItemTypeAdapterFactory(String agencyId) {
+        this.agencyId = agencyId;
+    }
+
     public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
 
         final TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
@@ -34,13 +40,14 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                 JsonElement jsonElement = elementAdapter.read(in);
                 if (jsonElement.isJsonObject()) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    if (jsonObject.has("data") && (jsonObject.get("data").isJsonObject() || jsonObject.get("data").isJsonArray()))
-                    {
+                    if (jsonObject.has("data") && jsonObject.get("data").isJsonArray()) {
+                        Log.v("ItemTypeAdapterFactory", "Is agency data");
                         jsonElement = jsonObject.get("data");
-                        Log.v("ItemTypeAdapterFactory", jsonElement.toString());
+                    } else if (jsonObject.has("data") && jsonObject.get("data").isJsonObject() && agencyId != null) {
+                        Log.v("ItemTypeAdapterFactory", "Is route data");
+                        jsonElement = jsonObject.getAsJsonObject("data").getAsJsonArray(agencyId);
                     }
                 }
-
                 return delegate.fromJsonTree(jsonElement);
             }
         }.nullSafe();

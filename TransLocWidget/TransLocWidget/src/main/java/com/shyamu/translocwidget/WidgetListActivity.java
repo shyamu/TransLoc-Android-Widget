@@ -22,12 +22,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
-import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
+import com.shyamu.translocwidget.rest.model.TransLocRoute;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
-import com.shyamu.translocwidget.rest.service.TransLocAgenciesClient;
+import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,10 +115,11 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
-            TransLocAgenciesClient client =
-                    ServiceGenerator.createService(TransLocAgenciesClient.class,
+            TransLocClient client =
+                    ServiceGenerator.createService(TransLocClient.class,
                     Utils.BASE_URL,
-                    getString(R.string.mashape_key));
+                    getString(R.string.mashape_key),
+                    null);
             client.agencies()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateAgencyListView,
@@ -151,7 +152,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     }
                 });
             } else {
-                Log.e(TAG, "Agencies data was null!");
+                Log.e(TAG, "Agencies data was null or empty!");
             }
 
         }
@@ -173,68 +174,44 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_route, container, false);
             routeListView = (ListView) rootView.findViewById(R.id.lvRouteList);
-            new PopulateRoutesTask(getActivity(), rootView).execute();
-            return rootView;
+            TransLocClient client =
+                    ServiceGenerator.createService(TransLocClient.class,
+                            Utils.BASE_URL,
+                            getString(R.string.mashape_key),
+                            atw.getAgencyID());
+            client.routes(atw.getAgencyID())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::populateRoutesListView,
+                            e -> Log.e(TAG, "Error in getting list of routes", e)
+                    );            return rootView;
         }
 
-        class PopulateRoutesTask extends AsyncTask<Void,Void,ArrayList<TransLocRoute>> {
+        private void populateRoutesListView(List<TransLocRoute> routes) {
+            if(routes != null && !routes.isEmpty()) {
+                ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
+                routeListView.setAdapter(routeArrayAdapter);
 
-            View mRootView;
-            Activity mContext;
+                // Set onclicklistener to open select stops fragment
+                routeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TransLocRoute selectedRoute = (TransLocRoute) parent.getItemAtPosition(position);
+                        atw.setRouteID(Integer.toString(selectedRoute.routeID));
+                        atw.setRouteName(selectedRoute.toString());
 
-            public PopulateRoutesTask(Activity context, View rootView) {
-                mContext = context;
-                mRootView = rootView;
-            }
-
-            @Override
-            protected ArrayList<TransLocRoute> doInBackground(Void... params) {
-                String url = Utils.GET_ROUTES_URL + atw.getAgencyID();
-                try {
-                    //return new ObjectMapper().readValue(Utils.getJsonResponse(url, getString(R.string.mashape_key)), TransLocRoutes.class);
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode rootNode = mapper.readTree(Utils.getJsonResponse(url, getString(R.string.mashape_key)));
-                    JsonNode arrayNode = rootNode.get("data").get(atw.getAgencyID());
-                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    ArrayList<TransLocRoute> array = mapper.readValue(arrayNode.toString(),mapper.getTypeFactory().constructCollectionType(
-                            List.class, TransLocRoute.class));
-                    return array;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in getting list of routes from TransLoc with url: " + url);
-                    Log.e(TAG, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<TransLocRoute> translocRoutesArray) {
-                if(translocRoutesArray != null && !translocRoutesArray.isEmpty()) {
-                    ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(mContext, android.R.layout.simple_spinner_dropdown_item, translocRoutesArray);
-                    routeListView.setAdapter(routeArrayAdapter);
-
-                    // Set onclicklistener to open select stops fragment
-                    routeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            TransLocRoute selectedRoute = (TransLocRoute) parent.getItemAtPosition(position);
-                            atw.setRouteID(Integer.toString(selectedRoute.routeID));
-                            atw.setRouteName(selectedRoute.toString());
-
-                            Fragment addStopFragment = new AddStopFragment();
-                            // Insert the fragment by replacing any existing fragment
-                            FragmentManager fragmentManager = mContext.getFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.container, addStopFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                    });
-                } else {
-                    Log.e(TAG, "Routes data was null or empty!");
-                }
+                        Fragment addStopFragment = new AddStopFragment();
+                        // Insert the fragment by replacing any existing fragment
+                        FragmentManager fragmentManager = getActivity().getFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, addStopFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
+            } else {
+                Log.e(TAG, "Routes data was null or empty!");
             }
         }
-
     }
 
     public static class AddStopFragment extends Fragment {
