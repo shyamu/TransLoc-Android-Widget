@@ -3,6 +3,7 @@ package com.shyamu.translocwidget;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -50,7 +51,15 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_list);
-        if (savedInstanceState == null) {
+        Intent intent = getIntent();
+        String startingFragment = intent.getStringExtra("starting_fragment");
+        if(startingFragment.equals("AddAgencyFragment")) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new AddAgencyFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new WidgetListFragment())
                     .addToBackStack(null)
