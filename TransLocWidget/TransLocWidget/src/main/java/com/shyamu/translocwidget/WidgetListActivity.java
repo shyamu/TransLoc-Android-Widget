@@ -115,69 +115,45 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
-            //new PopulateAgenciesTask(getActivity(), rootView).execute();
-            TransLocAgenciesClient client =  ServiceGenerator.createService(TransLocAgenciesClient.class, Utils.BASE_URL, getString(R.string.mashape_key));
+            TransLocAgenciesClient client =
+                    ServiceGenerator.createService(TransLocAgenciesClient.class,
+                    Utils.BASE_URL,
+                    getString(R.string.mashape_key));
             client.agencies()
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            result -> Toast.makeText(getActivity(), Integer.toString(result.size()), Toast.LENGTH_LONG).show(),
-                    e -> Log.e(TAG, "ERROR: " + e)
+                    .subscribe(this::populateAgencyListView,
+                    e -> Log.e(TAG, "Error in getting list of agencies", e)
             );
+
             return rootView;
         }
 
-        class PopulateAgenciesTask extends AsyncTask<Void,Void, List<TransLocAgency>> {
+        private void populateAgencyListView(List<TransLocAgency> agencies) {
+            if(agencies != null && !agencies.isEmpty()) {
+                ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
+                agencyListView.setAdapter(agencyArrayAdapter);
 
-            View mRootView;
-            Activity mContext;
+                // Set onclicklistener to open select routes fragment
+                agencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TransLocAgency selectedAgency = (TransLocAgency) parent.getItemAtPosition(position);
+                        atw.setAgencyID(Integer.toString(selectedAgency.agencyId));
+                        atw.setAgencyLongName(selectedAgency.longName);
 
-            public PopulateAgenciesTask(Activity context, View rootView) {
-                mContext = context;
-                mRootView = rootView;
+                        Fragment addRouteFragment = new AddRouteFragment();
+                        // Insert the fragment by replacing any existing fragment
+                        FragmentManager fragmentManager = getActivity().getFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, addRouteFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
+            } else {
+                Log.e(TAG, "Agencies data was null!");
             }
 
-            @Override
-            protected List<TransLocAgency> doInBackground(Void... params) {
-                try {
-                    TransLocAgenciesClient client =  ServiceGenerator.createService(TransLocAgenciesClient.class, Utils.BASE_URL, getString(R.string.mashape_key));
-                    //List<TransLocAgency> agencies = client.agencies();
-                    //Log.v(TAG, agencies.toString());
-                    return null;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in getting list of agencies from TransLoc");
-                    Log.e(TAG, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(List<TransLocAgency> translocAgencies) {
-                if(translocAgencies != null) {
-                    ArrayList<TransLocAgency> agencyList = (ArrayList<TransLocAgency>) translocAgencies;
-                    ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(mContext, android.R.layout.simple_spinner_dropdown_item, agencyList);
-                    agencyListView.setAdapter(agencyArrayAdapter);
-
-                    // Set onclicklistener to open select routes fragment
-                    agencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            TransLocAgency selectedAgency = (TransLocAgency) parent.getItemAtPosition(position);
-                            atw.setAgencyID(Integer.toString(selectedAgency.agencyId));
-                            atw.setAgencyLongName(selectedAgency.longName);
-
-                            Fragment addRouteFragment = new AddRouteFragment();
-                            // Insert the fragment by replacing any existing fragment
-                            FragmentManager fragmentManager = mContext.getFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.container, addRouteFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                    });
-                } else {
-                    Log.e(TAG, "Agencies data was null!");
-                }
-            }
         }
 
 
