@@ -32,7 +32,7 @@ public class Utils {
     public static final String GET_ROUTES_URL = "https://transloc-api-1-2.p.mashape.com/routes.json?agencies=";
     public static final String GET_STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
     public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
-
+    public static final String BASE_URL = "https://transloc-api-1-2.p.mashape.com";
     public static final String FILE_NAME = "WidgetList";
 
     protected static void showAlertDialog(Context context, String title, String message) {

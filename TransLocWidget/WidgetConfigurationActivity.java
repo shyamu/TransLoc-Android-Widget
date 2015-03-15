@@ -25,8 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyamu.translocwidget.TransLocJSON.TransLocAgencies;
-import com.shyamu.translocwidget.TransLocJSON.TransLocAgency;
+import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrival;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimate;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimates;

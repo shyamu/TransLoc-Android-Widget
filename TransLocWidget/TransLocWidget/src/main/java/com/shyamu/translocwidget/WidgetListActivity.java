@@ -1,8 +1,6 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
-import android.app.ListFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.app.FragmentManager;
@@ -20,25 +18,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyamu.translocwidget.TransLocJSON.TransLocAgencies;
-import com.shyamu.translocwidget.TransLocJSON.TransLocAgency;
+import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.TransLocJSON.TransLocRoute;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
 import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
+import com.shyamu.translocwidget.rest.service.ServiceGenerator;
+import com.shyamu.translocwidget.rest.service.TransLocAgenciesClient;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 
 public class WidgetListActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
@@ -52,12 +47,15 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_list);
         Intent intent = getIntent();
-        String startingFragment = intent.getStringExtra("starting_fragment");
-        if(startingFragment.equals("AddAgencyFragment")) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new AddAgencyFragment())
-                    .addToBackStack(null)
-                    .commit();
+
+        if(intent.hasExtra("starting_fragment")) {
+            String startingFragment = intent.getStringExtra("starting_fragment");
+            if(startingFragment.equals("AddAgencyFragment")) {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.container, new AddAgencyFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
         else if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -117,11 +115,18 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
-            new PopulateAgenciesTask(getActivity(), rootView).execute();
+            //new PopulateAgenciesTask(getActivity(), rootView).execute();
+            TransLocAgenciesClient client =  ServiceGenerator.createService(TransLocAgenciesClient.class, Utils.BASE_URL, getString(R.string.mashape_key));
+            client.agencies()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            result -> Toast.makeText(getActivity(), Integer.toString(result.size()), Toast.LENGTH_LONG).show(),
+                    e -> Log.e(TAG, "ERROR: " + e)
+            );
             return rootView;
         }
 
-        class PopulateAgenciesTask extends AsyncTask<Void,Void,TransLocAgencies> {
+        class PopulateAgenciesTask extends AsyncTask<Void,Void, List<TransLocAgency>> {
 
             View mRootView;
             Activity mContext;
@@ -132,21 +137,23 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
             }
 
             @Override
-            protected TransLocAgencies doInBackground(Void... params) {
-                String url = Utils.GET_AGENCIES_URL;
+            protected List<TransLocAgency> doInBackground(Void... params) {
                 try {
-                    return new ObjectMapper().readValue(Utils.getJsonResponse(url, getString(R.string.mashape_key)), TransLocAgencies.class);
+                    TransLocAgenciesClient client =  ServiceGenerator.createService(TransLocAgenciesClient.class, Utils.BASE_URL, getString(R.string.mashape_key));
+                    //List<TransLocAgency> agencies = client.agencies();
+                    //Log.v(TAG, agencies.toString());
+                    return null;
                 } catch (Exception e) {
-                    Log.e(TAG, "Error in getting list of agencies from TransLoc with url: " + url);
+                    Log.e(TAG, "Error in getting list of agencies from TransLoc");
                     Log.e(TAG, e.getMessage());
                 }
                 return null;
             }
 
             @Override
-            protected void onPostExecute(TransLocAgencies translocAgencies) {
+            protected void onPostExecute(List<TransLocAgency> translocAgencies) {
                 if(translocAgencies != null) {
-                    ArrayList<TransLocAgency> agencyList = (ArrayList<TransLocAgency>) translocAgencies.getData();
+                    ArrayList<TransLocAgency> agencyList = (ArrayList<TransLocAgency>) translocAgencies;
                     ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(mContext, android.R.layout.simple_spinner_dropdown_item, agencyList);
                     agencyListView.setAdapter(agencyArrayAdapter);
 

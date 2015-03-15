@@ -9,11 +9,25 @@
         <dex dex="C:\dev\android-projects\TransLoc-Android-Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\jackson-annotations-2.3.1-07ac5dfc26e85f8ab06239a16c13316943cba811.jar" />
     </item>
     <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.2.0\c0b52915a48fa91b1b94a28d4a2997bac5f524df\okio-1.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c0b52915a48fa91b1b94a28d4a2997bac5f524df">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\okio-1.2.0-53c3bd108ef02033fe67e2bcb1676f1c3f02f8e3.jar" />
+    </item>
+    <item
         jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.3.1\f9f7185c92ca5fefe2fb3efdeb477a67c96ea2d0\jackson-core-2.3.1.jar"
         jumboMode="false"
         revision="21.0.2"
         sha1="f9f7185c92ca5fefe2fb3efdeb477a67c96ea2d0">
         <dex dex="C:\dev\android-projects\TransLoc-Android-Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\jackson-core-2.3.1-068602a069f666f6ecf08fc4d88971cf4a2449a3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\io.reactivex\rxjava\1.0.4\a607b0e12d2de769dc219e00b60a9b3d9e730d\rxjava-1.0.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="00a607b0e12d2de769dc219e00b60a9b3d9e730d">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\rxjava-1.0.4-832d85fa82bbb84721822e32a929dfb21d03db7b.jar" />
     </item>
     <item
         jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\com.larswerkman\HoloColorPicker\1.1\classes.jar"
@@ -42,6 +56,20 @@
         revision="21.1.2"
         sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
         <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-d7911f24a8c2c64dd6c08d7ac1870fcd4e61ef81.jar" />
+    </item>
+    <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\io.reactivex\rxandroid\0.24.0\42dab493b8f74b164e082f281480c9d493ff89da\rxandroid-0.24.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="42dab493b8f74b164e082f281480c9d493ff89da">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\rxandroid-0.24.0-39fb08d48e15a7a8740efdbabc9da8f532d203af.jar" />
+    </item>
+    <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.3.1\ecb6e1f8e4b0e84c4b886c2f14a1500caf309757\gson-2.3.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\gson-2.3.1-b98bb999375a5ae4c4adbc3b7f0e0116303dc47c.jar" />
     </item>
     <item
         jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-databind\2.3.1\c4096a8323bbbcbeda072e3def123a9b66783361\jackson-databind-2.3.1.jar"
@@ -77,6 +105,20 @@
         revision="21.0.2"
         sha1="211fc9e709f0d32f73afa9601bb8e8a8f2fcd72f">
         <dex dex="C:\dev\android-projects\TransLoc-Android-Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-5b44805c24ab1ea681810cb97bec006048ddbfc3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit\retrofit\1.9.0\a681c044244d9fc375198588297a39ba78028423\retrofit-1.9.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a681c044244d9fc375198588297a39ba78028423">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\retrofit-1.9.0-bdab8ef3c32e58d209723236d2557c25c633df71.jar" />
+    </item>
+    <item
+        jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.2.0\959c454243581fdf730abfd4f4745441724bcf2c\okhttp-2.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="959c454243581fdf730abfd4f4745441724bcf2c">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\okhttp-2.2.0-91156e696b00e9fe257d7f4f2142f1088e7bac68.jar" />
     </item>
     <item
         jar="C:\Users\Shyamal\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.3.1\f9f7185c92ca5fefe2fb3efdeb477a67c96ea2d0\jackson-core-2.3.1.jar"
