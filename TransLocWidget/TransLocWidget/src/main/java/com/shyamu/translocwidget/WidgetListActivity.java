@@ -18,13 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
-import com.shyamu.translocwidget.TransLocJSON.TransLocStop;
-import com.shyamu.translocwidget.TransLocJSON.TransLocStops;
+import com.shyamu.translocwidget.rest.model.TransLocStop;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
 import com.shyamu.translocwidget.rest.service.TransLocClient;
@@ -183,7 +180,8 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateRoutesListView,
                             e -> Log.e(TAG, "Error in getting list of routes", e)
-                    );            return rootView;
+                    );
+            return rootView;
         }
 
         private void populateRoutesListView(List<TransLocRoute> routes) {
@@ -228,43 +226,27 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
             stopListView = (ListView) rootView.findViewById(R.id.lvStopList);
-            new PopulateStopsTask(getActivity(), rootView).execute();
+            TransLocClient client =
+                    ServiceGenerator.createService(TransLocClient.class,
+                            Utils.BASE_URL,
+                            getString(R.string.mashape_key),
+                            atw.getAgencyID());
+            client.stops(atw.getAgencyID())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::populateStopsListView,
+                            e -> Log.e(TAG, "Error in getting list of stops", e)
+                    );
             return rootView;
         }
 
-        class PopulateStopsTask extends AsyncTask<Void,Void,TransLocStops> {
-
-            View mRootView;
-            Activity mContext;
-
-            public PopulateStopsTask(Activity context, View rootView) {
-                mContext = context;
-                mRootView = rootView;
-            }
-
-            @Override
-            protected TransLocStops doInBackground(Void... params) {
-                String url = Utils.GET_STOPS_URL + atw.getAgencyID();
-                try {
-                    return new ObjectMapper().readValue(Utils.getJsonResponse(url, getString(R.string.mashape_key)), TransLocStops.class);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in getting list of stops from TransLoc with url: " + url);
-                    Log.e(TAG, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(TransLocStops translocStops) {
-                if(translocStops != null ) {
-                    ArrayList<TransLocStop> fullStopList = (ArrayList<TransLocStop>) translocStops.data;
-                    ArrayList<TransLocStop> stopList = new ArrayList<>();
-                    for(TransLocStop stop : fullStopList) {
-                        if(stop.routes.contains(Integer.parseInt(atw.getRouteID()))) {
-                            stopList.add(stop);
-                        }
+        private void populateStopsListView(List<TransLocStop> stops) {
+            if(stops != null && !stops.isEmpty()) {
+                ArrayList<TransLocStop> stopList = new ArrayList<>();
+                for(TransLocStop stop : stops) {
+                    if(stop.routes.contains(Integer.parseInt(atw.getRouteID()))) {
+                        stopList.add(stop);
                     }
-                    ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item, stopList);
+                    ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stopList);
                     stopListView.setAdapter(stopArrayAdapter);
 
                     // Set onclicklistener to open select stops fragment
@@ -274,7 +256,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                             ObjectMapper mapper = new ObjectMapper();
                             ArrayList<ArrivalTimeWidget> listViewArray = null;
                             try {
-                                listViewArray = Utils.getArrivalTimeWidgetsFromStorage(mContext);
+                                listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
                             } catch (IOException e) {
                                 Log.e(TAG, "Error in getting previous widget list", e);
                                 listViewArray = new ArrayList<>();
@@ -286,25 +268,24 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                             try {
                                 String value = mapper.writeValueAsString(listViewArray);
                                 Log.v(TAG, value);
-                                Utils.writeData(mContext, value);
+                                Utils.writeData(getActivity(), value);
                             } catch (Exception e) {
                                 Log.e(TAG, "Error in writing widget list to storage");
                                 Log.e(TAG, e.getMessage());
                             }
 
                             // Insert the fragment by replacing any existing fragment
-                            FragmentManager fragmentManager = mContext.getFragmentManager();
+                            FragmentManager fragmentManager = getActivity().getFragmentManager();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.container, new WidgetListFragment())
                                     .commit();
                         }
                     });
-                } else {
-                    Log.e(TAG, "Stops data was null or empty!");
                 }
+            } else {
+                Log.e(TAG, "Stops data is null or empty!");
             }
         }
-
     }
 
     @Override

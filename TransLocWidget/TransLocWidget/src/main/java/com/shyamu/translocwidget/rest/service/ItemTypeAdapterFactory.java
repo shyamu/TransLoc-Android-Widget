@@ -41,7 +41,7 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                 if (jsonElement.isJsonObject()) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
                     if (jsonObject.has("data") && jsonObject.get("data").isJsonArray()) {
-                        Log.v("ItemTypeAdapterFactory", "Is agency data");
+                        Log.v("ItemTypeAdapterFactory", "Is agency or stop data");
                         jsonElement = jsonObject.get("data");
                     } else if (jsonObject.has("data") && jsonObject.get("data").isJsonObject() && agencyId != null) {
                         Log.v("ItemTypeAdapterFactory", "Is route data");

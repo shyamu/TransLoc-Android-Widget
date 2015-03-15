@@ -1,4 +1,4 @@
-package com.shyamu.translocwidget.TransLocJSON;
+package com.shyamu.translocwidget.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
