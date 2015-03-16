@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
@@ -50,7 +50,7 @@ public class ListViewAdapter extends BaseAdapter {
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
-            widgetList = new ObjectMapper().readValue(sb.toString(),ArrayList.class);
+            widgetList = new Gson().fromJson(sb.toString(), ArrayList.class);
             Log.v(TAG, widgetList.toString());
             Log.v(TAG, widgetList.size()+ "");
 

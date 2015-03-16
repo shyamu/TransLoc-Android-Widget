@@ -5,7 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class Utils {
@@ -111,9 +113,8 @@ public class Utils {
     }
 
     public static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context) throws FileNotFoundException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
         String widgetListJsonStr = Utils.readSavedData(context);
-        return mapper.readValue(widgetListJsonStr, mapper.getTypeFactory().constructCollectionType(ArrayList.class, ArrivalTimeWidget.class));
+        return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>(){}.getType());
     }
 
 }

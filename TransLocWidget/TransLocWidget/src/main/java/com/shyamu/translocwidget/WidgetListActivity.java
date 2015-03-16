@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
 import com.shyamu.translocwidget.rest.model.TransLocStop;
@@ -36,7 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class WidgetListActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
     private static final String TAG = "WidgetListActivity";
-
+    private static final Gson gson = new Gson();
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
 
     @Override
@@ -253,7 +253,6 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            ObjectMapper mapper = new ObjectMapper();
                             ArrayList<ArrivalTimeWidget> listViewArray = null;
                             try {
                                 listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
@@ -266,7 +265,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                             atw.setStopName(selectedStop.toString());
                             listViewArray.add(atw);
                             try {
-                                String value = mapper.writeValueAsString(listViewArray);
+                                String value = gson.toJson(listViewArray);
                                 Log.v(TAG, value);
                                 Utils.writeData(getActivity(), value);
                             } catch (Exception e) {

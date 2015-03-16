@@ -1,19 +1,19 @@
 package com.shyamu.translocwidget.TransLocJSON;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
 public class TransLocArrival{
-    @JsonProperty("route_id")
+    @SerializedName("route_id")
     public int routeId;
 
-    @JsonProperty("vehicle_id")
+    @SerializedName("vehicle_id")
     public int vehicleId;
 
-    @JsonProperty("arrival_at")
+    @SerializedName("arrival_at")
     public Date arrivalAt;
 
-    @JsonProperty("type")
+    @SerializedName("type")
     public String type;
 }

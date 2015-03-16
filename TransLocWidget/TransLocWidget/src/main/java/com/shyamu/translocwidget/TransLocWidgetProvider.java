@@ -16,7 +16,6 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrival;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimate;
 import com.shyamu.translocwidget.TransLocJSON.TransLocArrivalEstimates;
@@ -146,9 +145,9 @@ public class TransLocWidgetProvider extends AppWidgetProvider {
 
             try {
                 if(onReboot) return null;
-                else return new ObjectMapper().readValue(Utils.getJsonResponse(url, context.getString(R.string.mashape_key)), TransLocArrivalEstimates.class);
-            } catch (IOException e) {
-                e.printStackTrace();
+                //else return new ObjectMapper().readValue(Utils.getJsonResponse(url, context.getString(R.string.mashape_key)), TransLocArrivalEstimates.class);
+            //} catch (IOException e) {
+            //    e.printStackTrace();
                 return null;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.shyamu.translocwidget.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

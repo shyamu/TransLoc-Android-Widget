@@ -1,12 +1,13 @@
 package com.shyamu.translocwidget.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.google.gson.annotations.SerializedName;
 
 public class TransLocLocation{
 
-    @JsonProperty("lat")
+    @SerializedName("lat")
     public Double lat;
 
-    @JsonProperty("lng")
+    @SerializedName("lng")
     public Double lng;
 }

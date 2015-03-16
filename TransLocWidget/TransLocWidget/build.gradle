@@ -44,8 +44,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.larswerkman:HoloColorPicker:1.1'
     compile 'joda-time:joda-time:2.3'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.3.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.3.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.1'
 
 }
