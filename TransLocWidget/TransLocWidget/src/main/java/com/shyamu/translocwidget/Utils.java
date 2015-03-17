@@ -30,6 +30,10 @@ import java.util.List;
 
 public class Utils {
 
+    public enum TransLocDataType {
+        AGENCY, ROUTE, STOP, ARRIVAL
+    }
+
     public static final String GET_AGENCIES_URL = "https://transloc-api-1-2.p.mashape.com/agencies.json";
     public static final String GET_ROUTES_URL = "https://transloc-api-1-2.p.mashape.com/routes.json?agencies=";
     public static final String GET_STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
@@ -114,7 +118,8 @@ public class Utils {
 
     public static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context) throws FileNotFoundException, IOException {
         String widgetListJsonStr = Utils.readSavedData(context);
-        return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>(){}.getType());
+        return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>() {
+        }.getType());
     }
 
 }

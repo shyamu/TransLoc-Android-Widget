@@ -1,5 +1,6 @@
 package com.shyamu.translocwidget.rest.service;
 
+import com.shyamu.translocwidget.rest.model.TransLocArrival;
 import com.shyamu.translocwidget.rest.model.TransLocStop;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
@@ -21,5 +22,12 @@ public interface TransLocClient {
     Observable<List<TransLocRoute>> routes(@Query("agencies") String agencyId);
 
     @GET("/stops.json")
-    Observable<List<TransLocStop>> stops(@Query("agencies")String agencyID);
+    Observable<List<TransLocStop>> stops(@Query("agencies")String agencyId);
+
+    @GET("/arrival-estimates.json")
+    Observable<List<TransLocArrival>> arrivalEstimates(
+            @Query("agencies") String agencyId,
+            @Query("routes") String routeId,
+            @Query("stops") String stopId
+    );
 }

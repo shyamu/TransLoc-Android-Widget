@@ -32,6 +32,10 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.shyamu.translocwidget.Utils.TransLocDataType.AGENCY;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.STOP;
+
 
 public class WidgetListActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
@@ -94,7 +98,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
 
     @Override
     public void onFragmentInteraction(String id) {
-        Toast.makeText(getApplicationContext(), id, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"interacted fragment with id:" + id, Toast.LENGTH_LONG).show();
     }
 
     public static class AddAgencyFragment extends Fragment {
@@ -116,7 +120,8 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     ServiceGenerator.createService(TransLocClient.class,
                     Utils.BASE_URL,
                     getString(R.string.mashape_key),
-                    null);
+                    null,
+                    AGENCY);
             client.agencies()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateAgencyListView,
@@ -175,7 +180,8 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     ServiceGenerator.createService(TransLocClient.class,
                             Utils.BASE_URL,
                             getString(R.string.mashape_key),
-                            atw.getAgencyID());
+                            atw.getAgencyID(),
+                            ROUTE);
             client.routes(atw.getAgencyID())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateRoutesListView,
@@ -230,7 +236,8 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     ServiceGenerator.createService(TransLocClient.class,
                             Utils.BASE_URL,
                             getString(R.string.mashape_key),
-                            atw.getAgencyID());
+                            atw.getAgencyID(),
+                            STOP);
             client.stops(atw.getAgencyID())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateStopsListView,

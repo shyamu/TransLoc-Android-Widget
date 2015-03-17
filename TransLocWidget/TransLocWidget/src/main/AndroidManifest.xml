@@ -19,12 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WidgetConfigurationActivity" >
-        </activity>
+
         <activity android:name=".AboutActivity" />
         <activity android:name=".CustomizeWidgetActivity" />
 
-        <receiver android:name=".TransLocWidgetProvider" >
+        <receiver android:name=".WidgetProvider" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -48,11 +47,12 @@
         <activity
             android:name=".WidgetConfigActivity"
             android:label="@string/title_activity_widget_config"
-            android:theme="@style/dialog_light">
-        <intent-filter>
+            android:theme="@style/dialog_light" >
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

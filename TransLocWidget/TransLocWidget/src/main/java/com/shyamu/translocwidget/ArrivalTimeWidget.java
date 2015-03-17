@@ -63,6 +63,10 @@ public class ArrivalTimeWidget {
         return stopName;
     }
 
+    public String toString() {
+        return "ArrivalTimeWidget with info: " + agencyLongName + " | " + routeName + " | " + stopName;
+    }
+
     private boolean isValidWidget() {
         return agencyID != null && routeID != null && stopID != null &&
                agencyLongName != null && routeName != null && stopName != null;
@@ -72,7 +76,7 @@ public class ArrivalTimeWidget {
         if(isValidWidget()) {
             return Utils.GET_ARRIVAL_ESTIMATES_URL + getAgencyID() + "&routes=" + getRouteID() + "&stops=" + getStopID();
         } else {
-            return "ERROR: NULL URL";
+            throw new IllegalStateException("ArrivalTimeWidget is not a valid widget");
         }
     }
 

@@ -78,8 +78,12 @@ public class WidgetListFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            ArrivalTimeWidget widget = (ArrivalTimeWidget) l.getSelectedItem();
-            mListener.onFragmentInteraction(widget.getArrivalTimesUrl());
+            ArrivalTimeWidget widget = (ArrivalTimeWidget) l.getItemAtPosition(position);
+            if(widget == null) throw new IllegalStateException();
+            else {
+                Log.d(TAG, widget.toString());
+                mListener.onFragmentInteraction(widget.getArrivalTimesUrl());
+            }
         }
     }
 

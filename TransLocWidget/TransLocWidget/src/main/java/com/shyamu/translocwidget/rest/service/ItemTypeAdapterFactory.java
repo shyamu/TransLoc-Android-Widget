@@ -10,18 +10,27 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.shyamu.translocwidget.Utils;
 
 import java.io.IOException;
+
+import static com.shyamu.translocwidget.Utils.*;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.AGENCY;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
 
 /**
  * Created by Shyamal on 3/15/2015.
  */
 public class ItemTypeAdapterFactory implements TypeAdapterFactory {
 
+    private static final String TAG = "ItemTypeAdapterFactory";
     private String agencyId;
+    private TransLocDataType dataType;
 
-    public ItemTypeAdapterFactory(String agencyId) {
+    public ItemTypeAdapterFactory(String agencyId, TransLocDataType dataType) {
         this.agencyId = agencyId;
+        this.dataType = dataType;
     }
 
     public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
@@ -40,12 +49,25 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                 JsonElement jsonElement = elementAdapter.read(in);
                 if (jsonElement.isJsonObject()) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    if (jsonObject.has("data") && jsonObject.get("data").isJsonArray()) {
-                        Log.v("ItemTypeAdapterFactory", "Is agency or stop data");
-                        jsonElement = jsonObject.get("data");
-                    } else if (jsonObject.has("data") && jsonObject.get("data").isJsonObject() && agencyId != null) {
-                        Log.v("ItemTypeAdapterFactory", "Is route data");
-                        jsonElement = jsonObject.getAsJsonObject("data").getAsJsonArray(agencyId);
+                    if (jsonObject.has("data") && (jsonObject.get("data").isJsonArray()) || jsonObject.get("data").isJsonArray()) {
+                        switch (dataType) {
+                            case AGENCY:
+                                Log.d(TAG, "dataType is AGENCY");
+                                jsonElement = jsonObject.get("data");
+                                break;
+                            case ROUTE:
+                                Log.d(TAG, "dataType is ROUTE");
+                                jsonElement = jsonObject.getAsJsonObject("data").getAsJsonArray(agencyId);
+                                break;
+                            case STOP:
+                                Log.d(TAG, "dataType is STOP");
+                                jsonElement = jsonObject.get("data");
+                                break;
+                            case ARRIVAL:
+                                Log.d(TAG, "dataType is ARRIVAL");
+                                jsonElement = jsonObject.getAsJsonArray("data").getAsJsonObject().getAsJsonArray("arrivals");
+                                break;
+                        }
                     }
                 }
                 return delegate.fromJsonTree(jsonElement);
