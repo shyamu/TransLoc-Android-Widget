@@ -53,11 +53,9 @@ public class Utils {
                 .show();
     }
 
-    protected static int getMinutesBetweenTimes(Date currentTime, Date futureTime)
+    protected static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime)
     {
-        DateTime start = new DateTime(currentTime);
-        DateTime end = new DateTime(futureTime);
-        return Minutes.minutesBetween(start,end).getMinutes();
+        return Minutes.minutesBetween(currentTime,futureTime).getMinutes();
     }
 
     protected static String getJsonResponse(String url, String key) throws Exception {
