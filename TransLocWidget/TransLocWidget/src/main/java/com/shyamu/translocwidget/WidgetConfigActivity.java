@@ -3,6 +3,7 @@ package com.shyamu.translocwidget;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,10 +11,21 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
+import com.shyamu.translocwidget.rest.model.TransLocArrival;
+import com.shyamu.translocwidget.rest.service.ServiceGenerator;
+import com.shyamu.translocwidget.rest.service.TransLocClient;
+
+import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
 
 
 public class WidgetConfigActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
 
+    private static final String TAG = "WidgetConfigActivity";
     Button addNewWidgetButton;
 
     @Override
@@ -62,7 +74,26 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
-        Toast.makeText(getApplicationContext(), id, Toast.LENGTH_LONG).show();
+    public void onFragmentInteraction(ArrivalTimeWidget atw) {
+        Log.d(TAG, "inOnFragmentInteraction");
+        TransLocClient client =
+                ServiceGenerator.createService(TransLocClient.class,
+                        Utils.BASE_URL,
+                        getString(R.string.mashape_key),
+                        atw.getAgencyID(),
+                        ARRIVAL);
+        client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::createWidget,
+                        e -> Log.e(TAG, "Error in getting list of arrival times", e)
+                );
+    }
+
+    private void createWidget(List<TransLocArrival> arrivals) {
+        if(arrivals != null && !arrivals.isEmpty()) {
+            Log.d(TAG, "In createWidget with: " + arrivals.size() + " arrivals");
+        } else {
+            Log.e(TAG, "arrivals is null or empty!");
+        }
     }
 }

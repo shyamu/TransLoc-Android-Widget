@@ -82,7 +82,7 @@ public class WidgetListFragment extends ListFragment {
             if(widget == null) throw new IllegalStateException();
             else {
                 Log.d(TAG, widget.toString());
-                mListener.onFragmentInteraction(widget.getArrivalTimesUrl());
+                mListener.onFragmentInteraction(widget);
             }
         }
     }
@@ -98,8 +98,7 @@ public class WidgetListFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        public void onFragmentInteraction(ArrivalTimeWidget widget);
     }
 
 }

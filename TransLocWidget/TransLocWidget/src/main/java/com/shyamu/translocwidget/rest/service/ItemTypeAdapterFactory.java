@@ -65,9 +65,11 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                                 break;
                             case ARRIVAL:
                                 Log.d(TAG, "dataType is ARRIVAL");
-                                jsonElement = jsonObject.getAsJsonArray("data").getAsJsonObject().getAsJsonArray("arrivals");
+                                jsonElement = jsonObject.getAsJsonArray("data").get(0).getAsJsonObject().getAsJsonArray("arrivals");
                                 break;
                         }
+                    } else {
+                        Log.e(TAG, "Error in json deserialize");
                     }
                 }
                 return delegate.fromJsonTree(jsonElement);

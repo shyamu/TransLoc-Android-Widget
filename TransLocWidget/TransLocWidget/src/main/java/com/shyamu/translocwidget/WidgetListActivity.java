@@ -97,8 +97,9 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
-        Toast.makeText(getApplicationContext(),"interacted fragment with id:" + id, Toast.LENGTH_LONG).show();
+    public void onFragmentInteraction(ArrivalTimeWidget widget) {
+        Toast.makeText(getApplicationContext(),"interacted fragment with id:" + widget
+                .toString(), Toast.LENGTH_LONG).show();
     }
 
     public static class AddAgencyFragment extends Fragment {
