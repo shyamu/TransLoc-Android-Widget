@@ -12,7 +12,7 @@ public class TransLocArrival{
     public int vehicleId;
 
     @SerializedName("arrival_at")
-    public Date arrivalAt;
+    public String arrivalAt;
 
     @SerializedName("type")
     public String type;

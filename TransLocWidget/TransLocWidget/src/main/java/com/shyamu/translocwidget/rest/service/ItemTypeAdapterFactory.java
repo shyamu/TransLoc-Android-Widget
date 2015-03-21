@@ -68,8 +68,6 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                                 jsonElement = jsonObject.getAsJsonArray("data").get(0).getAsJsonObject().getAsJsonArray("arrivals");
                                 break;
                         }
-                    } else {
-                        Log.e(TAG, "Error in json deserialize");
                     }
                 }
                 return delegate.fromJsonTree(jsonElement);
