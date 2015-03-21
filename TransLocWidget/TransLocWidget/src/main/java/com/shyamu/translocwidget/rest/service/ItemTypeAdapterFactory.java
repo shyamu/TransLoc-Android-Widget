@@ -49,7 +49,7 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                 JsonElement jsonElement = elementAdapter.read(in);
                 if (jsonElement.isJsonObject()) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    if (jsonObject.has("data") && (jsonObject.get("data").isJsonArray()) || jsonObject.get("data").isJsonArray()) {
+                    if (jsonObject.has("data") && ((jsonObject.get("data").isJsonObject()) || jsonObject.get("data").isJsonArray())) {
                         switch (dataType) {
                             case AGENCY:
                                 Log.d(TAG, "dataType is AGENCY");
