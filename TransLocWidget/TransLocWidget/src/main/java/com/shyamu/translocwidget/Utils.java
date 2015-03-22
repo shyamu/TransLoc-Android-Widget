@@ -53,7 +53,7 @@ public class Utils {
                 .show();
     }
 
-    protected static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime)
+    public static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime)
     {
         return Minutes.minutesBetween(currentTime,futureTime).getMinutes();
     }

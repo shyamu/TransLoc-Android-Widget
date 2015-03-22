@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.model.TransLocArrival;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
@@ -90,40 +91,10 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
 
     @Override
     public void onFragmentInteraction(ArrivalTimeWidget incomingAtw) {
-        this.atw = incomingAtw;
         Log.d(TAG, "inOnFragmentInteraction");
-        TransLocClient client =
-                ServiceGenerator.createService(TransLocClient.class,
-                        Utils.BASE_URL,
-                        getString(R.string.mashape_key),
-                        atw.getAgencyID(),
-                        ARRIVAL);
-        client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::createWidget,
-                        e -> Log.e(TAG, "Error in getting list of arrival times", e)
-                );
-    }
-
-    private void createWidget(List<TransLocArrival> arrivals) {
-        if(arrivals != null && !arrivals.isEmpty()) {
-            TransLocArrival nextArrival = arrivals.get(0);
-
-            int minsTillArrival = getMinsUntilArrival(nextArrival);
-            atw.setMinutesUntilArrival(minsTillArrival);
-
-            handleCreationOfWidget();
-
-        } else {
-            Log.e(TAG, "arrivals is null or empty!");
-        }
-    }
-
-    private int getMinsUntilArrival(TransLocArrival arrival) {
-        DateTime currentDate = new DateTime();
-        DateTime arrivalDate = new DateTime(arrival.arrivalAt);
-        atw.setNextArrivalTime(arrivalDate);
-        return Utils.getMinutesBetweenTimes(currentDate, arrivalDate);
+        ArrivalTimeCalculator arrivalTimeCalculator = new ArrivalTimeCalculator(this, incomingAtw);
+        atw = arrivalTimeCalculator.getArrivalTimeWidgetWithUpdatedTime();
+        handleCreationOfWidget();
     }
 
     private void handleCreationOfWidget() {
