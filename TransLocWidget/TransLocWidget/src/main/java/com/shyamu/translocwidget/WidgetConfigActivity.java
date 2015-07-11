@@ -2,6 +2,7 @@ package com.shyamu.translocwidget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
@@ -35,7 +37,6 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     private int appWidgetId = 0;
 
     private static final String TAG = "WidgetConfigActivity";
-    private ArrivalTimeWidget atw;
     Button addNewWidgetButton;
 
     @Override
@@ -55,7 +56,7 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), WidgetListActivity.class);
                 intent.putExtra("starting_fragment", "AddAgencyFragment");
-                startActivity(intent);
+                startActivityForResult(intent, 100);
             }
         });
 
@@ -93,19 +94,49 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     public void onFragmentInteraction(ArrivalTimeWidget incomingAtw) {
         Log.d(TAG, "inOnFragmentInteraction");
         ArrivalTimeCalculator arrivalTimeCalculator = new ArrivalTimeCalculator(this, incomingAtw);
-        atw = arrivalTimeCalculator.getArrivalTimeWidgetWithUpdatedTime();
-        handleCreationOfWidget();
+        ArrivalTimeWidget atw = arrivalTimeCalculator.getArrivalTimeWidgetWithUpdatedTime();
+        handleCreationOfWidget(atw);
     }
 
-    private void handleCreationOfWidget() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100) {
+            if(resultCode == 1) {
+                ArrivalTimeWidget atw = (ArrivalTimeWidget) data.getSerializableExtra("atw");
+                handleCreationOfWidget(atw);
+            } else {
+                // error
+            }
+        }
+    }
+
+    private void handleCreationOfWidget(ArrivalTimeWidget atw) {
+        Log.d(TAG, "in handleCreationOfWidget with widget: " + atw.toString());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
-        appWidgetManager.updateAppWidget(appWidgetId, atw.createRemoteViews(getBaseContext()));
+        appWidgetManager.updateAppWidget(appWidgetId, createRemoteViews(getBaseContext(), atw));
 
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
         Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
         finish();
+    }
+
+    private RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+
+        //Set the time remaining of the widget
+        int minutesUntilArrival = atw.getMinutesUntilArrival();
+        remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
+        if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
+        if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
+        else remoteViews.setTextViewText(R.id.tvMins, "mins away");
+
+        remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
+        remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
+
+        return remoteViews;
     }
 
 }

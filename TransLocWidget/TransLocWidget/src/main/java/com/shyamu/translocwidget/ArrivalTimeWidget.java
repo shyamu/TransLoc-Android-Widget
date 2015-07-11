@@ -5,10 +5,12 @@ import android.widget.RemoteViews;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
+
 /**
  * Created by Shyamal on 2/6/2015.
  */
-public class ArrivalTimeWidget {
+public class ArrivalTimeWidget implements Serializable{
     private String agencyID;
     private String routeID;
     private String stopID;
@@ -18,6 +20,8 @@ public class ArrivalTimeWidget {
     private String arrivalTimesUrl;
     private DateTime nextArrivalTime;
     private int minutesUntilArrival;
+    private int textColor = -1;
+    private int backgroundColor = 1996554497;
 
     public ArrivalTimeWidget() {
     }
@@ -86,6 +90,22 @@ public class ArrivalTimeWidget {
         this.minutesUntilArrival = minutesUntilArrival;
     }
 
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
     public String toString() {
         return "ArrivalTimeWidget with info: " + agencyLongName + " | " + routeName + " | " + stopName;
     }
@@ -101,21 +121,6 @@ public class ArrivalTimeWidget {
         } else {
             throw new IllegalStateException("ArrivalTimeWidget is not a valid widget");
         }
-    }
-
-    public RemoteViews createRemoteViews(Context context) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-
-        //Set the time remaining of the widget
-        remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
-        if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
-        if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
-        else remoteViews.setTextViewText(R.id.tvMins, "mins away");
-
-        remoteViews.setTextViewText(R.id.tvRoute, routeName);
-        remoteViews.setTextViewText(R.id.tvStop, stopName);
-
-        return remoteViews;
     }
 
 }

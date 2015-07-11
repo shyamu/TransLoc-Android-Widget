@@ -1,15 +1,15 @@
 package com.shyamu.translocwidget;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +24,10 @@ import com.google.gson.Gson;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
+import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
 import com.shyamu.translocwidget.rest.model.TransLocStop;
-import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
 import com.shyamu.translocwidget.rest.service.TransLocClient;
 
@@ -54,16 +54,15 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         setContentView(R.layout.activity_widget_list);
         Intent intent = getIntent();
 
-        if(intent.hasExtra("starting_fragment")) {
+        if (intent.hasExtra("starting_fragment")) {
             String startingFragment = intent.getStringExtra("starting_fragment");
-            if(startingFragment.equals("AddAgencyFragment")) {
+            if (startingFragment.equals("AddAgencyFragment")) {
                 getFragmentManager().beginTransaction()
                         .add(R.id.container, new AddAgencyFragment())
                         .addToBackStack(null)
                         .commit();
             }
-        }
-        else if (savedInstanceState == null) {
+        } else if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new WidgetListFragment())
                     .addToBackStack(null)
@@ -71,11 +70,10 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_widget_list, menu);
+        getMenuInflater().inflate(R.menu.menu_empty, menu);
         return true;
     }
 
@@ -91,7 +89,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
 
     @Override
     public void onFragmentInteraction(ArrivalTimeWidget widget) {
-        Toast.makeText(getApplicationContext(),"interacted fragment with id:" + widget
+        Toast.makeText(getApplicationContext(), "interacted fragment with id:" + widget
                 .toString(), Toast.LENGTH_LONG).show();
     }
 
@@ -104,29 +102,35 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
 
         }
 
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_empty, menu);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
+            setHasOptionsMenu(true);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
-                    Utils.BASE_URL,
-                    getString(R.string.mashape_key),
-                    null,
-                    AGENCY);
+                            Utils.BASE_URL,
+                            getString(R.string.mashape_key),
+                            null,
+                            AGENCY);
             client.agencies()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateAgencyListView,
-                    e -> Log.e(TAG, "Error in getting list of agencies", e)
-            );
+                            e -> Log.e(TAG, "Error in getting list of agencies", e)
+                    );
 
             return rootView;
         }
 
         private void populateAgencyListView(List<TransLocAgency> agencies) {
-            if(agencies != null && !agencies.isEmpty()) {
+            if (agencies != null && !agencies.isEmpty()) {
                 ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
                 agencyListView.setAdapter(agencyArrayAdapter);
 
@@ -166,9 +170,16 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
 
         @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_empty, menu);
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_route, container, false);
+            setHasOptionsMenu(true);
             routeListView = (ListView) rootView.findViewById(R.id.lvRouteList);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
@@ -185,7 +196,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
 
         private void populateRoutesListView(List<TransLocRoute> routes) {
-            if(routes != null && !routes.isEmpty()) {
+            if (routes != null && !routes.isEmpty()) {
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
                 routeListView.setAdapter(routeArrayAdapter);
 
@@ -222,9 +233,16 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
 
         @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_empty, menu);
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
+            setHasOptionsMenu(true);
             stopListView = (ListView) rootView.findViewById(R.id.lvStopList);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
@@ -241,10 +259,10 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
 
         private void populateStopsListView(List<TransLocStop> stops) {
-            if(stops != null && !stops.isEmpty()) {
+            if (stops != null && !stops.isEmpty()) {
                 ArrayList<TransLocStop> stopList = new ArrayList<>();
-                for(TransLocStop stop : stops) {
-                    if(stop.routes.contains(Integer.parseInt(atw.getRouteID()))) {
+                for (TransLocStop stop : stops) {
+                    if (stop.routes.contains(Integer.parseInt(atw.getRouteID()))) {
                         stopList.add(stop);
                     }
                     ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stopList);
@@ -254,25 +272,9 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                     stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            ArrayList<ArrivalTimeWidget> listViewArray = null;
-                            try {
-                                listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
-                            } catch (IOException e) {
-                                Log.e(TAG, "Error in getting previous widget list", e);
-                                listViewArray = new ArrayList<>();
-                            }
                             TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
                             atw.setStopID((Integer.toString(selectedStop.stopId)));
                             atw.setStopName(selectedStop.toString());
-                            listViewArray.add(atw);
-                            try {
-                                String value = gson.toJson(listViewArray);
-                                Log.v(TAG, value);
-                                Utils.writeData(getActivity(), value);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error in writing widget list to storage");
-                                Log.e(TAG, e.getMessage());
-                            }
 
                             /*
                             // Insert the fragment by replacing any existing fragment
@@ -297,7 +299,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
     }
 
-    public static class CustomizeColorsFragment extends Fragment {
+    public static class CustomizeColorsFragment extends Fragment implements ColorPicker.OnColorChangedListener {
         private final String TAG = this.getTag();
         private ColorPicker picker;
         private SVBar svBar;
@@ -306,14 +308,59 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         private Button setTextColorButton;
         private LinearLayout currentBackgroundColor;
         private LinearLayout currentTextColor;
+
         public CustomizeColorsFragment() {
 
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_widget_list, menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.getItemId();
+            if (id == R.id.finish_item) {
+                Log.v(TAG, "Selected Finish");
+
+                ArrayList<ArrivalTimeWidget> listViewArray;
+                try {
+                    listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
+                } catch (IOException e) {
+                    Log.e(TAG, "Error in getting previous widget list", e);
+                    listViewArray = new ArrayList<>();
+                }
+
+                listViewArray.add(atw);
+
+                try {
+                    String value = gson.toJson(listViewArray);
+                    Log.v(TAG, value);
+                    Utils.writeData(getActivity(), value);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in writing widget list to storage");
+                    Log.e(TAG, e.getMessage());
+                }
+                Intent intent = new Intent();
+                intent.putExtra("atw", atw);
+                getActivity().setResult(1, intent);
+                getActivity().finish();
+                return true;
+            } else {
+                return super.onOptionsItemSelected(item);
+            }
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_customize_colors, container, false);
+            setHasOptionsMenu(true);
             picker = (ColorPicker) rootView.findViewById(R.id.picker);
             opacityBar = (OpacityBar) rootView.findViewById(R.id.opacitybar);
             svBar = (SVBar) rootView.findViewById(R.id.svbar);
@@ -322,18 +369,49 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
             currentBackgroundColor = (LinearLayout) rootView.findViewById(R.id.llCurrentBackgroundColor);
             currentTextColor = (LinearLayout) rootView.findViewById(R.id.llCurrentTextColor);
 
+
+            currentBackgroundColor.setBackgroundColor(atw.getBackgroundColor());
+            currentTextColor.setBackgroundColor(atw.getTextColor());
+
             picker.addSVBar(svBar);
             picker.addOpacityBar(opacityBar);
+            picker.setOnColorChangedListener(this);
+
+            setBackgroundColorButton.setOnClickListener(v -> {
+                picker.setOldCenterColor(picker.getColor());
+                currentBackgroundColor.setBackgroundColor(picker.getColor());
+                atw.setBackgroundColor(picker.getColor());
+            });
+
+            setTextColorButton.setOnClickListener(v -> {
+                picker.setOldCenterColor(picker.getColor());
+                currentTextColor.setBackgroundColor(picker.getColor());
+                atw.setTextColor(picker.getColor());
+            });
+
+            currentBackgroundColor.setOnClickListener(v -> {
+                ColorDrawable d = (ColorDrawable) currentBackgroundColor.getBackground();
+                picker.setColor(d.getColor());
+            });
+
+            currentTextColor.setOnClickListener(v -> {
+                ColorDrawable d = (ColorDrawable) currentTextColor.getBackground();
+                picker.setColor(d.getColor());
+            });
 
             return rootView;
+        }
+
+        @Override
+        public void onColorChanged(int i) {
+
         }
     }
 
 
-
-        @Override
+    @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
