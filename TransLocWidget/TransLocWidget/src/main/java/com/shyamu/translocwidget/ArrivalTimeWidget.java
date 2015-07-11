@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Created by Shyamal on 2/6/2015.
  */
 public class ArrivalTimeWidget implements Serializable{
+    private int appWidgetId;
     private String agencyID;
     private String routeID;
     private String stopID;
@@ -24,6 +25,14 @@ public class ArrivalTimeWidget implements Serializable{
     private int backgroundColor = 1996554497;
 
     public ArrivalTimeWidget() {
+    }
+
+    public int getAppWidgetId() {
+        return appWidgetId;
+    }
+
+    public void setAppWidgetId(int appWidgetId) {
+        this.appWidgetId = appWidgetId;
     }
 
     public String getAgencyID() {

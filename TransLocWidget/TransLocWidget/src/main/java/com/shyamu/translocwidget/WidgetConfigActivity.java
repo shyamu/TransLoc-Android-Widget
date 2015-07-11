@@ -1,6 +1,7 @@
 package com.shyamu.translocwidget;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -16,21 +17,7 @@ import android.widget.Toast;
 
 import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
-import com.shyamu.translocwidget.rest.model.TransLocArrival;
-import com.shyamu.translocwidget.rest.service.ServiceGenerator;
-import com.shyamu.translocwidget.rest.service.TransLocClient;
 
-import org.joda.time.DateTime;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import rx.android.schedulers.AndroidSchedulers;
-
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
 
 
 public class WidgetConfigActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
@@ -114,36 +101,15 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     private void handleCreationOfWidget(ArrivalTimeWidget atw) {
         Log.d(TAG, "in handleCreationOfWidget with widget: " + atw.toString());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
-        appWidgetManager.updateAppWidget(appWidgetId, createRemoteViews(getBaseContext(), atw));
-
+        appWidgetManager.updateAppWidget(appWidgetId, Utils.createRemoteViews(getBaseContext(), atw, appWidgetId));
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("atw", atw);
+        appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle);
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
         Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
         finish();
-    }
-
-    private RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-
-        //Set the time remaining of the widget
-        int minutesUntilArrival = atw.getMinutesUntilArrival();
-        remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
-        if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
-        if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
-        else remoteViews.setTextViewText(R.id.tvMins, "mins away");
-
-        // set colors
-        remoteViews.setInt(R.id.rlWidgetLayout, "setBackgroundColor", atw.getBackgroundColor());
-        remoteViews.setTextColor(R.id.tvRoute, atw.getTextColor());
-        remoteViews.setTextColor(R.id.tvStop, atw.getTextColor());
-        remoteViews.setTextColor(R.id.tvRemainingTime, atw.getTextColor());
-        remoteViews.setTextColor(R.id.tvMins, atw.getTextColor());
-        // set text content
-        remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
-        remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
-
-        return remoteViews;
     }
 
 }

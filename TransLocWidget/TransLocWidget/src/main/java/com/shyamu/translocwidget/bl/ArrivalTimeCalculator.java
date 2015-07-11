@@ -2,6 +2,7 @@ package com.shyamu.translocwidget.bl;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.shyamu.translocwidget.ArrivalTimeWidget;
 import com.shyamu.translocwidget.R;
@@ -31,6 +32,8 @@ public class ArrivalTimeCalculator {
         this.atw = atw;
     }
 
+
+
     public void getArrivalsFromService() {
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,
@@ -48,10 +51,9 @@ public class ArrivalTimeCalculator {
     private void handleArrivalTime(List<TransLocArrival> arrivals) {
         if(arrivals != null && !arrivals.isEmpty()) {
             TransLocArrival nextArrival = arrivals.get(0);
-
             int minsTillArrival = getMinsUntilArrival(nextArrival);
+            Log.v(TAG, "mins: " + minsTillArrival);
             atw.setMinutesUntilArrival(minsTillArrival);
-
         } else {
             Log.e(TAG, "arrivals is null or empty!");
         }

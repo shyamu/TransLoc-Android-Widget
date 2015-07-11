@@ -1,12 +1,17 @@
 package com.shyamu.translocwidget;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -40,6 +45,7 @@ public class Utils {
     public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
     public static final String BASE_URL = "https://transloc-api-1-2.p.mashape.com";
     public static final String FILE_NAME = "WidgetList";
+    public static final String TAP_ON_WIDGET_ACTION = "TAPPED_ON_WIDGET";
 
     protected static void showAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder( context )
@@ -118,6 +124,41 @@ public class Utils {
         String widgetListJsonStr = Utils.readSavedData(context);
         return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>() {
         }.getType());
+    }
+
+    public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+
+        //Set the time remaining of the widget
+        atw = new ArrivalTimeCalculator(context, atw).getArrivalTimeWidgetWithUpdatedTime();
+
+        /*
+        int minutesUntilArrival = atw.getMinutesUntilArrival();
+        remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
+        if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
+        if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
+        else remoteViews.setTextViewText(R.id.tvMins, "mins away");
+        */
+        // Set on tap pending intent
+        Intent widgetTapIntent = new Intent(context, WidgetProvider.class);
+        widgetTapIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        widgetTapIntent.setAction(Utils.TAP_ON_WIDGET_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, widgetTapIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.rlWidgetLayout, pendingIntent);
+
+        // set colors
+        remoteViews.setInt(R.id.rlWidgetLayout, "setBackgroundColor", atw.getBackgroundColor());
+        remoteViews.setTextColor(R.id.tvRoute, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvStop, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvRemainingTime, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvMins, atw.getTextColor());
+        // set text content
+        remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
+        remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
+        remoteViews.setTextViewText(R.id.tvRemainingTime, "--");
+        remoteViews.setTextViewText(R.id.tvMins, "Tap on widget to update");
+
+        return remoteViews;
     }
 
 }
