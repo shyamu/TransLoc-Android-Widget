@@ -15,10 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SVBar;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
 import com.shyamu.translocwidget.rest.model.TransLocStop;
@@ -80,18 +85,6 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_addWidget) {
-            Fragment addAgencyFragment = new AddAgencyFragment();
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, addAgencyFragment)
-                    .addToBackStack(null)
-                    .commit();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -281,10 +274,19 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                                 Log.e(TAG, e.getMessage());
                             }
 
+                            /*
                             // Insert the fragment by replacing any existing fragment
                             FragmentManager fragmentManager = getActivity().getFragmentManager();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.container, new WidgetListFragment())
+                                    .commit();
+                            */
+                            Fragment customizeColorsFragment = new CustomizeColorsFragment();
+                            // Insert the fragment by replacing any existing fragment
+                            FragmentManager fragmentManager = getActivity().getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.container, customizeColorsFragment)
+                                    .addToBackStack(null)
                                     .commit();
                         }
                     });
@@ -295,7 +297,41 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
         }
     }
 
-    @Override
+    public static class CustomizeColorsFragment extends Fragment {
+        private final String TAG = this.getTag();
+        private ColorPicker picker;
+        private SVBar svBar;
+        private OpacityBar opacityBar;
+        private Button setBackgroundColorButton;
+        private Button setTextColorButton;
+        private LinearLayout currentBackgroundColor;
+        private LinearLayout currentTextColor;
+        public CustomizeColorsFragment() {
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_customize_colors, container, false);
+            picker = (ColorPicker) rootView.findViewById(R.id.picker);
+            opacityBar = (OpacityBar) rootView.findViewById(R.id.opacitybar);
+            svBar = (SVBar) rootView.findViewById(R.id.svbar);
+            setBackgroundColorButton = (Button) rootView.findViewById(R.id.bChangeBackgroundColor);
+            setTextColorButton = (Button) rootView.findViewById(R.id.bChangeTextColor);
+            currentBackgroundColor = (LinearLayout) rootView.findViewById(R.id.llCurrentBackgroundColor);
+            currentTextColor = (LinearLayout) rootView.findViewById(R.id.llCurrentTextColor);
+
+            picker.addSVBar(svBar);
+            picker.addOpacityBar(opacityBar);
+
+            return rootView;
+        }
+    }
+
+
+
+        @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0 ){
             getFragmentManager().popBackStack();

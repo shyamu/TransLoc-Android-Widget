@@ -48,7 +48,17 @@ public class WidgetListFragment extends ListFragment {
             Log.e(TAG, "Error in getting previous widget list", e);
             listViewArray = new ArrayList<>();
         }
-        if(listViewArray != null) widgetListViewAdapter.setWidgetList(listViewArray);
+        if(listViewArray != null) {
+            if(listViewArray.isEmpty()) {
+                ArrivalTimeWidget arrivalTimeNoWidget = new ArrivalTimeWidget();
+                arrivalTimeNoWidget.setAgencyLongName("No Widgets saved.");
+                arrivalTimeNoWidget.setRouteName("Add a widget from your home screen first!");
+                listViewArray.add(arrivalTimeNoWidget);
+                widgetListViewAdapter.setWidgetList(listViewArray);
+            } else {
+                widgetListViewAdapter.setWidgetList(listViewArray);
+            }
+        }
         setListAdapter(widgetListViewAdapter);
     }
 

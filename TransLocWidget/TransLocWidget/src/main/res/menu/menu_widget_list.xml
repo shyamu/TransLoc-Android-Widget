@@ -2,6 +2,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.shyamu.translocwidget.WidgetListActivity">
-    <item android:id="@+id/action_addWidget" android:title="Add Widget"
-        android:orderInCategory="100" app:showAsAction="always" />
+
 </menu>
