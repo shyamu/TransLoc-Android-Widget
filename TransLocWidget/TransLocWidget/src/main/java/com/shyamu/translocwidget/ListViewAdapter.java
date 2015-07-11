@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ public class ListViewAdapter extends BaseAdapter {
         TextView tv_agencyName;
         TextView tv_routeName;
         TextView tv_stopName;
+        RelativeLayout rl_background;
     }
 
     private ViewHolder mHolder = null;
@@ -87,13 +89,23 @@ public class ListViewAdapter extends BaseAdapter {
             mHolder = (ViewHolder)convertView.getTag();
         }
 
+        mHolder.rl_background = (RelativeLayout) convertView.findViewById(R.id.rlItemViewBackground);
         mHolder.tv_agencyName = (TextView)convertView.findViewById(R.id.tvAgencyNameItemView);
         mHolder.tv_routeName = (TextView)convertView.findViewById(R.id.tvRouteNameItemView);
         mHolder.tv_stopName = (TextView)convertView.findViewById(R.id.tvStopNameItemView);
 
-        mHolder.tv_agencyName.setText(widgetList.get(position).getAgencyLongName());
-        mHolder.tv_routeName.setText(widgetList.get(position).getRouteName());
-        mHolder.tv_stopName.setText(widgetList.get(position).getStopName());
+        ArrivalTimeWidget arrivalTimeWidget = widgetList.get(position);
+
+        // Set colors
+        mHolder.rl_background.setBackgroundColor(arrivalTimeWidget.getBackgroundColor());
+        mHolder.tv_agencyName.setTextColor(arrivalTimeWidget.getTextColor());
+        mHolder.tv_routeName.setTextColor(arrivalTimeWidget.getTextColor());
+        mHolder.tv_stopName.setTextColor(arrivalTimeWidget.getTextColor());
+
+        // Set text content
+        mHolder.tv_agencyName.setText(arrivalTimeWidget.getAgencyLongName());
+        mHolder.tv_routeName.setText(arrivalTimeWidget.getRouteName());
+        mHolder.tv_stopName.setText(arrivalTimeWidget.getStopName());
 
         return convertView;
     }

@@ -21,7 +21,6 @@
         </activity>
 
         <activity android:name=".AboutActivity" />
-        <activity android:name=".CustomizeWidgetActivity" />
 
         <receiver android:name=".WidgetProvider" >
             <intent-filter>
@@ -37,17 +36,7 @@
         </receiver>
 
         <activity
-            android:name=".AddNewWidgetActivity"
-            android:label="@string/title_activity_add_new_widget"
-            android:parentActivityName=".WidgetListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shyamu.translocwidget.WidgetListActivity" />
-        </activity>
-        <activity
-            android:name=".WidgetConfigActivity"
-            android:label="@string/title_activity_widget_config"
-            android:theme="@style/dialog_light" >
+            android:name=".WidgetConfigActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

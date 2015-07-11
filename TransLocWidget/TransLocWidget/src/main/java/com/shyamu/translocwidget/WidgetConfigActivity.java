@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -43,7 +44,6 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_config);
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -133,6 +133,13 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
         if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
         else remoteViews.setTextViewText(R.id.tvMins, "mins away");
 
+        // set colors
+        remoteViews.setInt(R.id.rlWidgetLayout, "setBackgroundColor", atw.getBackgroundColor());
+        remoteViews.setTextColor(R.id.tvRoute, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvStop, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvRemainingTime, atw.getTextColor());
+        remoteViews.setTextColor(R.id.tvMins, atw.getTextColor());
+        // set text content
         remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
         remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
 
