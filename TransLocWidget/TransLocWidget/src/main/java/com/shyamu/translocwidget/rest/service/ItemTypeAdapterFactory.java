@@ -3,6 +3,7 @@ package com.shyamu.translocwidget.rest.service;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
@@ -61,7 +62,12 @@ public class ItemTypeAdapterFactory implements TypeAdapterFactory {
                                 break;
                             case ARRIVAL:
                                 Log.d(TAG, "dataType is ARRIVAL");
-                                jsonElement = jsonObject.getAsJsonArray("data").get(0).getAsJsonObject().getAsJsonArray("arrivals");
+                                // if there are arrival times available send them, else send empty json array
+                                if(jsonObject.getAsJsonArray("data").size() > 0){
+                                    jsonElement = jsonObject.getAsJsonArray("data").get(0).getAsJsonObject().getAsJsonArray("arrivals");
+                                } else {
+                                    jsonElement = new JsonArray();
+                                }
                                 break;
                         }
                     }

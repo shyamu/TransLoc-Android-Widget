@@ -102,10 +102,17 @@ public class Utils {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
         int minutesUntilArrival = atw.getMinutesUntilArrival();
-        remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
-        if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
-        if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
-        else remoteViews.setTextViewText(R.id.tvMins, "mins away");
+        // Error state
+        if(minutesUntilArrival == -1) {
+            remoteViews.setTextViewText(R.id.tvRemainingTime, "---");
+            remoteViews.setTextViewText(R.id.tvMins, "Tap to refresh");
+        } else {
+            remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
+            if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
+            if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
+            else remoteViews.setTextViewText(R.id.tvMins, "mins away");
+        }
+
 
         // Set on tap pending intent
         Intent widgetTapIntent = new Intent(context, Provider.class);

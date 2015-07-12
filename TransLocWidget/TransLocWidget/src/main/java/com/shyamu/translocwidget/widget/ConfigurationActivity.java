@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -117,16 +116,26 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
                 .subscribe((arrivals) -> {
                             handleWidgetCreation(arrivals, atw);
                         },
-                        e -> Log.e(TAG, "Error in getting list of arrival times", e)
+                        e -> handleServiceErrors(e)
                 );
     }
 
-    private void handleWidgetCreation(List<TransLocArrival> arrivals, ArrivalTimeWidget atw) {
-        if(arrivals != null && !arrivals.isEmpty()) {
+    private void handleServiceErrors(Throwable e) {
+        Log.e(TAG, "Error in getting list of arrival times", e);
+        Utils.showAlertDialog(this, "Error", "Please check your data connection");
+    }
+
+        private void handleWidgetCreation(List<TransLocArrival> arrivals, ArrivalTimeWidget atw) {
+        if(arrivals != null) {
             // Calculate next arrival time
-            TransLocArrival nextArrival = arrivals.get(0);
-            int minsTillArrival = getMinsUntilArrival(nextArrival);
-            atw.setMinutesUntilArrival(minsTillArrival);
+            if(arrivals.isEmpty()) {
+                Log.d(TAG, "arrivals is empty");
+                atw.setMinutesUntilArrival(-1);
+            } else {
+                TransLocArrival nextArrival = arrivals.get(0);
+                int minsTillArrival = getMinsUntilArrival(nextArrival);
+                atw.setMinutesUntilArrival(minsTillArrival);
+            }
 
             // Create Widget
             RemoteViews remoteViews = Utils.createRemoteViews(this, atw, appWidgetId);
@@ -156,7 +165,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
             Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
             finish();
         } else {
-            Log.e(TAG, "arrivals is null or empty!");
+            Log.e(TAG, "arrivals is null!");
         }
     }
 

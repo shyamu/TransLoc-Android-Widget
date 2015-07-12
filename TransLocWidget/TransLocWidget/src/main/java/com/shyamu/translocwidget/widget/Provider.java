@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
@@ -77,20 +78,32 @@ public class Provider extends AppWidgetProvider {
                 .subscribe((arrivals) -> {
                             handleWidgetUpdate(arrivals, appWidgetManager, atw, context, appWidgetId);
                         },
-                        e -> Log.e(TAG, "Error in getting list of arrival times", e)
+                        e -> {
+                            handleServiceErrors(e, context);
+                        }
                 );
     }
 
+    private void handleServiceErrors(Throwable e, Context context) {
+        Log.e(TAG, "Error in getting list of arrival times", e);
+        Toast.makeText(context, "Error - No data connection.", Toast.LENGTH_LONG).show();
+    }
+
     private void handleWidgetUpdate(List<TransLocArrival> arrivals, AppWidgetManager appWidgetManager, ArrivalTimeWidget atw, Context context, int appWidgetId) {
-        if(arrivals != null && !arrivals.isEmpty()) {
-            TransLocArrival nextArrival = arrivals.get(0);
-            int minsTillArrival = getMinsUntilArrival(nextArrival);
-            atw.setMinutesUntilArrival(minsTillArrival);
-            Log.v(TAG, "in handleWidgetUpdate with " + minsTillArrival + " minsTillArrival for appwidgetId= " + appWidgetId);
+        if(arrivals != null) {
+            if(arrivals.isEmpty()) {
+                Log.d(TAG, "arrivals is empty");
+                Toast.makeText(context, "No arrival times found. Please try again later", Toast.LENGTH_LONG).show();
+                atw.setMinutesUntilArrival(-1);
+            } else {
+                TransLocArrival nextArrival = arrivals.get(0);
+                int minsTillArrival = getMinsUntilArrival(nextArrival);
+                atw.setMinutesUntilArrival(minsTillArrival);
+            }
             RemoteViews remoteViews = Utils.createRemoteViews(context, atw, appWidgetId);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         } else {
-            Log.e(TAG, "arrivals is null or empty!");
+            Log.e(TAG, "arrivals is null!");
         }
     }
 
