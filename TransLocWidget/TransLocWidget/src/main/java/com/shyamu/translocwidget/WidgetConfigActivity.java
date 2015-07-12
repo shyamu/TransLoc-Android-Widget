@@ -23,6 +23,8 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -135,10 +137,19 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
             appWidgetManager.updateAppWidget(appWidgetId, Utils.createRemoteViews(getBaseContext(), atw, appWidgetId));
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
 
-            // Store atw in widget options
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("atw", atw);
-            appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle);
+            try {
+                ArrayList<ArrivalTimeWidget> listOfWidgets = Utils.getArrivalTimeWidgetsFromStorage(this);
+                for(int i = 0; i < listOfWidgets.size(); i++) {
+                    ArrivalTimeWidget widget = listOfWidgets.get(i);
+                    if (atw.equals(widget)){
+                        widget.setAppWidgetId(appWidgetId);
+                        listOfWidgets.set(i, widget);
+                        Utils.writeArrivalTimeWidgetsToStorage(this, listOfWidgets);
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error in getting list of widgets", e);
+            }
 
             // Return result
             Intent resultValue = new Intent();

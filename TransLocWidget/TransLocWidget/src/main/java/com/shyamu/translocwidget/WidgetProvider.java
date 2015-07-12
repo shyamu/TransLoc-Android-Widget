@@ -15,6 +15,8 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -44,20 +46,23 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // onUpdate is called when app is updated and when a new widget is added so we need to recreate remoteviews for each widget
-        Log.d(TAG, "in onUpdate");
         // There may be multiple widgets active, so update all of them
         Log.d(TAG, "in onUpdate with " + appWidgetIds.length + " app widget Ids");
-        for (int appWidgetId: appWidgetIds) {
-            Bundle bundle = appWidgetManager.getAppWidgetOptions(appWidgetId);
-            ArrivalTimeWidget atw = (ArrivalTimeWidget) bundle.getSerializable("atw");
-            if(atw != null) {
-                Log.d(TAG, atw.toString());
-                getArrivalsFromServiceAndUpdateWidgetUI(context, atw, appWidgetManager, appWidgetId);
-            } else {
-                Log.e(TAG, "bundle not found for atw widgetId: " + appWidgetId);
+        try {
+            ArrayList<ArrivalTimeWidget> listOfWidgetsInStorage = Utils.getArrivalTimeWidgetsFromStorage(context);
+            for (int appWidgetId: appWidgetIds) {
+                ArrivalTimeWidget atw = Utils.getArrivalTimeWidgetFromWidgetId(listOfWidgetsInStorage, appWidgetId);
+                if(atw != null) {
+                    Log.d(TAG, atw.toString());
+                    getArrivalsFromServiceAndUpdateWidgetUI(context, atw, appWidgetManager, appWidgetId);
+                } else {
+                    Log.e(TAG, "ArrivalTimeWidget not found for atw widgetId: " + appWidgetId);
+                }
             }
-
+        } catch (IOException e) {
+            Log.e(TAG, "Error in getting widgets from storage in onUpdate", e);
         }
+
     }
 
     private void getArrivalsFromServiceAndUpdateWidgetUI(Context context, ArrivalTimeWidget atw, AppWidgetManager appWidgetManager, int appWidgetId) {
