@@ -12,6 +12,8 @@ import android.widget.RemoteViews;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
+import com.shyamu.translocwidget.rest.service.ServiceGenerator;
+import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -31,6 +33,10 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
 
 
 public class Utils {
@@ -129,16 +135,12 @@ public class Utils {
     public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        //Set the time remaining of the widget
-        atw = new ArrivalTimeCalculator(context, atw).getArrivalTimeWidgetWithUpdatedTime();
-
-        /*
         int minutesUntilArrival = atw.getMinutesUntilArrival();
         remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
         if (minutesUntilArrival < 1) remoteViews.setTextViewText(R.id.tvRemainingTime, "<1");
         if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
         else remoteViews.setTextViewText(R.id.tvMins, "mins away");
-        */
+
         // Set on tap pending intent
         Intent widgetTapIntent = new Intent(context, WidgetProvider.class);
         widgetTapIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -155,8 +157,6 @@ public class Utils {
         // set text content
         remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
         remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
-        remoteViews.setTextViewText(R.id.tvRemainingTime, "--");
-        remoteViews.setTextViewText(R.id.tvMins, "Tap on widget to update");
 
         return remoteViews;
     }

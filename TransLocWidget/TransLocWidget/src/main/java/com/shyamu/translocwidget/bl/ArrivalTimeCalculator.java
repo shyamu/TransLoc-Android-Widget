@@ -33,7 +33,6 @@ public class ArrivalTimeCalculator {
     }
 
 
-
     public void getArrivalsFromService() {
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,

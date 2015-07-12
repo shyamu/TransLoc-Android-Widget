@@ -17,7 +17,17 @@ import android.widget.Toast;
 
 import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
+import com.shyamu.translocwidget.rest.model.TransLocArrival;
+import com.shyamu.translocwidget.rest.service.ServiceGenerator;
+import com.shyamu.translocwidget.rest.service.TransLocClient;
 
+import org.joda.time.DateTime;
+
+import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+
+import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
 
 
 public class WidgetConfigActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
@@ -80,9 +90,7 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
     @Override
     public void onFragmentInteraction(ArrivalTimeWidget incomingAtw) {
         Log.d(TAG, "inOnFragmentInteraction");
-        ArrivalTimeCalculator arrivalTimeCalculator = new ArrivalTimeCalculator(this, incomingAtw);
-        ArrivalTimeWidget atw = arrivalTimeCalculator.getArrivalTimeWidgetWithUpdatedTime();
-        handleCreationOfWidget(atw);
+        getArrivalsFromServiceAndCreateWidget(incomingAtw);
     }
 
     @Override
@@ -91,25 +99,62 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
         if(requestCode == 100) {
             if(resultCode == 1) {
                 ArrivalTimeWidget atw = (ArrivalTimeWidget) data.getSerializableExtra("atw");
-                handleCreationOfWidget(atw);
+                getArrivalsFromServiceAndCreateWidget(atw);
             } else {
                 // error
             }
         }
     }
 
-    private void handleCreationOfWidget(ArrivalTimeWidget atw) {
-        Log.d(TAG, "in handleCreationOfWidget with widget: " + atw.toString());
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
-        appWidgetManager.updateAppWidget(appWidgetId, Utils.createRemoteViews(getBaseContext(), atw, appWidgetId));
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("atw", atw);
-        appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle);
-        Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        setResult(RESULT_OK, resultValue);
-        Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
-        finish();
+    private void getArrivalsFromServiceAndCreateWidget(ArrivalTimeWidget atw) {
+        TransLocClient client =
+                ServiceGenerator.createService(TransLocClient.class,
+                        Utils.BASE_URL,
+                        this.getString(R.string.mashape_key),
+                        atw.getAgencyID(),
+                        ARRIVAL);
+        client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((arrivals) -> {
+                            handleWidgetCreation(arrivals, atw);
+                        },
+                        e -> Log.e(TAG, "Error in getting list of arrival times", e)
+                );
+    }
+
+    private void handleWidgetCreation(List<TransLocArrival> arrivals, ArrivalTimeWidget atw) {
+        if(arrivals != null && !arrivals.isEmpty()) {
+            // Calculate next arrival time
+            TransLocArrival nextArrival = arrivals.get(0);
+            int minsTillArrival = getMinsUntilArrival(nextArrival);
+            atw.setMinutesUntilArrival(minsTillArrival);
+
+            // Create Widget
+            RemoteViews remoteViews = Utils.createRemoteViews(this, atw, appWidgetId);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
+            appWidgetManager.updateAppWidget(appWidgetId, Utils.createRemoteViews(getBaseContext(), atw, appWidgetId));
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+
+            // Store atw in widget options
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("atw", atw);
+            appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle);
+
+            // Return result
+            Intent resultValue = new Intent();
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            setResult(RESULT_OK, resultValue);
+            Toast.makeText(getApplicationContext(), "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
+            finish();
+        } else {
+            Log.e(TAG, "arrivals is null or empty!");
+        }
+    }
+
+    private int getMinsUntilArrival(TransLocArrival arrival) {
+        DateTime currentDate = new DateTime();
+        DateTime arrivalDate = new DateTime(arrival.arrivalAt);
+        return Utils.getMinutesBetweenTimes(currentDate, arrivalDate);
     }
 
 }
