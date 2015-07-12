@@ -7,6 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -45,10 +52,8 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 
-public class MainActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
-    private static final String FILE_NAME = "WidgetList";
+public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
-    private static final Gson gson = new Gson();
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
 
     @Override
@@ -56,6 +61,12 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_list);
         Intent intent = getIntent();
+
+        Transition enterTrans = new Explode();
+        getWindow().setEnterTransition(enterTrans);
+
+        Transition returnTrans = new Explode();
+        getWindow().setReturnTransition(returnTrans);
 
         if (intent.hasExtra("starting_fragment")) {
             String startingFragment = intent.getStringExtra("starting_fragment");
@@ -71,6 +82,11 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
                     .addToBackStack(null)
                     .commit();
         }
+
+        // Prevents user from pressing back to an empty activity
+        getFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getFragmentManager().getBackStackEntryCount() == 0) finish();
+        });
     }
 
     @Override
@@ -125,6 +141,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
 
         private final String TAG = this.getTag();
         ListView agencyListView;
+        ProgressBar progressBar;
 
         public AddAgencyFragment() {
 
@@ -142,6 +159,8 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
             View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
             setHasOptionsMenu(true);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
+            progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
+            progressBar.setVisibility(View.VISIBLE);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
                             Utils.BASE_URL,
@@ -160,6 +179,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
         }
 
         private void populateAgencyListView(List<TransLocAgency> agencies) {
+            progressBar.setVisibility(View.INVISIBLE);
             if (agencies != null && !agencies.isEmpty()) {
                 ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
                 agencyListView.setAdapter(agencyArrayAdapter);
@@ -191,6 +211,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
 
         private final String TAG = this.getTag();
         ListView routeListView;
+        ProgressBar progressBar;
 
         public AddRouteFragment() {
 
@@ -208,6 +229,8 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
             View rootView = inflater.inflate(R.layout.fragment_add_route, container, false);
             setHasOptionsMenu(true);
             routeListView = (ListView) rootView.findViewById(R.id.lvRouteList);
+            progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
+            progressBar.setVisibility(View.VISIBLE);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
                             Utils.BASE_URL,
@@ -223,6 +246,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
         }
 
         private void populateRoutesListView(List<TransLocRoute> routes) {
+            progressBar.setVisibility(View.INVISIBLE);
             if (routes != null && !routes.isEmpty()) {
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
                 routeListView.setAdapter(routeArrayAdapter);
@@ -254,6 +278,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
 
         private final String TAG = this.getTag();
         ListView stopListView;
+        ProgressBar progressBar;
 
         public AddStopFragment() {
 
@@ -271,6 +296,8 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
             View rootView = inflater.inflate(R.layout.fragment_add_stop, container, false);
             setHasOptionsMenu(true);
             stopListView = (ListView) rootView.findViewById(R.id.lvStopList);
+            progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
+            progressBar.setVisibility(View.VISIBLE);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
                             Utils.BASE_URL,
@@ -286,6 +313,7 @@ public class MainActivity extends Activity implements WidgetListFragment.OnFragm
         }
 
         private void populateStopsListView(List<TransLocStop> stops) {
+            progressBar.setVisibility(View.INVISIBLE);
             if (stops != null && !stops.isEmpty()) {
                 ArrayList<TransLocStop> stopList = new ArrayList<>();
                 for (TransLocStop stop : stops) {

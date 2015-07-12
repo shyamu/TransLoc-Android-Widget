@@ -1,4 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context="com.shyamu.translocwidget.MainActivity" tools:ignore="MergeRootFrame" />
+    tools:context="com.shyamu.translocwidget.MainActivity" tools:ignore="MergeRootFrame">
+
+    <ProgressBar
+    style="?android:attr/progressBarStyleHorizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/pbLoading"
+    android:layout_gravity="center_horizontal"
+    android:indeterminate="true" />
+
+</FrameLayout>

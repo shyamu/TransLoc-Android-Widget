@@ -1,9 +1,15 @@
 package com.shyamu.translocwidget.widget;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +42,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
     private int appWidgetId = 0;
 
     private static final String TAG = "ConfigurationActivity";
-    Button addNewWidgetButton;
+    FloatingActionButton addNewWidgetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +54,16 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        addNewWidgetButton = (Button) findViewById(R.id.bAddNewWidget);
+        addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
         addNewWidgetButton.setOnClickListener(v -> {
+            Transition exitTrans = new Explode();
+            getWindow().setExitTransition(exitTrans);
+            Transition reenterTrans = new Explode();
+            getWindow().setReenterTransition(reenterTrans);
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(ConfigurationActivity.this);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra("starting_fragment", "AddAgencyFragment");
-            startActivityForResult(intent, 100);
+            startActivityForResult(intent, 100, options.toBundle());
         });
 
         if (savedInstanceState == null) {

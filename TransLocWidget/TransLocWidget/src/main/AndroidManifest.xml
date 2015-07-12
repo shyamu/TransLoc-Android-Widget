@@ -36,8 +36,9 @@
         </receiver>
 
         <activity
-            android:name=".widget.ConfigurationActivity">
-            <intent-filter>
+            android:name=".widget.ConfigurationActivity"
+            android:label="@string/app_name" >
+        <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
