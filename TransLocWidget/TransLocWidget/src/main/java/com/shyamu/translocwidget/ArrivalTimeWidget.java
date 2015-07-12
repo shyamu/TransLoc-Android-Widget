@@ -132,4 +132,12 @@ public class ArrivalTimeWidget implements Serializable{
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        ArrivalTimeWidget arrivalTimeWidget = (ArrivalTimeWidget) o;
+        return  arrivalTimeWidget.getAgencyID().equals(this.getAgencyID()) &&
+                arrivalTimeWidget.getRouteID().equals(this.getRouteID()) &&
+                arrivalTimeWidget.getStopID().equals(this.getStopID()) &&
+                arrivalTimeWidget.getAppWidgetId() == this.getAppWidgetId();
+    }
 }

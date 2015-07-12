@@ -45,9 +45,6 @@ public class Utils {
         AGENCY, ROUTE, STOP, ARRIVAL
     }
 
-    public static final String GET_AGENCIES_URL = "https://transloc-api-1-2.p.mashape.com/agencies.json";
-    public static final String GET_ROUTES_URL = "https://transloc-api-1-2.p.mashape.com/routes.json?agencies=";
-    public static final String GET_STOPS_URL = "https://transloc-api-1-2.p.mashape.com/stops.json?agencies=";
     public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
     public static final String BASE_URL = "https://transloc-api-1-2.p.mashape.com";
     public static final String FILE_NAME = "WidgetList";
@@ -68,39 +65,6 @@ public class Utils {
     public static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime)
     {
         return Minutes.minutesBetween(currentTime,futureTime).getMinutes();
-    }
-
-    protected static String getJsonResponse(String url, String key) throws Exception {
-        String response = "";
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("X-Mashape-Authorization",key);
-        try {
-            HttpResponse execute = client.execute(httpGet);
-            int statusCode = execute.getStatusLine().getStatusCode();
-            if(statusCode != HttpStatus.SC_OK) {
-                Log.e("Utils", "error in HTTP");
-                Log.e("Utils", "Did you rememember to put the API_KEY from mashape.com into res/values/strings.xml? :) ");
-                throw new Exception();
-            } else {
-                InputStream content = execute.getEntity().getContent();
-                BufferedReader buffer = new BufferedReader(
-                        new InputStreamReader(content));
-                String s = "";
-                while ((s = buffer.readLine()) != null) {
-                    response += s;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(response == "")
-        {
-            throw new Exception();
-        } else {
-            return response;
-        }
     }
 
     protected static void writeData(Context context, String data) throws IOException {
@@ -130,6 +94,20 @@ public class Utils {
         String widgetListJsonStr = Utils.readSavedData(context);
         return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>() {
         }.getType());
+    }
+
+    public static void writeArrivalTimeWidgetsToStorage(Context context, ArrayList<ArrivalTimeWidget> widgets) throws IOException {
+        String value = new Gson().toJson(widgets);
+        Utils.writeData(context, value);
+    }
+
+    public static ArrivalTimeWidget getArrivalTimeWidgetFromWidgetId(ArrayList<ArrivalTimeWidget> widgets, int appWidgetId) {
+        for (ArrivalTimeWidget widget : widgets) {
+            if (widget.getAppWidgetId() == appWidgetId) {
+                return widget;
+            }
+        }
+        return null;
     }
 
     public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {

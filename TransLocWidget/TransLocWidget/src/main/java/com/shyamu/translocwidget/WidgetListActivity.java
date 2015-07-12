@@ -340,9 +340,7 @@ public class WidgetListActivity extends ActionBarActivity implements WidgetListF
                 listViewArray.add(atw);
 
                 try {
-                    String value = gson.toJson(listViewArray);
-                    Log.v(TAG, value);
-                    Utils.writeData(getActivity(), value);
+                    Utils.writeArrivalTimeWidgetsToStorage(getActivity(), listViewArray);
                 } catch (Exception e) {
                     Log.e(TAG, "Error in writing widget list to storage");
                     Log.e(TAG, e.getMessage());

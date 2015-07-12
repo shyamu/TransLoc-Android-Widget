@@ -39,7 +39,10 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.d(TAG, "in onReceive with intent action: " + intent.getAction());
         if(intent.getAction().equals(Utils.TAP_ON_WIDGET_ACTION)) {
-            Log.d(TAG, "Tapped on Widget");
+            int idOfTappedWidget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+            Log.d(TAG, "Tapped on widget with widget id: " + idOfTappedWidget);
+            int[] appWidgetIds = {idOfTappedWidget};
+            onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
         }
     }
 
