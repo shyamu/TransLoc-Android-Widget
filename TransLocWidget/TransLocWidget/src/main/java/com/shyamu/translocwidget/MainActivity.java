@@ -2,10 +2,12 @@ package com.shyamu.translocwidget;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +46,7 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 
-public class MainActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
     private static final String TAG = "MainActivity";
     private static final Gson gson = new Gson();
@@ -95,6 +97,31 @@ public class MainActivity extends ActionBarActivity implements WidgetListFragmen
                 .toString(), Toast.LENGTH_LONG).show();
     }
 
+    private static void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e) {
+        Log.e(TAG, "error in getting list of " + errorFrom, e);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Error in retreiving a list of ");
+        String listOf = null;
+        switch (errorFrom) {
+            case AGENCY:
+                listOf = "agencies.";
+                break;
+            case ROUTE:
+                listOf = "routes.";
+                break;
+            case STOP:
+                listOf = "stops.";
+                break;
+            case ARRIVAL:
+                listOf = "arrivals.";
+                break;
+        }
+        sb.append(listOf);
+        sb.append(" Please try again later");
+
+        Utils.showAlertDialog(context, "Error", sb.toString());
+    }
+
     public static class AddAgencyFragment extends Fragment {
 
         private final String TAG = this.getTag();
@@ -125,7 +152,9 @@ public class MainActivity extends ActionBarActivity implements WidgetListFragmen
             client.agencies()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateAgencyListView,
-                            e -> Log.e(TAG, "Error in getting list of agencies", e)
+                            e -> {
+                                handleServiceErrors(getActivity(), AGENCY, e);
+                            }
                     );
 
             return rootView;
@@ -156,10 +185,7 @@ public class MainActivity extends ActionBarActivity implements WidgetListFragmen
             } else {
                 Log.e(TAG, "Agencies data was null or empty!");
             }
-
         }
-
-
     }
 
     public static class AddRouteFragment extends Fragment {
@@ -407,7 +433,6 @@ public class MainActivity extends ActionBarActivity implements WidgetListFragmen
 
         }
     }
-
 
     @Override
     public void onBackPressed() {
