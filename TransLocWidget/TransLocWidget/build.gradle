@@ -16,7 +16,7 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "21.1.2"
 
     defaultConfig {
@@ -38,10 +38,10 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:design:22.2.0'
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'joda-time:joda-time:2.3'
 

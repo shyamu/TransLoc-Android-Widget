@@ -1,13 +1,12 @@
 package com.shyamu.translocwidget;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,7 +45,7 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 
-public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
     private static final String TAG = "MainActivity";
     private static final Gson gson = new Gson();
