@@ -1,7 +1,4 @@
-package com.shyamu.translocwidget;
-
-import android.content.Context;
-import android.widget.RemoteViews;
+package com.shyamu.translocwidget.bl;
 
 import org.joda.time.DateTime;
 

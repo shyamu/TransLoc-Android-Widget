@@ -1,4 +1,4 @@
-package com.shyamu.translocwidget;
+package com.shyamu.translocwidget.listview;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,15 +10,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
+import com.shyamu.translocwidget.R;
+import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Shyamal on 2/6/2015.

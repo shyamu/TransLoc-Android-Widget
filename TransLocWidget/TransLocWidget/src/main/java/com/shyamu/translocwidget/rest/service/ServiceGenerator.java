@@ -2,15 +2,13 @@ package com.shyamu.translocwidget.rest.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.shyamu.translocwidget.Utils;
 import com.squareup.okhttp.OkHttpClient;
 
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
-import static com.shyamu.translocwidget.Utils.*;
+import static com.shyamu.translocwidget.bl.Utils.*;
 
 /**
  * Created by Shyamal on 3/15/2015.

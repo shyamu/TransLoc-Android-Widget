@@ -7,10 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import com.shyamu.translocwidget.ArrivalTimeWidget;
-import com.shyamu.translocwidget.ListViewAdapter;
+import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.listview.ListViewAdapter;
 
-import com.shyamu.translocwidget.Utils;
+import com.shyamu.translocwidget.bl.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;

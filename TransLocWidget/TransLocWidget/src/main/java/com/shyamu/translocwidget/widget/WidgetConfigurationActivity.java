@@ -1,21 +1,21 @@
-package com.shyamu.translocwidget;
+package com.shyamu.translocwidget.widget;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
+import com.shyamu.translocwidget.MainActivity;
+import com.shyamu.translocwidget.R;
+import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.model.TransLocArrival;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
@@ -29,14 +29,14 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
+import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
 
 
-public class WidgetConfigActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
+public class WidgetConfigurationActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
 
     private int appWidgetId = 0;
 
-    private static final String TAG = "WidgetConfigActivity";
+    private static final String TAG = "WidgetConfigurationActivity";
     Button addNewWidgetButton;
 
     @Override
@@ -53,7 +53,7 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
         addNewWidgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WidgetListActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("starting_fragment", "AddAgencyFragment");
                 startActivityForResult(intent, 100);
             }
@@ -137,6 +137,7 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
             appWidgetManager.updateAppWidget(appWidgetId, Utils.createRemoteViews(getBaseContext(), atw, appWidgetId));
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
 
+            // Add appWidgetId to same ArrivalTimeWidget that is stored in device storage
             try {
                 ArrayList<ArrivalTimeWidget> listOfWidgets = Utils.getArrivalTimeWidgetsFromStorage(this);
                 for(int i = 0; i < listOfWidgets.size(); i++) {
@@ -148,7 +149,7 @@ public class WidgetConfigActivity extends Activity implements WidgetListFragment
                     }
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Error in getting list of widgets", e);
+                Log.e(TAG, "Error in getting list of widgets from storage", e);
             }
 
             // Return result

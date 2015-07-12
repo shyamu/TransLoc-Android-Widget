@@ -27,7 +27,7 @@
 
     <FrameLayout android:id="@+id/container"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        tools:context="com.shyamu.translocwidget.WidgetConfigActivity" tools:ignore="MergeRootFrame"
+        tools:context="com.shyamu.translocwidget.widget.WidgetConfigurationActivity" tools:ignore="MergeRootFrame"
         android:layout_gravity="center">
     </FrameLayout>
 

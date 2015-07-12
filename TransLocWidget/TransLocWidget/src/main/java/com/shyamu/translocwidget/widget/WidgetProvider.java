@@ -1,14 +1,15 @@
-package com.shyamu.translocwidget;
+package com.shyamu.translocwidget.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
+import com.shyamu.translocwidget.R;
+import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.rest.model.TransLocArrival;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
 import com.shyamu.translocwidget.rest.service.TransLocClient;
@@ -19,13 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.Subscriptions;
 
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
+import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
 
 /**
  * Created by Shyamal on 3/16/2015.

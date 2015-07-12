@@ -1,4 +1,4 @@
-package com.shyamu.translocwidget;
+package com.shyamu.translocwidget.bl;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -11,14 +11,9 @@ import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
-import com.shyamu.translocwidget.rest.service.ServiceGenerator;
-import com.shyamu.translocwidget.rest.service.TransLocClient;
+import com.shyamu.translocwidget.R;
+import com.shyamu.translocwidget.widget.WidgetProvider;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
@@ -27,16 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import rx.android.schedulers.AndroidSchedulers;
-
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
 
 
 public class Utils {

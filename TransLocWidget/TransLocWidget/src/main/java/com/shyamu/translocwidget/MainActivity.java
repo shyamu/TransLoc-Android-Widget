@@ -24,7 +24,8 @@ import com.google.gson.Gson;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
-import com.shyamu.translocwidget.bl.ArrivalTimeCalculator;
+import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
 import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocRoute;
@@ -38,14 +39,14 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.shyamu.translocwidget.Utils.TransLocDataType.AGENCY;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.STOP;
+import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.AGENCY;
+import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
+import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 
-public class WidgetListActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
+public class MainActivity extends ActionBarActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String FILE_NAME = "WidgetList";
-    private static final String TAG = "WidgetListActivity";
+    private static final String TAG = "MainActivity";
     private static final Gson gson = new Gson();
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
 

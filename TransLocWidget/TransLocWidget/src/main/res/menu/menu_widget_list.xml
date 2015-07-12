@@ -1,7 +1,7 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.shyamu.translocwidget.WidgetListActivity"
+    tools:context="com.shyamu.translocwidget.MainActivity"
     xmlns:tools="http://schemas.android.com/tools">
     <item android:id="@+id/finish_item"
             android:title="Finish!"

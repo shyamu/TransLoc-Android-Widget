@@ -10,14 +10,10 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.shyamu.translocwidget.Utils;
 
 import java.io.IOException;
 
-import static com.shyamu.translocwidget.Utils.*;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.AGENCY;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ARRIVAL;
-import static com.shyamu.translocwidget.Utils.TransLocDataType.ROUTE;
+import static com.shyamu.translocwidget.bl.Utils.*;
 
 /**
  * Created by Shyamal on 3/15/2015.

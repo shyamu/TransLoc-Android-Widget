@@ -1,4 +1,4 @@
-package com.shyamu.translocwidget;
+package com.shyamu.translocwidget.listview;
 
 /**
  * Created by Shyamal on 2/6/2015.
