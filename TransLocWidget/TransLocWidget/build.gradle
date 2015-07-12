@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 8
         versionName "3.0"
     }
@@ -41,7 +41,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'joda-time:joda-time:2.3'
 

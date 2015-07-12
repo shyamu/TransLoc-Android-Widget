@@ -12,7 +12,7 @@ import android.widget.RemoteViews;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.shyamu.translocwidget.R;
-import com.shyamu.translocwidget.widget.WidgetProvider;
+import com.shyamu.translocwidget.widget.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
@@ -38,7 +38,7 @@ public class Utils {
     public static final String FILE_NAME = "WidgetList";
     public static final String TAP_ON_WIDGET_ACTION = "TAPPED_ON_WIDGET";
 
-    protected static void showAlertDialog(Context context, String title, String message) {
+    public static void showAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder( context )
                 .setTitle( title )
                 .setMessage( message )
@@ -108,7 +108,7 @@ public class Utils {
         else remoteViews.setTextViewText(R.id.tvMins, "mins away");
 
         // Set on tap pending intent
-        Intent widgetTapIntent = new Intent(context, WidgetProvider.class);
+        Intent widgetTapIntent = new Intent(context, Provider.class);
         widgetTapIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         widgetTapIntent.setAction(Utils.TAP_ON_WIDGET_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, widgetTapIntent, PendingIntent.FLAG_UPDATE_CURRENT);

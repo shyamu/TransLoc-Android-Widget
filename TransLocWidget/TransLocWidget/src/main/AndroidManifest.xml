@@ -22,7 +22,7 @@
 
         <activity android:name=".AboutActivity" />
 
-        <receiver android:name=".widget.WidgetProvider" >
+        <receiver android:name=".widget.Provider" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -36,7 +36,7 @@
         </receiver>
 
         <activity
-            android:name=".widget.WidgetConfigurationActivity">
+            android:name=".widget.ConfigurationActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
