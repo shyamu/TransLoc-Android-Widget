@@ -7,11 +7,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.listview.ListViewAdapter;
 
 import com.shyamu.translocwidget.bl.Utils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -45,10 +48,17 @@ public class WidgetListFragment extends ListFragment {
         try {
             listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
         } catch (IOException e) {
+            try {
+                Utils.writeArrivalTimeWidgetsToStorage(getActivity(), new ArrayList<>());
+            } catch (IOException e1) {
+                Log.e(TAG, "Error in writing empty widget list", e1);
+            }
             Log.e(TAG, "Error in getting previous widget list", e);
-            listViewArray = new ArrayList<>();
         }
         if(listViewArray != null) {
+            if(listViewArray.isEmpty()) {
+
+            }
             widgetListViewAdapter.setWidgetList(listViewArray);
         }
         setListAdapter(widgetListViewAdapter);

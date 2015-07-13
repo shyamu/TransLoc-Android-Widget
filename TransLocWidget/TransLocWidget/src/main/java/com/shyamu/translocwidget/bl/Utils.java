@@ -78,7 +78,7 @@ public class Utils {
         return datax.toString();
     }
 
-    public static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context) throws FileNotFoundException, IOException {
+    public static ArrayList<ArrivalTimeWidget> getArrivalTimeWidgetsFromStorage(Context context) throws IOException {
         String widgetListJsonStr = Utils.readSavedData(context);
         return new Gson().fromJson(widgetListJsonStr, new TypeToken<ArrayList<ArrivalTimeWidget>>() {
         }.getType());

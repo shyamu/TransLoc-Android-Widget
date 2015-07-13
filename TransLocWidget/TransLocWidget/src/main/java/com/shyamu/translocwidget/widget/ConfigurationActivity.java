@@ -50,6 +50,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_list);
         Bundle extras = getIntent().getExtras();
+
         if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -69,7 +70,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new WidgetListFragment())
+                    .add(R.id.widget_container, new WidgetListFragment())
                     .commit();
         }
     }

@@ -133,8 +133,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
 
     @Override
     public void onFragmentInteraction(ArrivalTimeWidget widget) {
-        Toast.makeText(getApplicationContext(), "interacted fragment with id:" + widget
-                .toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "To see arrival times, add TransLoc Widget to your home screen", Toast.LENGTH_LONG).show();
     }
 
     private static void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e, ProgressBar progressBar) {

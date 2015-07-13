@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\com.github.rahatarmanahmed\circularprogressview\2.3.2\jars\classes.jar"
+        jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\com.github.amlcurran.showcaseview\library\5.0.0\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="5d7ea94136c556d0ce3e56cbe3ba89283c7d9392">
-        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-581c16fdc4e05e2ea9320c9b6f1b9ec617800982.jar" />
+        sha1="8b3d9a7b348d8bcfb4d740dfaf70bc374cdae9d6">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-2abb0c5647161e257da741ec79a6926e15dedb62.jar" />
     </item>
 
 </items>
