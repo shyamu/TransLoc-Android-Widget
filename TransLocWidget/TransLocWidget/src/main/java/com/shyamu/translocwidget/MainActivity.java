@@ -3,6 +3,7 @@ package com.shyamu.translocwidget;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -160,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             setHasOptionsMenu(true);
             agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
             progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
+            agencyListView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             TransLocClient client =
                     ServiceGenerator.createService(TransLocClient.class,
@@ -179,10 +182,16 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         }
 
         private void populateAgencyListView(List<TransLocAgency> agencies) {
-            progressBar.setVisibility(View.INVISIBLE);
             if (agencies != null && !agencies.isEmpty()) {
                 ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
                 agencyListView.setAdapter(agencyArrayAdapter);
+
+                // Animate
+                TranslateAnimation animate = new TranslateAnimation(agencyListView.getWidth(),0,0,0);
+                animate.setDuration(250);
+                animate.setFillAfter(true);
+                agencyListView.startAnimation(animate);
+                agencyListView.setVisibility(View.VISIBLE);
 
                 // Set onclicklistener to open select routes fragment
                 agencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -192,11 +201,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         atw.setAgencyID(Integer.toString(selectedAgency.agencyId));
                         atw.setAgencyLongName(selectedAgency.longName);
 
-                        Fragment addRouteFragment = new AddRouteFragment();
                         // Insert the fragment by replacing any existing fragment
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, addRouteFragment)
+                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                                .replace(R.id.container, new AddRouteFragment())
                                 .addToBackStack(null)
                                 .commit();
                     }
@@ -251,6 +260,13 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
                 routeListView.setAdapter(routeArrayAdapter);
 
+                // Animate
+                TranslateAnimation animate = new TranslateAnimation(routeListView.getWidth(),0,0,0);
+                animate.setDuration(250);
+                animate.setFillAfter(true);
+                routeListView.startAnimation(animate);
+                routeListView.setVisibility(View.VISIBLE);
+
                 // Set onclicklistener to open select stops fragment
                 routeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -263,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         // Insert the fragment by replacing any existing fragment
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                                 .replace(R.id.container, addStopFragment)
                                 .addToBackStack(null)
                                 .commit();
@@ -323,6 +340,13 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                     ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stopList);
                     stopListView.setAdapter(stopArrayAdapter);
 
+                    // Animate
+                    TranslateAnimation animate = new TranslateAnimation(stopListView.getWidth(),0,0,0);
+                    animate.setDuration(250);
+                    animate.setFillAfter(true);
+                    stopListView.startAnimation(animate);
+                    stopListView.setVisibility(View.VISIBLE);
+
                     // Set onclicklistener to open select stops fragment
                     stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -331,18 +355,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                             atw.setStopID((Integer.toString(selectedStop.stopId)));
                             atw.setStopName(selectedStop.toString());
 
-                            /*
                             // Insert the fragment by replacing any existing fragment
                             FragmentManager fragmentManager = getActivity().getFragmentManager();
                             fragmentManager.beginTransaction()
-                                    .replace(R.id.container, new WidgetListFragment())
-                                    .commit();
-                            */
-                            Fragment customizeColorsFragment = new CustomizeColorsFragment();
-                            // Insert the fragment by replacing any existing fragment
-                            FragmentManager fragmentManager = getActivity().getFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.container, customizeColorsFragment)
+                                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                                    .replace(R.id.container, new CustomizeColorsFragment())
                                     .addToBackStack(null)
                                     .commit();
                         }

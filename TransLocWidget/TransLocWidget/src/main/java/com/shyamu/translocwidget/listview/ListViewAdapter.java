@@ -29,11 +29,7 @@ public class ListViewAdapter extends BaseAdapter {
     private LayoutInflater mInflater = null;
     private ArrayList<ArrivalTimeWidget> widgetList = new ArrayList<ArrivalTimeWidget>();
     private Context mContext;
-
-    private int lastPosition = -1;
-
-
-
+    
     private final class ViewHolder {
         TextView tv_agencyName;
         TextView tv_routeName;
@@ -110,10 +106,6 @@ public class ListViewAdapter extends BaseAdapter {
         mHolder.tv_agencyName.setText(arrivalTimeWidget.getAgencyLongName());
         mHolder.tv_routeName.setText(arrivalTimeWidget.getRouteName());
         mHolder.tv_stopName.setText(arrivalTimeWidget.getStopName());
-
-        Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        convertView.startAnimation(animation);
-        lastPosition = position;
 
         return convertView;
     }
