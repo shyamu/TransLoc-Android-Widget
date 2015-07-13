@@ -4,11 +4,13 @@
     tools:context="com.shyamu.translocwidget.MainActivity" tools:ignore="MergeRootFrame">
 
     <ProgressBar
-    style="?android:attr/progressBarStyleHorizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/pbLoading"
-    android:layout_gravity="center_horizontal"
-    android:indeterminate="true" />
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbLoading"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:visibility="invisible"
+    />
 
 </FrameLayout>

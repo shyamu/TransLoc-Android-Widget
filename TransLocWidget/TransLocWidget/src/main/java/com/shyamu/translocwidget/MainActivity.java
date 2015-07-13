@@ -114,8 +114,9 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 .toString(), Toast.LENGTH_LONG).show();
     }
 
-    private static void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e) {
+    private static void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e, ProgressBar progressBar) {
         Log.e(TAG, "error in getting list of " + errorFrom, e);
+        progressBar.setVisibility(View.INVISIBLE);
         StringBuilder sb = new StringBuilder();
         sb.append("Error in retreiving a list of ");
         String listOf = null;
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateAgencyListView,
                             e -> {
-                                handleServiceErrors(getActivity(), AGENCY, e);
+                                handleServiceErrors(getActivity(), AGENCY, e, progressBar);
                             }
                     );
 
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 animate.setFillAfter(true);
                 agencyListView.startAnimation(animate);
                 agencyListView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
 
                 // Set onclicklistener to open select routes fragment
                 agencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             client.routes(atw.getAgencyID())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateRoutesListView,
-                            e -> Log.e(TAG, "Error in getting list of routes", e)
+                            e ->  handleServiceErrors(getActivity(), ROUTE, e, progressBar)
                     );
             return rootView;
         }
@@ -324,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             client.stops(atw.getAgencyID())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::populateStopsListView,
-                            e -> Log.e(TAG, "Error in getting list of stops", e)
+                            e ->  handleServiceErrors(getActivity(), STOP, e, progressBar)
                     );
             return rootView;
         }
@@ -438,8 +440,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             setTextColorButton = (Button) rootView.findViewById(R.id.bChangeTextColor);
             currentBackgroundColor = (LinearLayout) rootView.findViewById(R.id.llCurrentBackgroundColor);
             currentTextColor = (LinearLayout) rootView.findViewById(R.id.llCurrentTextColor);
-
-
             currentBackgroundColor.setBackgroundColor(atw.getBackgroundColor());
             currentTextColor.setBackgroundColor(atw.getTextColor());
 

@@ -29,7 +29,7 @@ public class ListViewAdapter extends BaseAdapter {
     private LayoutInflater mInflater = null;
     private ArrayList<ArrivalTimeWidget> widgetList = new ArrayList<ArrivalTimeWidget>();
     private Context mContext;
-    
+
     private final class ViewHolder {
         TextView tv_agencyName;
         TextView tv_routeName;
