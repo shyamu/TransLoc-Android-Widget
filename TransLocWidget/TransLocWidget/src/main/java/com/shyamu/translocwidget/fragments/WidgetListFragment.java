@@ -49,15 +49,7 @@ public class WidgetListFragment extends ListFragment {
             listViewArray = new ArrayList<>();
         }
         if(listViewArray != null) {
-            if(listViewArray.isEmpty()) {
-                ArrivalTimeWidget arrivalTimeNoWidget = new ArrivalTimeWidget();
-                arrivalTimeNoWidget.setAgencyLongName("No Widgets saved.");
-                arrivalTimeNoWidget.setRouteName("Add a widget from your home screen first!");
-                listViewArray.add(arrivalTimeNoWidget);
-                widgetListViewAdapter.setWidgetList(listViewArray);
-            } else {
-                widgetListViewAdapter.setWidgetList(listViewArray);
-            }
+            widgetListViewAdapter.setWidgetList(listViewArray);
         }
         setListAdapter(widgetListViewAdapter);
     }

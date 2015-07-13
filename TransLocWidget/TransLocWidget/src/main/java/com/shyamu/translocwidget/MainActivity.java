@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
@@ -57,6 +58,8 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
+    private static FloatingActionButton addNewWidgetButton;
+    private static boolean cameFromConfigurationActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,17 +73,37 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         Transition returnTrans = new Explode();
         getWindow().setReturnTransition(returnTrans);
 
+        addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
+        addNewWidgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO add animation to move FAB to bottom right off screen
+                addNewWidgetButton.setVisibility(View.GONE);
+                cameFromConfigurationActivity = false;
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, new AddAgencyFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         if (intent.hasExtra("starting_fragment")) {
+            cameFromConfigurationActivity = true;
             String startingFragment = intent.getStringExtra("starting_fragment");
             if (startingFragment.equals("AddAgencyFragment")) {
                 getFragmentManager().beginTransaction()
-                        .add(R.id.container, new AddAgencyFragment())
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, new AddAgencyFragment())
                         .addToBackStack(null)
                         .commit();
             }
         } else if (savedInstanceState == null) {
+            addNewWidgetButton.setVisibility(View.VISIBLE);
+            cameFromConfigurationActivity = false;
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new WidgetListFragment())
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .add(R.id.widget_container, new WidgetListFragment())
                     .addToBackStack(null)
                     .commit();
         }
@@ -207,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                .replace(R.id.container, new AddRouteFragment())
+                                .replace(R.id.widget_container, new AddRouteFragment())
                                 .addToBackStack(null)
                                 .commit();
                     }
@@ -282,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                .replace(R.id.container, addStopFragment)
+                                .replace(R.id.widget_container, addStopFragment)
                                 .addToBackStack(null)
                                 .commit();
                     }
@@ -361,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                             FragmentManager fragmentManager = getActivity().getFragmentManager();
                             fragmentManager.beginTransaction()
                                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                    .replace(R.id.container, new CustomizeColorsFragment())
+                                    .replace(R.id.widget_container, new CustomizeColorsFragment())
                                     .addToBackStack(null)
                                     .commit();
                         }
@@ -420,8 +443,19 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 }
                 Intent intent = new Intent();
                 intent.putExtra("atw", atw);
-                getActivity().setResult(1, intent);
-                getActivity().finish();
+                if(cameFromConfigurationActivity) {
+                    getActivity().setResult(1, intent);
+                    getActivity().finish();
+                } else {
+                    FragmentManager fragmentManager = getActivity().getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                            .replace(R.id.widget_container, new WidgetListFragment())
+                            .addToBackStack(null)
+                            .commit();
+                    addNewWidgetButton.setVisibility(View.VISIBLE);
+                }
+
                 return true;
             } else {
                 return super.onOptionsItemSelected(item);

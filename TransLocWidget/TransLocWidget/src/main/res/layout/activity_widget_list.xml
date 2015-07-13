@@ -1,5 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/widget_container"
     android:layout_width="match_parent" android:layout_height="match_parent"
     tools:context="com.shyamu.translocwidget.MainActivity" tools:ignore="MergeRootFrame">
 
@@ -12,5 +12,20 @@
         android:indeterminate="true"
         android:visibility="invisible"
     />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAddNewWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:clickable="true"
+        android:src="@drawable/ic_add_black_48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:visibility="gone"/>
 
 </FrameLayout>

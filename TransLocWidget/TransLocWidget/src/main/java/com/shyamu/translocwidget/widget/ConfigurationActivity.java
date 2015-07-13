@@ -13,6 +13,7 @@ import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -47,14 +48,14 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_widget_config);
+        setContentView(R.layout.activity_widget_list);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
-
         addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
+        addNewWidgetButton.setVisibility(View.VISIBLE);
         addNewWidgetButton.setOnClickListener(v -> {
             Transition exitTrans = new Explode();
             getWindow().setExitTransition(exitTrans);
@@ -73,6 +74,12 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(addNewWidgetButton == null) addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
+        addNewWidgetButton.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
