@@ -19,7 +19,6 @@ import org.joda.time.Minutes;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -99,7 +98,7 @@ public class Utils {
     }
 
     public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout_main);
 
         int minutesUntilArrival = atw.getMinutesUntilArrival();
         // Error state
