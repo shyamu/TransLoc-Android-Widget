@@ -94,7 +94,7 @@ public class WidgetListFragment extends ListFragment {
             if(tourGuide != null ) tourGuide.cleanUp();
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .replace(R.id.widget_container, new MainActivity.AddAgencyFragment())
+                    .replace(R.id.widget_container, new SelectAgencyFragment())
                     .addToBackStack(null)
                     .commit();
         });
