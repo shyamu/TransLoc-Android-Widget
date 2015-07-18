@@ -58,7 +58,6 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
     private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
-    private static FloatingActionButton addNewWidgetButton;
     private static boolean cameFromConfigurationActivity;
 
     @Override
@@ -73,20 +72,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         Transition returnTrans = new Explode();
         getWindow().setReturnTransition(returnTrans);
 
-        addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
-        addNewWidgetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO add animation to move FAB to bottom right off screen
-                addNewWidgetButton.setVisibility(View.GONE);
-                cameFromConfigurationActivity = false;
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .replace(R.id.widget_container, new AddAgencyFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+
 
         if (intent.hasExtra("starting_fragment")) {
             cameFromConfigurationActivity = true;
@@ -99,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         .commit();
             }
         } else if (savedInstanceState == null) {
-            addNewWidgetButton.setVisibility(View.VISIBLE);
             cameFromConfigurationActivity = false;
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
@@ -452,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                             .replace(R.id.widget_container, new WidgetListFragment())
                             .addToBackStack(null)
                             .commit();
-                    addNewWidgetButton.setVisibility(View.VISIBLE);
                 }
 
                 return true;

@@ -3,12 +3,17 @@ package com.shyamu.translocwidget.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.shyamu.translocwidget.MainActivity;
+import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.listview.ListViewAdapter;
 
@@ -29,6 +34,8 @@ public class WidgetListFragment extends ListFragment {
 
     private static final String TAG = "WidgetListFragment";
     private OnFragmentInteractionListener mListener;
+
+    private FloatingActionButton addNewWidgetButton;
 
     public static WidgetListFragment newInstance() {
         WidgetListFragment fragment = new WidgetListFragment();
@@ -64,6 +71,21 @@ public class WidgetListFragment extends ListFragment {
         setListAdapter(widgetListViewAdapter);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
+        addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
+        addNewWidgetButton.setOnClickListener(view -> {
+            // TODO add animation to move FAB to bottom right off screen
+            addNewWidgetButton.setVisibility(View.GONE);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .replace(R.id.widget_container, new MainActivity.AddAgencyFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+        return rootView;
+    }
 
     @Override
     public void onAttach(Activity activity) {

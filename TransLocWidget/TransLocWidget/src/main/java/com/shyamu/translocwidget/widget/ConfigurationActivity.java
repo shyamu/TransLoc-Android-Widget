@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
@@ -38,12 +39,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
 
 
-public class ConfigurationActivity extends Activity implements WidgetListFragment.OnFragmentInteractionListener {
+public class ConfigurationActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
 
     private int appWidgetId = 0;
 
     private static final String TAG = "ConfigurationActivity";
-    FloatingActionButton addNewWidgetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
+        /*
         addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
         addNewWidgetButton.setVisibility(View.VISIBLE);
         addNewWidgetButton.setOnClickListener(v -> {
@@ -67,7 +68,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
             intent.putExtra("starting_fragment", "AddAgencyFragment");
             startActivityForResult(intent, 100, options.toBundle());
         });
-
+        */
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.widget_container, new WidgetListFragment())
@@ -78,8 +79,10 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
     @Override
     protected void onResume() {
         super.onResume();
+        /*
         if(addNewWidgetButton == null) addNewWidgetButton = (FloatingActionButton) findViewById(R.id.fabAddNewWidget);
         addNewWidgetButton.setVisibility(View.VISIBLE);
+        */
     }
 
     @Override
@@ -113,6 +116,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.v(TAG, "onActivityResult");
         if(requestCode == 100) {
             if(resultCode == 1) {
                 ArrivalTimeWidget atw = (ArrivalTimeWidget) data.getSerializableExtra("atw");
@@ -124,6 +128,7 @@ public class ConfigurationActivity extends Activity implements WidgetListFragmen
     }
 
     private void getArrivalsFromServiceAndCreateWidget(ArrivalTimeWidget atw) {
+        Log.v(TAG, "creating widget: " + atw.toString());
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,
                         Utils.BASE_URL,
