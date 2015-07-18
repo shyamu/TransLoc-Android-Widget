@@ -5,6 +5,8 @@ import android.app.ListFragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -90,8 +92,6 @@ public class WidgetListFragment extends ListFragment {
 
         addNewWidgetButton.setOnClickListener(view -> {
             if(tourGuide != null ) tourGuide.cleanUp();
-            // TODO add animation to move FAB to bottom right off screen
-            addNewWidgetButton.setVisibility(View.GONE);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.widget_container, new MainActivity.AddAgencyFragment())
