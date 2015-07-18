@@ -89,7 +89,7 @@ public class WidgetListFragment extends ListFragment {
         setListAdapter(widgetListViewAdapter);
 
         addNewWidgetButton.setOnClickListener(view -> {
-            tourGuide.cleanUp();
+            if(tourGuide != null ) tourGuide.cleanUp();
             // TODO add animation to move FAB to bottom right off screen
             addNewWidgetButton.setVisibility(View.GONE);
             getFragmentManager().beginTransaction()
