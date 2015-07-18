@@ -64,18 +64,14 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Transition enterTrans = new Explode();
-        getWindow().setEnterTransition(enterTrans);
-
-        Transition returnTrans = new Explode();
-        getWindow().setReturnTransition(returnTrans);
-
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
+            // appWidgetId will equal widget being configured if we came from adding a widget to home screen
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
+
          if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
@@ -104,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.finish_item) {
+            // Finish button from customize colors fragment
             Log.v(TAG, "Selected Finish");
 
             ArrayList<ArrivalTimeWidget> listViewArray;
@@ -122,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 Log.e(TAG, "Error in writing widget list to storage");
                 Log.e(TAG, e.getMessage());
             }
-            Intent intent = new Intent();
-            intent.putExtra("atw", atw);
             if(appWidgetId > 0) {
+                // configuration path so create widget
                 getArrivalsFromServiceAndCreateWidget(atw);
             } else {
+                // app path so return back to widget list
                 FragmentManager fragmentManager = this.getFragmentManager();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
@@ -134,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         .addToBackStack(null)
                         .commit();
             }
-
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -160,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     }
 
     private void handleArrivalTimeError(Throwable e) {
+        // TODO show relevant alert dialog
         Log.e(TAG, "error in getting arrival times", e);
     }
 
@@ -481,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     }
 
     public static class CustomizeColorsFragment extends Fragment implements ColorPicker.OnColorChangedListener {
-        private final String TAG = this.getTag();
+        private final String TAG = "CustomizeColorsFragment";
         private ColorPicker picker;
         private SVBar svBar;
         private OpacityBar opacityBar;
@@ -499,10 +496,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             menu.clear();
             inflater.inflate(R.menu.menu_widget_list, menu);
         }
-
-
-
-
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -562,7 +555,4 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             super.onBackPressed();
         }
     }
-
-
-
 }

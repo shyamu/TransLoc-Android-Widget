@@ -2,11 +2,18 @@
 <items version="2" >
 
     <item
-        jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\com.github.amlcurran.showcaseview\library\5.0.0\jars\classes.jar"
+        jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\com.github.worker8\tourguide\1.0.11-SNAPSHOT\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="8b3d9a7b348d8bcfb4d740dfaf70bc374cdae9d6">
-        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-2abb0c5647161e257da741ec79a6926e15dedb62.jar" />
+        sha1="8baaf3e0308101b0d291d7c6778413af431eb7bb">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-3e258d0e5a139c84cd8b5a211371ce9f1af67517.jar" />
+    </item>
+    <item
+        jar="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\exploded-aar\net.i2p.android.ext\floatingactionbutton\1.9.0\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7c5e4db194c6ec3e62b70759ef913381ea4903d1">
+        <dex dex="C:\dev\android-projects\TransLoc_Widget\TransLocWidget\TransLocWidget\build\intermediates\pre-dexed\debug\classes-77c3fee71c58c1cb0b784638fa25c25964ffeac4.jar" />
     </item>
 
 </items>

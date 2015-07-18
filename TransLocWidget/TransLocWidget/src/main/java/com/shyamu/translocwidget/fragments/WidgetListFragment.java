@@ -1,32 +1,35 @@
 package com.shyamu.translocwidget.fragments;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.ListFragment;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.listview.ListViewAdapter;
 
-import com.shyamu.translocwidget.bl.Utils;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
+
 /**
  * A fragment representing a list of Items.
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
@@ -36,6 +39,8 @@ public class WidgetListFragment extends ListFragment {
     private OnFragmentInteractionListener mListener;
 
     private FloatingActionButton addNewWidgetButton;
+    private TourGuide tourGuide;
+
 
     public static WidgetListFragment newInstance() {
         WidgetListFragment fragment = new WidgetListFragment();
@@ -50,6 +55,12 @@ public class WidgetListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
+        addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
         ListViewAdapter widgetListViewAdapter = new ListViewAdapter(getActivity());
         ArrayList<ArrivalTimeWidget> listViewArray = null;
         try {
@@ -62,20 +73,23 @@ public class WidgetListFragment extends ListFragment {
             }
             Log.e(TAG, "Error in getting previous widget list", e);
         }
-        if(listViewArray != null) {
-            if(listViewArray.isEmpty()) {
+        if (listViewArray != null) {
+            if (listViewArray.isEmpty()) {
+                tourGuide = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                        .setPointer(new Pointer())
+                        .setToolTip(new ToolTip()
+                                .setTitle("No saved widgets")
+                                .setDescription("Tap the button to add a new widget!")
+                                .setGravity(Gravity.TOP | Gravity.LEFT))
+                        .playOn(addNewWidgetButton);
 
             }
             widgetListViewAdapter.setWidgetList(listViewArray);
         }
         setListAdapter(widgetListViewAdapter);
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
-        addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
         addNewWidgetButton.setOnClickListener(view -> {
+            tourGuide.cleanUp();
             // TODO add animation to move FAB to bottom right off screen
             addNewWidgetButton.setVisibility(View.GONE);
             getFragmentManager().beginTransaction()
@@ -113,7 +127,7 @@ public class WidgetListFragment extends ListFragment {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             ArrivalTimeWidget widget = (ArrivalTimeWidget) l.getItemAtPosition(position);
-            if(widget == null) throw new IllegalStateException();
+            if (widget == null) throw new IllegalStateException();
             else {
                 Log.d(TAG, widget.toString());
                 mListener.onFragmentInteraction(widget);
@@ -126,7 +140,7 @@ public class WidgetListFragment extends ListFragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
