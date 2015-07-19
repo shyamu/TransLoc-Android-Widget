@@ -62,6 +62,7 @@ public class SelectStopFragment extends BaseFragment {
         }
 
         setHasOptionsMenu(true);
+        getActivity().setTitle("Select a Stop");
         stopListView = (ListView) rootView.findViewById(R.id.lvStopList);
         progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
         progressBar.setVisibility(View.VISIBLE);

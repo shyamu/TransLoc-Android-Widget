@@ -9,9 +9,7 @@ import android.widget.ProgressBar;
 import com.shyamu.translocwidget.BuildConfig;
 import com.shyamu.translocwidget.bl.Utils;
 
-/**
- * Created by Shyamal on 7/18/2015.
- */
+
 public class BaseFragment extends Fragment {
     protected static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
 

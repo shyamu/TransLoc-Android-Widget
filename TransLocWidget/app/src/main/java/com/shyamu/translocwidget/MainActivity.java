@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             }
 
             setHasOptionsMenu(true);
+            getActivity().setTitle(R.string.app_name);
             picker = (ColorPicker) rootView.findViewById(R.id.picker);
             opacityBar = (OpacityBar) rootView.findViewById(R.id.opacitybar);
             svBar = (SVBar) rootView.findViewById(R.id.svbar);

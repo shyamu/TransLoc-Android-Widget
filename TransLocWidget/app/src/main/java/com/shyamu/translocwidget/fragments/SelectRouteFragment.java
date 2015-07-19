@@ -60,6 +60,7 @@ public class SelectRouteFragment extends BaseFragment {
         }
 
         setHasOptionsMenu(true);
+        getActivity().setTitle("Select a Route");
         routeListView = (ListView) rootView.findViewById(R.id.lvRouteList);
         progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
         progressBar.setVisibility(View.VISIBLE);

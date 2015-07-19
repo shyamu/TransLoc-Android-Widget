@@ -62,18 +62,15 @@ public class WidgetListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
+        getActivity().setTitle(R.string.app_name);
         addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
         ListViewAdapter widgetListViewAdapter = new ListViewAdapter(getActivity());
         ArrayList<ArrivalTimeWidget> listViewArray = null;
         try {
             listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
         } catch (IOException e) {
-            try {
-                Utils.writeArrivalTimeWidgetsToStorage(getActivity(), new ArrayList<>());
-            } catch (IOException e1) {
-                Log.e(TAG, "Error in writing empty widget list", e1);
-            }
             Log.e(TAG, "Error in getting previous widget list", e);
+            listViewArray = new ArrayList<>();
         }
         if (listViewArray != null) {
             if (listViewArray.isEmpty()) {
@@ -81,7 +78,7 @@ public class WidgetListFragment extends ListFragment {
                         .setPointer(new Pointer())
                         .setToolTip(new ToolTip()
                                 .setTitle("No saved widgets")
-                                .setDescription("Tap the button to add a new widget!")
+                                .setDescription("Tap the button to add your first widget!")
                                 .setGravity(Gravity.TOP | Gravity.LEFT))
                         .playOn(addNewWidgetButton);
 

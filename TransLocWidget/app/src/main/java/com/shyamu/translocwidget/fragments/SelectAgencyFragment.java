@@ -51,6 +51,7 @@ public class SelectAgencyFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_agency, container, false);
         setHasOptionsMenu(true);
+        getActivity().setTitle("Select an Agency");
         agencyListView = (ListView) rootView.findViewById(R.id.lvAgencyList);
         progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoading);
         agencyListView.setVisibility(View.INVISIBLE);
