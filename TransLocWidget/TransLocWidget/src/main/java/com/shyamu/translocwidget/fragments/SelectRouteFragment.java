@@ -66,7 +66,7 @@ public class SelectRouteFragment extends BaseFragment {
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,
                         Utils.BASE_URL,
-                        getString(R.string.mashape_key),
+                        TRANSLOC_API_KEY,
                         atw.getAgencyID(),
                         ROUTE);
         client.routes(atw.getAgencyID())

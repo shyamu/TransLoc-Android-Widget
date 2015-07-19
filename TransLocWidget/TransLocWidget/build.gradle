@@ -26,9 +26,13 @@ android {
         versionName "3.0"
     }
     buildTypes {
-        //noinspection GroovyMissingReturnStatement
+        debug{
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_TESTING +"\"")
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+        }
         release {
-
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_PRODUCTION +"\"")
         }
     }
     compileOptions {

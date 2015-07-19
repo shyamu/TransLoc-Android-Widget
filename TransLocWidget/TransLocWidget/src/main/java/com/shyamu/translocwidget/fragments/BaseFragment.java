@@ -6,12 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.shyamu.translocwidget.BuildConfig;
 import com.shyamu.translocwidget.bl.Utils;
 
 /**
  * Created by Shyamal on 7/18/2015.
  */
 public class BaseFragment extends Fragment {
+    protected static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
 
    protected void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e, ProgressBar progressBar) {
         Log.e("Fragments", "error in getting list of " + errorFrom, e);

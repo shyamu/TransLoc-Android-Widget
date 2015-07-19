@@ -68,7 +68,7 @@ public class SelectStopFragment extends BaseFragment {
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,
                         Utils.BASE_URL,
-                        getString(R.string.mashape_key),
+                        TRANSLOC_API_KEY,
                         atw.getAgencyID(),
                         STOP);
         client.stops(atw.getAgencyID())
