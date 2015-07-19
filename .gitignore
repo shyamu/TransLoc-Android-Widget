@@ -31,6 +31,7 @@ proguard/
 out/
 *.properties
 
+TransLocWidget/TransLocWidget/build/
 TransLocWidget/build/
 build/
 
