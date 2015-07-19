@@ -29,8 +29,6 @@ proguard/
 .idea/
 
 out/
-*.properties
-
 
 TransLoc_Widget/TransLocWidget/build/
 TransLocWidget/TransLocWidget/build/
@@ -39,4 +37,4 @@ build/
 
 TransLocWidget/TransLocWidget/gradle.properties
 TransLocWidget/gradle.properties
-TransLocWidget/gradle.properties
+
