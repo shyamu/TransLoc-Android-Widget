@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.shyamu.translocwidget.MainActivity.*;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 

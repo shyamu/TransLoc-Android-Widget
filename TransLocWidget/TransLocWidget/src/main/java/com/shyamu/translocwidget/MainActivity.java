@@ -2,14 +2,12 @@ package com.shyamu.translocwidget;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Explode;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -32,12 +25,8 @@ import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
-import com.shyamu.translocwidget.fragments.CustomizeColorsFragment;
 import com.shyamu.translocwidget.fragments.WidgetListFragment;
-import com.shyamu.translocwidget.rest.model.TransLocAgency;
 import com.shyamu.translocwidget.rest.model.TransLocArrival;
-import com.shyamu.translocwidget.rest.model.TransLocRoute;
-import com.shyamu.translocwidget.rest.model.TransLocStop;
 import com.shyamu.translocwidget.rest.service.ServiceGenerator;
 import com.shyamu.translocwidget.rest.service.TransLocClient;
 
@@ -49,15 +38,12 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.AGENCY;
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
-import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
-import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 
 public class MainActivity extends AppCompatActivity implements WidgetListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
-    private static ArrivalTimeWidget atw = new ArrivalTimeWidget();
+    private static ArrivalTimeWidget atw;
     private static int appWidgetId = 0;
 
     @Override
@@ -73,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-         if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .add(R.id.widget_container, new WidgetListFragment())
@@ -120,17 +106,20 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 Log.e(TAG, "Error in writing widget list to storage");
                 Log.e(TAG, e.getMessage());
             }
-            if(appWidgetId > 0) {
+            if (appWidgetId > 0) {
                 // configuration path so create widget
                 getArrivalsFromServiceAndCreateWidget(atw);
             } else {
                 // app path so return back to widget list
                 FragmentManager fragmentManager = this.getFragmentManager();
+                // clear back stack
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .replace(R.id.widget_container, new WidgetListFragment())
                         .addToBackStack(null)
                         .commit();
+                Toast.makeText(this, "Select Transloc Widget from your home screen widget drawer to see arrival times.", Toast.LENGTH_LONG).show();
+
             }
             return true;
         } else {
@@ -162,9 +151,9 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     }
 
     private void handleWidgetCreation(List<TransLocArrival> arrivals, ArrivalTimeWidget atw) {
-        if(arrivals != null) {
+        if (arrivals != null) {
             // Calculate next arrival time
-            if(arrivals.isEmpty()) {
+            if (arrivals.isEmpty()) {
                 Log.d(TAG, "arrivals is empty");
                 atw.setMinutesUntilArrival(-1);
             } else {
@@ -182,9 +171,9 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             // Add appWidgetId to same ArrivalTimeWidget that is stored in device storage
             try {
                 ArrayList<ArrivalTimeWidget> listOfWidgets = Utils.getArrivalTimeWidgetsFromStorage(this);
-                for(int i = 0; i < listOfWidgets.size(); i++) {
+                for (int i = 0; i < listOfWidgets.size(); i++) {
                     ArrivalTimeWidget widget = listOfWidgets.get(i);
-                    if (atw.equals(widget)){
+                    if (atw.equals(widget)) {
                         widget.setAppWidgetId(appWidgetId);
                         listOfWidgets.set(i, widget);
                         Utils.writeArrivalTimeWidgetsToStorage(this, listOfWidgets);
@@ -198,12 +187,13 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             Intent resultValue = new Intent();
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             setResult(RESULT_OK, resultValue);
-            Toast.makeText(this, "Tap on the widget to update!", Toast.LENGTH_LONG ).show();
+            Toast.makeText(this, "Tap on the widget to update!", Toast.LENGTH_LONG).show();
             finish();
         } else {
             Log.e(TAG, "arrivals is null!");
         }
     }
+
     private int getMinsUntilArrival(TransLocArrival arrival) {
         DateTime currentDate = new DateTime();
         DateTime arrivalDate = new DateTime(arrival.arrivalAt);
@@ -212,10 +202,10 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
 
     @Override
     public void onFragmentInteraction(ArrivalTimeWidget widget) {
-        if(appWidgetId > 0) {
+        if (appWidgetId > 0) {
             getArrivalsFromServiceAndCreateWidget(widget);
         } else {
-            Toast.makeText(getApplicationContext(), "To see arrival times, add TransLoc Widget to your home screen", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Select Transloc Widget from your home screen widget drawer to see arrival times", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -225,6 +215,85 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    public static class CustomizeColorsFragment extends Fragment implements ColorPicker.OnColorChangedListener {
+
+        private final String TAG = "CustomizeColorsFragment";
+        private ColorPicker picker;
+        private SVBar svBar;
+        private OpacityBar opacityBar;
+        private Button setBackgroundColorButton;
+        private Button setTextColorButton;
+        private LinearLayout currentBackgroundColor;
+        private LinearLayout currentTextColor;
+
+        public CustomizeColorsFragment() {
+
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_widget_list, menu);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_customize_colors, container, false);
+
+            Bundle args = getArguments();
+            if (args != null && args.containsKey("atw")) {
+                atw = (ArrivalTimeWidget) args.getSerializable("atw");
+            } else {
+                throw new IllegalStateException("No atw received from SelectStopFragment");
+            }
+
+            setHasOptionsMenu(true);
+            picker = (ColorPicker) rootView.findViewById(R.id.picker);
+            opacityBar = (OpacityBar) rootView.findViewById(R.id.opacitybar);
+            svBar = (SVBar) rootView.findViewById(R.id.svbar);
+            setBackgroundColorButton = (Button) rootView.findViewById(R.id.bChangeBackgroundColor);
+            setTextColorButton = (Button) rootView.findViewById(R.id.bChangeTextColor);
+            currentBackgroundColor = (LinearLayout) rootView.findViewById(R.id.llCurrentBackgroundColor);
+            currentTextColor = (LinearLayout) rootView.findViewById(R.id.llCurrentTextColor);
+            currentBackgroundColor.setBackgroundColor(atw.getBackgroundColor());
+            currentTextColor.setBackgroundColor(atw.getTextColor());
+
+            picker.addSVBar(svBar);
+            picker.addOpacityBar(opacityBar);
+            picker.setOnColorChangedListener(this);
+
+            setBackgroundColorButton.setOnClickListener(v -> {
+                picker.setOldCenterColor(picker.getColor());
+                currentBackgroundColor.setBackgroundColor(picker.getColor());
+                atw.setBackgroundColor(picker.getColor());
+            });
+
+            setTextColorButton.setOnClickListener(v -> {
+                picker.setOldCenterColor(picker.getColor());
+                currentTextColor.setBackgroundColor(picker.getColor());
+                atw.setTextColor(picker.getColor());
+            });
+
+            currentBackgroundColor.setOnClickListener(v -> {
+                ColorDrawable d = (ColorDrawable) currentBackgroundColor.getBackground();
+                picker.setColor(d.getColor());
+            });
+
+            currentTextColor.setOnClickListener(v -> {
+                ColorDrawable d = (ColorDrawable) currentTextColor.getBackground();
+                picker.setColor(d.getColor());
+            });
+
+            return rootView;
+        }
+
+        @Override
+        public void onColorChanged(int i) {
+
         }
     }
 }
