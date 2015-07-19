@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.shyamu.translocwidget.BuildConfig;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -31,6 +32,7 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
 public class Provider extends AppWidgetProvider {
 
     private static final String TAG = "Provider";
+    private static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -70,7 +72,7 @@ public class Provider extends AppWidgetProvider {
         TransLocClient client =
                 ServiceGenerator.createService(TransLocClient.class,
                         Utils.BASE_URL,
-                        context.getString(R.string.mashape_key),
+                        TRANSLOC_API_KEY,
                         atw.getAgencyID(),
                         ARRIVAL);
         client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
