@@ -26,6 +26,8 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.shyamu.translocwidget.MainActivity.*;
@@ -34,10 +36,12 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.STOP;
 
 public class SelectStopFragment extends BaseFragment {
     private final String TAG = this.getTag();
-    ListView stopListView;
-    ProgressBar progressBar;
+    private ListView stopListView;
+    private ProgressBar progressBar;
 
-    ArrivalTimeWidget atw;
+    private ArrivalTimeWidget atw;
+
+    private Subscription stopsSub;
 
     public SelectStopFragment() {
 
@@ -72,12 +76,19 @@ public class SelectStopFragment extends BaseFragment {
                         TRANSLOC_API_KEY,
                         atw.getAgencyID(),
                         STOP);
-        client.stops(atw.getAgencyID())
+        stopsSub = client.stops(atw.getAgencyID())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateStopsListView,
-                        e ->  handleServiceErrors(getActivity(), STOP, e, progressBar)
+                        e -> handleServiceErrors(getActivity(), STOP, e, progressBar)
                 );
+
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(stopsSub != null) stopsSub.unsubscribe();
     }
 
     private void populateStopsListView(List<TransLocStop> stops) {

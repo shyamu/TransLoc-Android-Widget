@@ -25,6 +25,7 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import java.util.List;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.AGENCY;
@@ -32,9 +33,11 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.AGENCY;
 public class SelectAgencyFragment extends BaseFragment {
 
     private final String TAG = this.getTag();
-    ListView agencyListView;
-    ProgressBar progressBar;
-    ArrivalTimeWidget atw;
+    private ListView agencyListView;
+    private ProgressBar progressBar;
+    private ArrivalTimeWidget atw;
+
+    private Subscription agenciesSub;
 
     public SelectAgencyFragment() {
 
@@ -62,7 +65,7 @@ public class SelectAgencyFragment extends BaseFragment {
                         TRANSLOC_API_KEY,
                         null,
                         AGENCY);
-        client.agencies()
+        agenciesSub = client.agencies()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateAgencyListView,
                         e -> {
@@ -71,6 +74,12 @@ public class SelectAgencyFragment extends BaseFragment {
                 );
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(agenciesSub != null) agenciesSub.unsubscribe();
     }
 
     private void populateAgencyListView(List<TransLocAgency> agencies) {

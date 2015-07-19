@@ -25,6 +25,7 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 
 import java.util.List;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
@@ -32,10 +33,11 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ROUTE;
 public class SelectRouteFragment extends BaseFragment {
 
     private final String TAG = this.getTag();
-    ListView routeListView;
-    ProgressBar progressBar;
+    private ListView routeListView;
+    private ProgressBar progressBar;
 
-    ArrivalTimeWidget atw;
+    private ArrivalTimeWidget atw;
+    private Subscription routesSub;
 
     public SelectRouteFragment() {
 
@@ -70,12 +72,18 @@ public class SelectRouteFragment extends BaseFragment {
                         TRANSLOC_API_KEY,
                         atw.getAgencyID(),
                         ROUTE);
-        client.routes(atw.getAgencyID())
+        routesSub = client.routes(atw.getAgencyID())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateRoutesListView,
-                        e ->  handleServiceErrors(getActivity(), ROUTE, e, progressBar)
+                        e -> handleServiceErrors(getActivity(), ROUTE, e, progressBar)
                 );
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(routesSub != null) routesSub.unsubscribe();
     }
 
     private void populateRoutesListView(List<TransLocRoute> routes) {

@@ -11,7 +11,7 @@ import com.shyamu.translocwidget.bl.Utils;
 
 
 public class BaseFragment extends Fragment {
-    protected static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
+    protected static final String TRANSLOC_API_KEY = BuildConfig.TRANSLOC_API_KEY;
 
    protected void handleServiceErrors(Context context, Utils.TransLocDataType errorFrom, Throwable e, ProgressBar progressBar) {
         Log.e("Fragments", "error in getting list of " + errorFrom, e);
