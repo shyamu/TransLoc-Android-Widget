@@ -2,6 +2,7 @@ package com.shyamu.translocwidget.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,6 +107,8 @@ public class SelectRouteFragment extends BaseFragment {
                     TransLocRoute selectedRoute = (TransLocRoute) parent.getItemAtPosition(position);
                     atw.setRouteID(Integer.toString(selectedRoute.routeID));
                     atw.setRouteName(selectedRoute.toString());
+                    Log.d(TAG, "color: " + selectedRoute.color);
+                    if(selectedRoute.color != null ) atw.setBackgroundColor(Color.parseColor("#" + selectedRoute.color));
 
                     SelectStopFragment selectStopFragment = new SelectStopFragment();
                     Bundle bundle = new Bundle();

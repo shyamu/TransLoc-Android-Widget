@@ -1,5 +1,9 @@
 package com.shyamu.translocwidget.bl;
 
+import android.graphics.Color;
+
+import com.shyamu.translocwidget.R;
+
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -19,7 +23,7 @@ public class ArrivalTimeWidget implements Serializable{
     private DateTime nextArrivalTime;
     private int minutesUntilArrival;
     private int textColor = -1;
-    private int backgroundColor = 1996554497;
+    private int backgroundColor = R.color.primary_dark;
 
     public ArrivalTimeWidget() {
     }

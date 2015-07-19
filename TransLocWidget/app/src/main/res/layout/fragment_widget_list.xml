@@ -29,7 +29,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="@dimen/FAB_marginRight"
         android:layout_marginBottom="@dimen/FAB_marginBottom"
-        app:backgroundTint="@color/accent"
+        app:backgroundTint="@color/accent_orange"
     />
 
 

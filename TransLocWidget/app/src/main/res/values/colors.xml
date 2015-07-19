@@ -2,4 +2,10 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="trans_gray">#77010101</color>
+
+    <color name="black">#FF000000</color>
+    <color name="whitegrey">#FFF2F2F2</color>
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="accent_orange">#FF5722</color>
 </resources>

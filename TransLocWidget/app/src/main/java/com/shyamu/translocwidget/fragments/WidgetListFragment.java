@@ -62,7 +62,7 @@ public class WidgetListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
-        getActivity().setTitle(R.string.app_name);
+        getActivity().setTitle("Saved Widgets");
         addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
         ListViewAdapter widgetListViewAdapter = new ListViewAdapter(getActivity());
         ArrayList<ArrivalTimeWidget> listViewArray = null;
