@@ -29,7 +29,14 @@ proguard/
 .idea/
 
 out/
+*.properties
 
 
-TransLocWidget/TransLocWidget/src/main/res/values/strings.xml
+TransLoc_Widget/TransLocWidget/build/
+TransLocWidget/TransLocWidget/build/
+TransLocWidget/build/
+build/
 
+TransLocWidget/TransLocWidget/gradle.properties
+TransLocWidget/gradle.properties
+TransLocWidget/gradle.properties

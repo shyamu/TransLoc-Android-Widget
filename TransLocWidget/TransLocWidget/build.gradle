@@ -1,4 +1,5 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
 
@@ -15,28 +16,40 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
-        versionCode 7
-        versionName "2.0"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 8
+        versionName "3.0"
     }
     buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        debug{
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_TESTING +"\"")
+            minifyEnabled false
+            applicationIdSuffix ".debug"
         }
+        release {
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_PRODUCTION +"\"")
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
-    compile 'com.larswerkman:HoloColorPicker:1.1'
+    compile 'com.android.support:design:22.2.0'
+    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile ('com.github.worker8:tourguide:1.0.11-SNAPSHOT@aar'){
+        transitive=true
+    }
+    compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'joda-time:joda-time:2.3'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.3.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.3.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.1'
+
 }
