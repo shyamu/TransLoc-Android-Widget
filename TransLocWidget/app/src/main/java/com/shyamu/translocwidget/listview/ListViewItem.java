@@ -9,7 +9,6 @@ public class ListViewItem {
     private String stopName;
     private int backgroundColor;
     private int textColor;
-    public boolean needInflate;
 
 
     public ListViewItem(String agencyName, String routeName, String stopName, int backgroundColor, int textColor) {

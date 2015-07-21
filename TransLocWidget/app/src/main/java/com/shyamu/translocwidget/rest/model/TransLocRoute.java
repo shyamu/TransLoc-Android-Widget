@@ -18,6 +18,10 @@ public class TransLocRoute{
     public String color;
 
     public String toString(){
-        return shortName + " " + longName;
+        if(shortName == null || shortName.equals("")) {
+            return longName;
+        } else {
+            return shortName + " - " + longName;
+        }
     }
 }

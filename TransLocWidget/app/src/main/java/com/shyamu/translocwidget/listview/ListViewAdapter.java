@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
+import com.shyamu.translocwidget.bl.Utils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -44,24 +45,11 @@ public class ListViewAdapter extends BaseAdapter {
     public ListViewAdapter(Context context) {
         mContext = context;
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        StringBuilder sb = new StringBuilder();
 
         try {
-            FileInputStream fis = mContext.openFileInput("WidgetList");
-            InputStreamReader inputStreamReader = new InputStreamReader(fis);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-            widgetList = new Gson().fromJson(sb.toString(), ArrayList.class);
-            Log.v(TAG, widgetList.toString());
-            Log.v(TAG, widgetList.size()+ "");
-
-
-            fis.close();
+            widgetList = Utils.getArrivalTimeWidgetsFromStorage(context);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "error in reading widget list from storage", e);
         }
     }
 
