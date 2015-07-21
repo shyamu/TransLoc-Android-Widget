@@ -297,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
 
         @Override
         public void onColorChanged(int i) {
-
         }
     }
 }
