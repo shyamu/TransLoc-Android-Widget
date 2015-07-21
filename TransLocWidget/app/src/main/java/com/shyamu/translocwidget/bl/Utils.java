@@ -1,11 +1,14 @@
 package com.shyamu.translocwidget.bl;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -28,6 +31,8 @@ import java.util.ArrayList;
 
 public class Utils {
 
+    private static final String TAG = "Utils";
+
     public enum TransLocDataType {
         AGENCY, ROUTE, STOP, ARRIVAL
     }
@@ -36,6 +41,7 @@ public class Utils {
     public static final String BASE_URL = "https://transloc-api-1-2.p.mashape.com";
     public static final String FILE_NAME = "WidgetList";
     public static final String TAP_ON_WIDGET_ACTION = "TAPPED_ON_WIDGET";
+
 
     public static void showAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder( context )
@@ -98,12 +104,32 @@ public class Utils {
     }
 
     public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout_main);
+
+        RemoteViews remoteViews;
+        int widgetSize = 3;
+        // for resizable widgets
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
+            if(widgetOptions != null) {
+                int minWidthDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+                int minHeightDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+                if(minWidthDp <= 72) widgetSize = 1;
+                else if(minWidthDp <= 160) widgetSize = 2;
+                else if(minWidthDp <= 248) widgetSize = 3;
+                else widgetSize = 4;
+            } else {
+                Log.e(TAG, "widget options is null");
+            }
+            remoteViews = drawWidgetForJellyBean(context, widgetSize);
+        } else {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        }
 
         int minutesUntilArrival = atw.getMinutesUntilArrival();
         // Error state
         if(minutesUntilArrival == -1) {
-            remoteViews.setTextViewText(R.id.tvRemainingTime, "---");
+            remoteViews.setTextViewText(R.id.tvRemainingTime, "--");
             remoteViews.setTextViewText(R.id.tvMins, "Tap to refresh");
         } else {
             remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
@@ -111,7 +137,6 @@ public class Utils {
             if (minutesUntilArrival < 2) remoteViews.setTextViewText(R.id.tvMins, "min away");
             else remoteViews.setTextViewText(R.id.tvMins, "mins away");
         }
-
 
         // Set on tap pending intent
         Intent widgetTapIntent = new Intent(context, Provider.class);
@@ -126,11 +151,40 @@ public class Utils {
         remoteViews.setTextColor(R.id.tvStop, atw.getTextColor());
         remoteViews.setTextColor(R.id.tvRemainingTime, atw.getTextColor());
         remoteViews.setTextColor(R.id.tvMins, atw.getTextColor());
+
         // set text content
-        remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
-        remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
+        if(widgetSize == 1) {
+            remoteViews.setTextViewText(R.id.tvRouteAndStop, atw.getRouteName() + " - " + atw.getStopName());
+            remoteViews.setTextColor(R.id.tvRouteAndStop, atw.getTextColor());
+        } else {
+            remoteViews.setTextViewText(R.id.tvRoute, atw.getRouteName());
+            remoteViews.setTextViewText(R.id.tvStop, atw.getStopName());
+        }
 
         return remoteViews;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static RemoteViews drawWidgetForJellyBean(Context context, int widgetSize) {
+
+        RemoteViews newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        newView.removeAllViews(R.id.rlWidgetLayout);
+
+        if(widgetSize == 3) {
+            RemoteViews threeWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
+            newView.addView(R.id.rlWidgetLayout,threeWidget);
+        } else if (widgetSize == 2) {
+            RemoteViews twoWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_two);
+            newView.addView(R.id.rlWidgetLayout,twoWidget);
+        } else if (widgetSize == 1) {
+            RemoteViews oneWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_one);
+            newView.addView(R.id.rlWidgetLayout, oneWidget);
+        } else {
+            Log.v(TAG,"widget size not found");
+            RemoteViews fourWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
+            newView.addView(R.id.rlWidgetLayout,fourWidget);
+        }
+        return newView;
     }
 
 }

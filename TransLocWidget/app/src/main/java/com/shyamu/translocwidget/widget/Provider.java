@@ -43,6 +43,10 @@ public class Provider extends AppWidgetProvider {
             Log.d(TAG, "Tapped on widget with widget id: " + idOfTappedWidget);
             int[] appWidgetIds = {idOfTappedWidget};
             onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
+        } else if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
+            int idOfResizedWidget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+            int[] appWidgetIds = {idOfResizedWidget};
+            onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
         }
     }
 
@@ -102,6 +106,7 @@ public class Provider extends AppWidgetProvider {
                 int minsTillArrival = getMinsUntilArrival(nextArrival);
                 atw.setMinutesUntilArrival(minsTillArrival);
             }
+
             RemoteViews remoteViews = Utils.createRemoteViews(context, atw, appWidgetId);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         } else {
@@ -114,10 +119,6 @@ public class Provider extends AppWidgetProvider {
         DateTime arrivalDate = new DateTime(arrival.arrivalAt);
         return Utils.getMinutesBetweenTimes(currentDate, arrivalDate);
     }
-
-
-
-
 
     @Override
     public void onEnabled(Context context) {

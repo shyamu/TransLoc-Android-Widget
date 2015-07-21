@@ -49,16 +49,16 @@
             android:layout_alignLeft="@+id/tvRoute"/>
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="mins away"
-                android:textSize="18sp"
-                android:id="@+id/tvMins"
-                android:layout_alignBaseline="@+id/tvRemainingTime"
-                android:layout_alignBottom="@+id/tvRoute"
-                android:layout_toRightOf="@+id/tvRemainingTime"
-                android:textColor="#ffffff"
-                android:layout_marginLeft="5dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mins away"
+            android:textSize="18sp"
+            android:id="@+id/tvMins"
+            android:layout_alignBaseline="@+id/tvRemainingTime"
+            android:layout_alignBottom="@+id/tvRoute"
+            android:layout_toRightOf="@+id/tvRemainingTime"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="5dp"/>
     </RelativeLayout>
 
 </RelativeLayout>
