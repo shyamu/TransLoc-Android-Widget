@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -58,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             // appWidgetId will equal widget being configured if we came from adding a widget to home screen
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
+
+        // Color nav bar if on lollipop or higher
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.primary));
         }
 
         if (savedInstanceState == null) {
