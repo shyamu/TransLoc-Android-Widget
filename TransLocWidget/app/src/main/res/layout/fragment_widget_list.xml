@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:clickable="true"
-        app:borderWidth="0dp"
         app:elevation="12dp"
         android:src="@drawable/ic_add_black_48dp"
         android:layout_alignParentBottom="true"

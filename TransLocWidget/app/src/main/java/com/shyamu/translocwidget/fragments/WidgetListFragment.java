@@ -3,6 +3,7 @@ package com.shyamu.translocwidget.fragments;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.transition.Explode;
@@ -20,6 +21,7 @@ import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.shyamu.translocwidget.MainActivity;
@@ -55,8 +57,6 @@ public class WidgetListFragment extends ListFragment {
     ListViewAdapter widgetListViewAdapter;
     ArrayList<ArrivalTimeWidget> listViewArray;
 
-    static final int ANIMATION_DURATION = 200;
-
     public static WidgetListFragment newInstance() {
         WidgetListFragment fragment = new WidgetListFragment();
         Bundle args = new Bundle();
@@ -77,6 +77,14 @@ public class WidgetListFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
         getActivity().setTitle("Saved Widgets");
         addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
+
+        // Fix a margin issue in pre-lollipop floating action buttons
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) addNewWidgetButton.getLayoutParams();
+            p.setMargins(0, 0, 0, 0); // get rid of margins since shadow area is now the margin
+            addNewWidgetButton.setLayoutParams(p);
+        }
+
         widgetListViewAdapter = new ListViewAdapter(getActivity());
         try {
             listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());

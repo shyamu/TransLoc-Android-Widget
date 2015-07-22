@@ -39,11 +39,13 @@ public class Provider extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.d(TAG, "in onReceive with intent action: " + intent.getAction());
         if(intent.getAction().equals(Utils.TAP_ON_WIDGET_ACTION)) {
+            // Widget was tapped so update that widget
             int idOfTappedWidget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             Log.d(TAG, "Tapped on widget with widget id: " + idOfTappedWidget);
             int[] appWidgetIds = {idOfTappedWidget};
             onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
         } else if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
+            // Widget's size was changed so update that widget
             int idOfResizedWidget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             int[] appWidgetIds = {idOfResizedWidget};
             onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
@@ -99,7 +101,6 @@ public class Provider extends AppWidgetProvider {
         if(arrivals != null) {
             if(arrivals.isEmpty()) {
                 Log.d(TAG, "arrivals is empty");
-                Toast.makeText(context, "No arrival times found. Please try again later", Toast.LENGTH_LONG).show();
                 atw.setMinutesUntilArrival(-1);
             } else {
                 TransLocArrival nextArrival = arrivals.get(0);

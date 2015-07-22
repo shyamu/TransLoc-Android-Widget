@@ -104,6 +104,7 @@ public class Utils {
         return null;
     }
 
+    // Utility method that creates RemoteViews for the widget based on the given ArrivalTimeWidget
     public static RemoteViews createRemoteViews(Context context, ArrivalTimeWidget atw, int appWidgetId) {
 
         RemoteViews remoteViews;
@@ -130,7 +131,7 @@ public class Utils {
         int minutesUntilArrival = atw.getMinutesUntilArrival();
         // Error state
         if (minutesUntilArrival == -1) {
-            remoteViews.setTextViewText(R.id.tvRemainingTime, "--");
+            remoteViews.setTextViewText(R.id.tvRemainingTime, "?");
             remoteViews.setTextViewText(R.id.tvMins, "Tap to refresh");
         } else {
             remoteViews.setTextViewText(R.id.tvRemainingTime, Integer.toString(minutesUntilArrival));
@@ -165,6 +166,7 @@ public class Utils {
         return remoteViews;
     }
 
+    // If we are on Jelly Bean or higher add the ability to have dynamically changing widget layouts based on size
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private static RemoteViews drawWidgetForJellyBean(Context context, int widgetSize) {
 
