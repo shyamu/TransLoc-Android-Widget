@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     }
 
     private void handleArrivalTimeError(Throwable e) {
-        // TODO show relevant alert dialog
         Log.e(TAG, "error in getting arrival times", e);
+        Utils.showAlertDialog(this, "Error", "No data connection", false);
     }
 
     private void handleWidgetCreation(List<TransLocArrival> arrivals, ArrivalTimeWidget atw) {

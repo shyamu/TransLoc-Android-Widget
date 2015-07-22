@@ -79,7 +79,7 @@ public class SelectStopFragment extends BaseFragment {
         stopsSub = client.stops(atw.getAgencyID())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateStopsListView,
-                        e -> handleServiceErrors(getActivity(), STOP, e, progressBar)
+                        e -> handleServiceErrors(STOP, e, progressBar)
                 );
 
         return rootView;
@@ -99,41 +99,46 @@ public class SelectStopFragment extends BaseFragment {
                 if (stop.routes.contains(Integer.parseInt(atw.getRouteID()))) {
                     stopList.add(stop);
                 }
+            }
+            if(stopList.isEmpty()) {
+                Utils.showAlertDialog(getActivity(), "No stops available", "Please select another route or try again later.", true);
+            } else {
                 ArrayAdapter<TransLocStop> stopArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stopList);
                 stopListView.setAdapter(stopArrayAdapter);
-
-                // Animate
-                TranslateAnimation animate = new TranslateAnimation(stopListView.getWidth(),0,0,0);
-                animate.setDuration(250);
-                animate.setFillAfter(true);
-                stopListView.startAnimation(animate);
-                stopListView.setVisibility(View.VISIBLE);
-
-                // Set onclicklistener to open select stops fragment
-                stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
-                        atw.setStopID((Integer.toString(selectedStop.stopId)));
-                        atw.setStopName(selectedStop.toString());
-
-                        CustomizeColorsFragment customizeColorsFragment = new CustomizeColorsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("atw", atw);
-                        customizeColorsFragment.setArguments(bundle);
-
-                        // Insert the fragment by replacing any existing fragment
-                        FragmentManager fragmentManager = getActivity().getFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                .replace(R.id.widget_container, customizeColorsFragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
             }
+
+            // Animate
+            TranslateAnimation animate = new TranslateAnimation(stopListView.getWidth(),0,0,0);
+            animate.setDuration(250);
+            animate.setFillAfter(true);
+            stopListView.startAnimation(animate);
+            stopListView.setVisibility(View.VISIBLE);
+
+            // Set onclicklistener to open select stops fragment
+            stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
+                    atw.setStopID((Integer.toString(selectedStop.stopId)));
+                    atw.setStopName(selectedStop.toString());
+
+                    CustomizeColorsFragment customizeColorsFragment = new CustomizeColorsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("atw", atw);
+                    customizeColorsFragment.setArguments(bundle);
+
+                    // Insert the fragment by replacing any existing fragment
+                    FragmentManager fragmentManager = getActivity().getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                            .replace(R.id.widget_container, customizeColorsFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
         } else {
             Log.e(TAG, "Stops data is null or empty!");
+            Utils.showAlertDialog(getActivity(), "No stops available", "Please select another route or try again later.", true);
         }
     }
 }

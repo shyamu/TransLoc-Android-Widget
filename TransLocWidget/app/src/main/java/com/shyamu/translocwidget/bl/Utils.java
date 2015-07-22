@@ -1,6 +1,7 @@
 package com.shyamu.translocwidget.bl;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -43,21 +44,21 @@ public class Utils {
     public static final String TAP_ON_WIDGET_ACTION = "TAPPED_ON_WIDGET";
 
 
-    public static void showAlertDialog(Context context, String title, String message) {
-        new AlertDialog.Builder( context )
-                .setTitle( title )
-                .setMessage( message )
-                .setNeutralButton( "Ok", new DialogInterface.OnClickListener() {
+    public static void showAlertDialog(Activity activity, String title, String message, boolean goBack) {
+        new AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(message)
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("AlertDialog", "Neutral");
+                        if (goBack) activity.onBackPressed();
                     }
                 })
                 .show();
     }
 
-    public static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime)
-    {
-        return Minutes.minutesBetween(currentTime,futureTime).getMinutes();
+    public static int getMinutesBetweenTimes(DateTime currentTime, DateTime futureTime) {
+        return Minutes.minutesBetween(currentTime, futureTime).getMinutes();
     }
 
     protected static void writeData(Context context, String data) throws IOException {
@@ -108,15 +109,15 @@ public class Utils {
         RemoteViews remoteViews;
         int widgetSize = 3;
         // for resizable widgets
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
-            if(widgetOptions != null) {
+            if (widgetOptions != null) {
                 int minWidthDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
                 int minHeightDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-                if(minWidthDp <= 72) widgetSize = 1;
-                else if(minWidthDp <= 160) widgetSize = 2;
-                else if(minWidthDp <= 248) widgetSize = 3;
+                if (minWidthDp <= 72) widgetSize = 1;
+                else if (minWidthDp <= 160) widgetSize = 2;
+                else if (minWidthDp <= 248) widgetSize = 3;
                 else widgetSize = 4;
             } else {
                 Log.e(TAG, "widget options is null");
@@ -128,7 +129,7 @@ public class Utils {
 
         int minutesUntilArrival = atw.getMinutesUntilArrival();
         // Error state
-        if(minutesUntilArrival == -1) {
+        if (minutesUntilArrival == -1) {
             remoteViews.setTextViewText(R.id.tvRemainingTime, "--");
             remoteViews.setTextViewText(R.id.tvMins, "Tap to refresh");
         } else {
@@ -153,7 +154,7 @@ public class Utils {
         remoteViews.setTextColor(R.id.tvMins, atw.getTextColor());
 
         // set text content
-        if(widgetSize == 1) {
+        if (widgetSize == 1) {
             remoteViews.setTextViewText(R.id.tvRouteAndStop, atw.getRouteName() + " - " + atw.getStopName());
             remoteViews.setTextColor(R.id.tvRouteAndStop, atw.getTextColor());
         } else {
@@ -170,19 +171,19 @@ public class Utils {
         RemoteViews newView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         newView.removeAllViews(R.id.rlWidgetLayout);
 
-        if(widgetSize == 3) {
+        if (widgetSize == 3) {
             RemoteViews threeWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
-            newView.addView(R.id.rlWidgetLayout,threeWidget);
+            newView.addView(R.id.rlWidgetLayout, threeWidget);
         } else if (widgetSize == 2) {
             RemoteViews twoWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_two);
-            newView.addView(R.id.rlWidgetLayout,twoWidget);
+            newView.addView(R.id.rlWidgetLayout, twoWidget);
         } else if (widgetSize == 1) {
             RemoteViews oneWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_one);
             newView.addView(R.id.rlWidgetLayout, oneWidget);
         } else {
-            Log.v(TAG,"widget size not found");
+            Log.v(TAG, "widget size not found");
             RemoteViews fourWidget = new RemoteViews(context.getPackageName(), R.layout.widget_layout_three);
-            newView.addView(R.id.rlWidgetLayout,fourWidget);
+            newView.addView(R.id.rlWidgetLayout, fourWidget);
         }
         return newView;
     }

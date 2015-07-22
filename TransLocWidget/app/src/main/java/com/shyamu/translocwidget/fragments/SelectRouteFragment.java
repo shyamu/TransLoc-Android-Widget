@@ -76,7 +76,7 @@ public class SelectRouteFragment extends BaseFragment {
         routesSub = client.routes(atw.getAgencyID())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateRoutesListView,
-                        e -> handleServiceErrors(getActivity(), ROUTE, e, progressBar)
+                        e -> handleServiceErrors(ROUTE, e, progressBar)
                 );
         return rootView;
     }
@@ -126,6 +126,7 @@ public class SelectRouteFragment extends BaseFragment {
             });
         } else {
             Log.e(TAG, "Routes data was null or empty!");
+            Utils.showAlertDialog(getActivity(), "No routes available", "Please select another agency or try again later.", true);
         }
     }
 }

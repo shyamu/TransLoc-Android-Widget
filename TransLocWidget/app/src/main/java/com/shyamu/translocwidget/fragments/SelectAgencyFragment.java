@@ -69,7 +69,7 @@ public class SelectAgencyFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateAgencyListView,
                         e -> {
-                            handleServiceErrors(getActivity(), AGENCY, e, progressBar);
+                            handleServiceErrors(AGENCY, e, progressBar);
                         }
                 );
 
@@ -120,6 +120,7 @@ public class SelectAgencyFragment extends BaseFragment {
             });
         } else {
             Log.e(TAG, "Agencies data was null or empty!");
+            Utils.showAlertDialog(getActivity(), "No agencies available", "Please try again later.", true);
         }
     }
 }
