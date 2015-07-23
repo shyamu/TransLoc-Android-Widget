@@ -9,7 +9,7 @@
         android:id="@+id/tvAgencyNameItemView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Agency"
+        android:text="@string/agency"
         android:singleLine="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvAgencyNameItemView"
-        android:text="Route"
+        android:text="@string/route"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
     <TextView
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvRouteNameItemView"
-        android:text="Stop"
+        android:text="@string/stop"
         android:singleLine="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
 

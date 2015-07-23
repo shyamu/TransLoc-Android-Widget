@@ -40,7 +40,7 @@ public class Utils {
 
     public static final String GET_ARRIVAL_ESTIMATES_URL = "https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=";
     public static final String BASE_URL = "https://transloc-api-1-2.p.mashape.com";
-    public static final String FILE_NAME = "WidgetList";
+    private static final String FILE_NAME = "WidgetList";
     public static final String TAP_ON_WIDGET_ACTION = "TAPPED_ON_WIDGET";
 
 
@@ -48,11 +48,9 @@ public class Utils {
         new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)
-                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("AlertDialog", "Neutral");
-                        if (goBack) activity.onBackPressed();
-                    }
+                .setNeutralButton("Ok", (dialog, which) -> {
+                    Log.d("AlertDialog", "Neutral");
+                    if (goBack) activity.onBackPressed();
                 })
                 .show();
     }
@@ -61,7 +59,7 @@ public class Utils {
         return Minutes.minutesBetween(currentTime, futureTime).getMinutes();
     }
 
-    protected static void writeData(Context context, String data) throws IOException {
+    private static void writeData(Context context, String data) throws IOException {
         FileOutputStream fOut = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
         OutputStreamWriter osw = new OutputStreamWriter(fOut);
         osw.write(data);
@@ -69,8 +67,8 @@ public class Utils {
         osw.close();
     }
 
-    protected static String readSavedData(Context context) throws IOException {
-        StringBuffer datax = new StringBuffer("");
+    private static String readSavedData(Context context) throws IOException {
+        StringBuilder datax = new StringBuilder("");
         FileInputStream fin = context.openFileInput(FILE_NAME);
         InputStreamReader isr = new InputStreamReader(fin);
         BufferedReader reader = new BufferedReader(isr);
@@ -115,7 +113,7 @@ public class Utils {
             Bundle widgetOptions = manager.getAppWidgetOptions(appWidgetId);
             if (widgetOptions != null) {
                 int minWidthDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-                int minHeightDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+                //int minHeightDp = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
                 if (minWidthDp <= 72) widgetSize = 1;
                 else if (minWidthDp <= 160) widgetSize = 2;
                 else if (minWidthDp <= 248) widgetSize = 3;

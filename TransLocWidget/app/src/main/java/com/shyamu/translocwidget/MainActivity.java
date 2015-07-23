@@ -2,7 +2,6 @@ package com.shyamu.translocwidget;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -145,10 +144,8 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         ARRIVAL);
         client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((arrivals) -> {
-                            handleWidgetCreation(arrivals, atw);
-                        },
-                        e -> handleArrivalTimeError(e)
+                .subscribe((arrivals) -> handleWidgetCreation(arrivals, atw),
+                        this::handleArrivalTimeError
                 );
     }
 

@@ -2,8 +2,6 @@ package com.shyamu.translocwidget.rest.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class TransLocAgency{
 
     @SerializedName("name")

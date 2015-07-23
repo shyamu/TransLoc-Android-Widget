@@ -1,28 +1,19 @@
 package com.shyamu.translocwidget.listview;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -31,7 +22,7 @@ import java.util.ArrayList;
 public class ListViewAdapter extends BaseAdapter {
     private static final String TAG = "ListViewAdapter";
     private LayoutInflater mInflater = null;
-    private ArrayList<ArrivalTimeWidget> widgetList = new ArrayList<ArrivalTimeWidget>();
+    private ArrayList<ArrivalTimeWidget> widgetList = new ArrayList<>();
     private Context mContext;
 
     private final class ViewHolder {
@@ -67,8 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // TODO
-        return 0;
+        return -1;
     }
 
     @Override

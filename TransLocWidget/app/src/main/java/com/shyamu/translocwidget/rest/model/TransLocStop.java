@@ -22,7 +22,7 @@ public class TransLocStop{
     public List<Integer> routes;
 
     @SerializedName("name")
-    public String name;
+    private String name;
 
     public String toString(){
         return name;

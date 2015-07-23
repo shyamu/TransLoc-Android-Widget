@@ -4,12 +4,12 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.shyamu.translocwidget.BuildConfig;
-import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.rest.model.TransLocArrival;
@@ -35,7 +35,7 @@ public class Provider extends AppWidgetProvider {
     private static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
         Log.d(TAG, "in onReceive with intent action: " + intent.getAction());
         if(intent.getAction().equals(Utils.TAP_ON_WIDGET_ACTION)) {
@@ -83,12 +83,8 @@ public class Provider extends AppWidgetProvider {
                         ARRIVAL);
         client.arrivalEstimates(atw.getAgencyID(), atw.getRouteID(), atw.getStopID())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((arrivals) -> {
-                            handleWidgetUpdate(arrivals, appWidgetManager, atw, context, appWidgetId);
-                        },
-                        e -> {
-                            handleServiceErrors(e, context);
-                        }
+                .subscribe((arrivals) -> handleWidgetUpdate(arrivals, appWidgetManager, atw, context, appWidgetId),
+                        e -> handleServiceErrors(e, context)
                 );
     }
 

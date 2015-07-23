@@ -11,7 +11,9 @@ import com.shyamu.translocwidget.R;
 
 
 public class AboutActivity extends Activity {
-    TextView tvTwitter, tvApiUrl, tvGithubUrl;
+    private TextView tvTwitter;
+    private TextView tvApiUrl;
+    private TextView tvGithubUrl;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,37 +23,23 @@ public class AboutActivity extends Activity {
         tvApiUrl = (TextView) findViewById(R.id.tvApiUrl);
         tvGithubUrl = (TextView) findViewById(R.id.tvGithubURL);
 
-        tvTwitter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("twitter://user?screen_name=ShyamuP"));
-                    startActivity(intent);
+        tvTwitter.setOnClickListener(view -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("twitter://user?screen_name=ShyamuP"));
+                startActivity(intent);
 
-                }catch (Exception e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://twitter.com/#!/ShyamuP")));
-                }
-            }
-        });
-
-        tvApiUrl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            }catch (Exception e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://api.transloc.com")));
-
+                        Uri.parse("https://twitter.com/#!/ShyamuP")));
             }
         });
 
-        tvGithubUrl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://shyamu.github.io/TransLoc-Android-Widget/")));
-            }
-        });
+        tvApiUrl.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://api.transloc.com"))));
+
+        tvGithubUrl.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://shyamu.github.io/TransLoc-Android-Widget/"))));
 
     }
 }

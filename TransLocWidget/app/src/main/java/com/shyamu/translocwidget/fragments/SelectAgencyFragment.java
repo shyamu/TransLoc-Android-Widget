@@ -1,6 +1,5 @@
 package com.shyamu.translocwidget.fragments;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -68,9 +66,7 @@ public class SelectAgencyFragment extends BaseFragment {
         agenciesSub = client.agencies()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::populateAgencyListView,
-                        e -> {
-                            handleServiceErrors(AGENCY, e, progressBar);
-                        }
+                        e -> handleServiceErrors(AGENCY, e, progressBar)
                 );
 
         return rootView;
@@ -84,7 +80,7 @@ public class SelectAgencyFragment extends BaseFragment {
 
     private void populateAgencyListView(List<TransLocAgency> agencies) {
         if (agencies != null && !agencies.isEmpty()) {
-            ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<TransLocAgency>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
+            ArrayAdapter<TransLocAgency> agencyArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, agencies);
             agencyListView.setAdapter(agencyArrayAdapter);
 
             // Animate
@@ -96,27 +92,24 @@ public class SelectAgencyFragment extends BaseFragment {
             progressBar.setVisibility(View.INVISIBLE);
 
             // Set onclicklistener to open select routes fragment
-            agencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    TransLocAgency selectedAgency = (TransLocAgency) parent.getItemAtPosition(position);
-                    atw = new ArrivalTimeWidget();
-                    atw.setAgencyID(Integer.toString(selectedAgency.agencyId));
-                    atw.setAgencyLongName(selectedAgency.longName);
+            agencyListView.setOnItemClickListener((parent, view, position, id) -> {
+                TransLocAgency selectedAgency = (TransLocAgency) parent.getItemAtPosition(position);
+                atw = new ArrivalTimeWidget();
+                atw.setAgencyID(Integer.toString(selectedAgency.agencyId));
+                atw.setAgencyLongName(selectedAgency.longName);
 
-                    SelectRouteFragment selectRouteFragment = new SelectRouteFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("atw", atw);
-                    selectRouteFragment.setArguments(bundle);
+                SelectRouteFragment selectRouteFragment = new SelectRouteFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("atw", atw);
+                selectRouteFragment.setArguments(bundle);
 
-                    // Insert the fragment by replacing any existing fragment
-                    FragmentManager fragmentManager = getActivity().getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                            .replace(R.id.widget_container, selectRouteFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getActivity().getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, selectRouteFragment)
+                        .addToBackStack(null)
+                        .commit();
             });
         } else {
             Log.e(TAG, "Agencies data was null or empty!");

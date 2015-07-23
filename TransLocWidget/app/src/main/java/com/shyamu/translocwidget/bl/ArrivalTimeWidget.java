@@ -1,7 +1,5 @@
 package com.shyamu.translocwidget.bl;
 
-import android.graphics.Color;
-
 import com.shyamu.translocwidget.R;
 
 import org.joda.time.DateTime;

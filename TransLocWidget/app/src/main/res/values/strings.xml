@@ -19,6 +19,34 @@
     <string name="title_activity_widget_configuration_popup">WidgetConfigurationPopupActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="err_widget_not_found">Error: Widget not found</string>
+    <string name="err_recreate">Recreate or remove widget</string>
+    <string name="mins_away">mins away</string>
+    <string name="remove">Remove</string>
+    <string name="about">About</string>
+    <string name="finish">Finish!</string>
+    <string name="developer">Developer:</string>
+    <string name="agency">Agency</string>
+    <string name="route">Route</string>
+    <string name="stop">Stop</string>
+    <string name="test_mins">13</string>
+    <string name="error">Error:</string>
+    <string name="route_placeholder">Route Short Name</string>
+    <string name="stop_placeholder">Stop Name</string>
+    <string name="dev_name">Shyamal Patel</string>
+    <string name="dev_twitter_handle">\@ShyamuP</string>
+    <string name="route_stop_placeholder">Route and Stop Name</string>
+    <string name="set_background_color_button_txt">Set Background Color</string>
+    <string name="set_text_color_button_txt">Set Text Color</string>
+    <string name="bus_data">Bus Data:</string>
+    <string name="bus_data_provider">TransLoc OpenAPI</string>
+    <string name="bus_data_provider_url">https://www.mashape.com/transloc/</string>
+    <string name="disclaimer">Disclaimer:</string>
+    <string name="disclaimer_txt">Bus data may not be 100% reliable</string>
+    <string name="disclaimer_content">Some routes may show inaccurate or no arrival times at all.</string>
+    <string name="contribute">Contribute:</string>
+    <string name="open_source">Open-source</string>
+    <string name="source_url"><a href='http://www.shyamalpatel.com/TransLoc-Android-Widget/'>http://www.shyamalpatel.com/TransLoc-Android-Widget/</a></string>
 
 </resources>
 

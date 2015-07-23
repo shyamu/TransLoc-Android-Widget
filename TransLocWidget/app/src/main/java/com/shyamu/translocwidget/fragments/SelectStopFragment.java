@@ -1,6 +1,5 @@
 package com.shyamu.translocwidget.fragments;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -26,7 +24,6 @@ import com.shyamu.translocwidget.rest.service.TransLocClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -115,26 +112,23 @@ public class SelectStopFragment extends BaseFragment {
             stopListView.setVisibility(View.VISIBLE);
 
             // Set onclicklistener to open select stops fragment
-            stopListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
-                    atw.setStopID((Integer.toString(selectedStop.stopId)));
-                    atw.setStopName(selectedStop.toString());
+            stopListView.setOnItemClickListener((parent, view, position, id) -> {
+                TransLocStop selectedStop = (TransLocStop) parent.getItemAtPosition(position);
+                atw.setStopID((Integer.toString(selectedStop.stopId)));
+                atw.setStopName(selectedStop.toString());
 
-                    CustomizeColorsFragment customizeColorsFragment = new CustomizeColorsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("atw", atw);
-                    customizeColorsFragment.setArguments(bundle);
+                CustomizeColorsFragment customizeColorsFragment = new CustomizeColorsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("atw", atw);
+                customizeColorsFragment.setArguments(bundle);
 
-                    // Insert the fragment by replacing any existing fragment
-                    FragmentManager fragmentManager = getActivity().getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                            .replace(R.id.widget_container, customizeColorsFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getActivity().getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, customizeColorsFragment)
+                        .addToBackStack(null)
+                        .commit();
             });
         } else {
             Log.e(TAG, "Stops data is null or empty!");

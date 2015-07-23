@@ -2,8 +2,6 @@ package com.shyamu.translocwidget.rest.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 public class TransLocArrival{
     @SerializedName("route_id")
     public int routeId;

@@ -9,10 +9,10 @@ public class TransLocRoute{
     public int routeID;
 
     @SerializedName("short_name")
-    public String shortName;
+    private String shortName;
 
     @SerializedName("long_name")
-    public String longName;
+    private String longName;
 
     @SerializedName("color")
     public String color;

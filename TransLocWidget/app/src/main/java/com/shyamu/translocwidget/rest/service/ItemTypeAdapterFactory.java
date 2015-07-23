@@ -19,7 +19,7 @@ import static com.shyamu.translocwidget.bl.Utils.*;
 /**
  * Created by Shyamal on 3/15/2015.
  */
-public class ItemTypeAdapterFactory implements TypeAdapterFactory {
+class ItemTypeAdapterFactory implements TypeAdapterFactory {
 
     private static final String TAG = "ItemTypeAdapterFactory";
     private String agencyId;

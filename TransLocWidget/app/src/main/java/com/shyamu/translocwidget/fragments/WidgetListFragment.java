@@ -2,12 +2,10 @@ package com.shyamu.translocwidget.fragments;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.transition.Explode;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -16,25 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
 import com.shyamu.translocwidget.listview.ListViewAdapter;
-import com.shyamu.translocwidget.listview.ListViewItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
@@ -54,8 +45,8 @@ public class WidgetListFragment extends ListFragment {
     private FloatingActionButton addNewWidgetButton;
     private TourGuide tourGuide;
 
-    ListViewAdapter widgetListViewAdapter;
-    ArrayList<ArrivalTimeWidget> listViewArray;
+    private ListViewAdapter widgetListViewAdapter;
+    private ArrayList<ArrivalTimeWidget> listViewArray;
 
     public static WidgetListFragment newInstance() {
         WidgetListFragment fragment = new WidgetListFragment();
@@ -65,11 +56,6 @@ public class WidgetListFragment extends ListFragment {
     }
 
     public WidgetListFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -84,7 +70,7 @@ public class WidgetListFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
         getActivity().setTitle("Saved Widgets");
         addNewWidgetButton = (FloatingActionButton) rootView.findViewById(R.id.fabAddNewWidget);
@@ -205,7 +191,7 @@ public class WidgetListFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(ArrivalTimeWidget widget);
+        void onFragmentInteraction(ArrivalTimeWidget widget);
     }
 
 }

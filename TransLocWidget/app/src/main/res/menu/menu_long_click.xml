@@ -3,6 +3,6 @@
     tools:context="com.shyamu.translocwidget.MainActivity"
     xmlns:tools="http://schemas.android.com/tools">
     <item android:id="@+id/remove"
-            android:title="Remove">
+            android:title="@string/remove">
     </item>
 </menu>

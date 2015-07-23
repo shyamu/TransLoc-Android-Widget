@@ -1,6 +1,5 @@
 package com.shyamu.translocwidget.fragments;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -90,7 +88,7 @@ public class SelectRouteFragment extends BaseFragment {
     private void populateRoutesListView(List<TransLocRoute> routes) {
         progressBar.setVisibility(View.INVISIBLE);
         if (routes != null && !routes.isEmpty()) {
-            ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<TransLocRoute>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
+            ArrayAdapter<TransLocRoute> routeArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, routes);
             routeListView.setAdapter(routeArrayAdapter);
 
             // Animate
@@ -101,28 +99,25 @@ public class SelectRouteFragment extends BaseFragment {
             routeListView.setVisibility(View.VISIBLE);
 
             // Set onclicklistener to open select stops fragment
-            routeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    TransLocRoute selectedRoute = (TransLocRoute) parent.getItemAtPosition(position);
-                    atw.setRouteID(Integer.toString(selectedRoute.routeID));
-                    atw.setRouteName(selectedRoute.toString());
-                    Log.d(TAG, "color: " + selectedRoute.color);
-                    if(selectedRoute.color != null ) atw.setBackgroundColor(Color.parseColor("#" + selectedRoute.color));
+            routeListView.setOnItemClickListener((parent, view, position, id) -> {
+                TransLocRoute selectedRoute = (TransLocRoute) parent.getItemAtPosition(position);
+                atw.setRouteID(Integer.toString(selectedRoute.routeID));
+                atw.setRouteName(selectedRoute.toString());
+                Log.d(TAG, "color: " + selectedRoute.color);
+                if(selectedRoute.color != null ) atw.setBackgroundColor(Color.parseColor("#" + selectedRoute.color));
 
-                    SelectStopFragment selectStopFragment = new SelectStopFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("atw", atw);
-                    selectStopFragment.setArguments(bundle);
+                SelectStopFragment selectStopFragment = new SelectStopFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("atw", atw);
+                selectStopFragment.setArguments(bundle);
 
-                    // Insert the fragment by replacing any existing fragment
-                    FragmentManager fragmentManager = getActivity().getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                            .replace(R.id.widget_container, selectStopFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getActivity().getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, selectStopFragment)
+                        .addToBackStack(null)
+                        .commit();
             });
         } else {
             Log.e(TAG, "Routes data was null or empty!");

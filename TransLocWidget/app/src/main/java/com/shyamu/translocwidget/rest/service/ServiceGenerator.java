@@ -25,7 +25,7 @@ public class ServiceGenerator {
                 .create();
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(baseUrl)
+                .setEndpoint(com.shyamu.translocwidget.bl.Utils.BASE_URL)
                 .setClient(new OkClient(new OkHttpClient()))
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(request -> request.addHeader("X-Mashape-Authorization", key));
