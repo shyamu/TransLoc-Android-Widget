@@ -173,6 +173,7 @@ public class WidgetListFragment extends ListFragment {
                 } catch (IOException e) {
                     Log.e(TAG, "Error in writing widget list to storage", e);
                 }
+                widgetListViewAdapter.setWidgetList(listViewArray);
                 widgetListViewAdapter.notifyDataSetChanged();
                 return true;
             default:
