@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="@dimen/widget_margin"
+    android:clickable="false"
+    android:id="@+id/rlWidgetLayoutThree">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/tvRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="@string/error"
+            android:textColor="#000000"
+            android:layout_toRightOf="@+id/tvRemainingTime"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tvRemainingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test_mins"
+            android:textSize="65sp"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false"
+            android:textColor="#000000"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:id="@+id/tvStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="@string/err_recreate"
+            android:textColor="#000000"
+            android:layout_below="@+id/tvRoute"
+            android:layout_alignLeft="@+id/tvRoute"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mins_away"
+            android:textSize="18sp"
+            android:id="@+id/tvMins"
+            android:layout_alignBaseline="@+id/tvRemainingTime"
+            android:layout_alignBottom="@+id/tvRoute"
+            android:layout_toRightOf="@+id/tvRemainingTime"
+            android:textColor="#000000"
+            android:layout_marginLeft="5dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

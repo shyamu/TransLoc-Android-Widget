@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 9
+        versionName "3.1"
+    }
+    buildTypes {
+        debug{
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_TESTING +"\"")
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+        }
+        release {
+            buildConfigField("String", "TRANSLOC_API_KEY", "\"" + TRANSLOC_API_KEY_PRODUCTION +"\"")
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile 'com.android.support:design:22.2.1'
+    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile ('com.github.worker8:tourguide:1.0.11-SNAPSHOT@aar'){
+        transitive=true
+    }
+    compile 'com.larswerkman:HoloColorPicker:1.5'
+    compile 'joda-time:joda-time:2.3'
+
+}

@@ -30,6 +30,11 @@ proguard/
 
 out/
 
+TransLoc_Widget/TransLocWidget/build/
+TransLocWidget/TransLocWidget/build/
+TransLocWidget/build/
+build/
 
-TransLocWidget/TransLocWidget/src/main/res/values/strings.xml
+TransLocWidget/TransLocWidget/gradle.properties
+TransLocWidget/gradle.properties
 

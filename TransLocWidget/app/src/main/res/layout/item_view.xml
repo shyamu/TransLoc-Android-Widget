@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlItemViewBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+    <TextView
+        android:id="@+id/tvAgencyNameItemView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/agency"
+        android:singleLine="true"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
+    <TextView
+        android:id="@+id/tvRouteNameItemView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAgencyNameItemView"
+        android:text="@string/route"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+    <TextView
+        android:id="@+id/tvStopNameItemView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvRouteNameItemView"
+        android:text="@string/stop"
+        android:singleLine="true"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvAgencyNameItemView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:id="@+id/llColors"
+        android:padding="1px">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/border"
+            android:padding="1px">
+
+            <RelativeLayout
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@color/primary_dark"
+                android:id="@+id/rlBackgroundColor"
+                android:layout_toLeftOf="@+id/rlTextColor">
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:paddingTop="1px"
+            android:paddingRight="1px"
+            android:paddingBottom="1px">
+
+            <RelativeLayout
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@color/accent_orange"
+                android:id="@+id/rlTextColor"></RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
