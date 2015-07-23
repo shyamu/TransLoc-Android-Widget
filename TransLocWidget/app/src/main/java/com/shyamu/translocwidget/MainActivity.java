@@ -270,8 +270,8 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             currentBackgroundColor.setBackgroundColor(atw.getBackgroundColor());
             currentTextColor.setBackgroundColor(atw.getTextColor());
 
+            picker.setColor(atw.getBackgroundColor());
             picker.setOldCenterColor(atw.getBackgroundColor());
-            picker.setNewCenterColor(atw.getBackgroundColor());
             picker.addSVBar(svBar);
             picker.addOpacityBar(opacityBar);
             picker.setOnColorChangedListener(this);

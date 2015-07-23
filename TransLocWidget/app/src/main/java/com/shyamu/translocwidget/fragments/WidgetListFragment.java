@@ -73,6 +73,17 @@ public class WidgetListFragment extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            listViewArray = Utils.getArrivalTimeWidgetsFromStorage(getActivity());
+        } catch (IOException e) {
+            Log.e(TAG, "Error in getting previous widget list", e);
+            listViewArray = new ArrayList<>();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_widget_list, container, false);
         getActivity().setTitle("Saved Widgets");
