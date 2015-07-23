@@ -2,6 +2,7 @@ package com.shyamu.translocwidget.listview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,8 @@ public class ListViewAdapter extends BaseAdapter {
         TextView tv_agencyName;
         TextView tv_routeName;
         TextView tv_stopName;
-        RelativeLayout rl_background;
+        RelativeLayout rl_backgroundColor;
+        RelativeLayout rl_TextColor;
     }
 
     private ViewHolder mHolder = null;
@@ -79,7 +81,8 @@ public class ListViewAdapter extends BaseAdapter {
             mHolder = (ViewHolder)convertView.getTag();
         }
 
-        mHolder.rl_background = (RelativeLayout) convertView.findViewById(R.id.rlItemViewBackground);
+        mHolder.rl_backgroundColor = (RelativeLayout) convertView.findViewById(R.id.rlBackgroundColor);
+        mHolder.rl_TextColor = (RelativeLayout) convertView.findViewById(R.id.rlTextColor);
         mHolder.tv_agencyName = (TextView)convertView.findViewById(R.id.tvAgencyNameItemView);
         mHolder.tv_routeName = (TextView)convertView.findViewById(R.id.tvRouteNameItemView);
         mHolder.tv_stopName = (TextView)convertView.findViewById(R.id.tvStopNameItemView);
@@ -87,10 +90,8 @@ public class ListViewAdapter extends BaseAdapter {
         ArrivalTimeWidget arrivalTimeWidget = widgetList.get(position);
 
         // Set colors
-        mHolder.rl_background.setBackgroundColor(arrivalTimeWidget.getBackgroundColor());
-        mHolder.tv_agencyName.setTextColor(arrivalTimeWidget.getTextColor());
-        mHolder.tv_routeName.setTextColor(arrivalTimeWidget.getTextColor());
-        mHolder.tv_stopName.setTextColor(arrivalTimeWidget.getTextColor());
+        mHolder.rl_backgroundColor.setBackgroundColor(arrivalTimeWidget.getBackgroundColor());
+        mHolder.rl_TextColor.setBackgroundColor(arrivalTimeWidget.getTextColor());
 
         // Set text content
         mHolder.tv_agencyName.setText(arrivalTimeWidget.getAgencyLongName());

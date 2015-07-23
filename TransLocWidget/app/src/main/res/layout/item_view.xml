@@ -26,4 +26,52 @@
         android:text="Stop"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvAgencyNameItemView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:id="@+id/llColors"
+        android:padding="1px">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/border"
+            android:padding="1px">
+
+            <RelativeLayout
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@color/primary_dark"
+                android:id="@+id/rlBackgroundColor"
+                android:layout_toLeftOf="@+id/rlTextColor">
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:paddingTop="1px"
+            android:paddingRight="1px"
+            android:paddingBottom="1px">
+
+            <RelativeLayout
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@color/accent_orange"
+                android:id="@+id/rlTextColor"></RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 </RelativeLayout>
