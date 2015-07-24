@@ -31,8 +31,12 @@ import static com.shyamu.translocwidget.bl.Utils.TransLocDataType.ARRIVAL;
  */
 public class Provider extends AppWidgetProvider {
 
-    private static final String TAG = "Provider";
+    private static final String TAG = "AppWidgetProvider";
     private static final String TRANSLOC_API_KEY= BuildConfig.TRANSLOC_API_KEY;
+
+    // Flag for knowing whether onUpdate is called from a tap on widget action
+    // Used for showing/not showing toasts during onUpdate
+    private boolean cameFromTap = false;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -43,6 +47,7 @@ public class Provider extends AppWidgetProvider {
             int idOfTappedWidget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             Log.d(TAG, "Tapped on widget with widget id: " + idOfTappedWidget);
             int[] appWidgetIds = {idOfTappedWidget};
+            cameFromTap = true;
             onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds);
         } else if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED)) {
             // Widget's size was changed so update that widget
@@ -96,7 +101,8 @@ public class Provider extends AppWidgetProvider {
     private void handleWidgetUpdate(List<TransLocArrival> arrivals, AppWidgetManager appWidgetManager, ArrivalTimeWidget atw, Context context, int appWidgetId) {
         if(arrivals != null) {
             if(arrivals.isEmpty()) {
-                Log.d(TAG, "arrivals is empty");
+                Log.d(TAG, "Arrivals is empty for appwidget: " + appWidgetId);
+                if(cameFromTap) Toast.makeText(context, "Arrival time currently unavailable. Please try again later when the route is running", Toast.LENGTH_SHORT).show();
                 atw.setMinutesUntilArrival(-1);
             } else {
                 TransLocArrival nextArrival = arrivals.get(0);
@@ -109,6 +115,8 @@ public class Provider extends AppWidgetProvider {
         } else {
             Log.e(TAG, "arrivals is null!");
         }
+        // reset flag
+        cameFromTap = false;
     }
 
     private int getMinsUntilArrival(TransLocArrival arrival) {

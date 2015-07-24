@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         if (appWidgetId > 0) {
             getArrivalsFromServiceAndCreateWidget(widget);
         } else {
-            Toast.makeText(getApplicationContext(), "Select Transloc Widget from your home screen widget drawer to see arrival times", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "To use this widget, add TransLoc Widget from your launcher's widget drawer", Toast.LENGTH_LONG).show();
         }
     }
 
