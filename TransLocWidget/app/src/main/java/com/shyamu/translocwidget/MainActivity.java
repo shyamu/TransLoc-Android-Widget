@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_empty, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -95,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.finish_item) {
+        if(id == R.id.about) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
+        } else if(id == R.id.finish_item) {
             // Finish button from customize colors fragment
             Log.v(TAG, "Selected Finish");
 
@@ -138,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void getArrivalsFromServiceAndCreateWidget(ArrivalTimeWidget atw) {
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             menu.clear();
-            inflater.inflate(R.menu.menu_widget_list, menu);
+            inflater.inflate(R.menu.menu_customize_colors, menu);
         }
 
         @Override

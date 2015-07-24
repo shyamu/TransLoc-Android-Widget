@@ -46,8 +46,10 @@
     <string name="disclaimer_content">Some routes may show inaccurate or no arrival times at all.</string>
     <string name="contribute">Contribute:</string>
     <string name="open_source">Open-source</string>
-    <string name="source_url"><a href='http://www.shyamalpatel.com/TransLoc-Android-Widget/'>http://www.shyamalpatel.com/TransLoc-Android-Widget/</a></string>
+    <string name="source_url">http://www.shyamalpatel.com/TransLoc-Android-Widget/</string>
     <string name="Edit">Edit Colors</string>
+    <string name="About">About</string>
+    <string name="dev_website">www.shyamalpatel.com</string>
 
 </resources>
 
