@@ -47,6 +47,7 @@
     <string name="contribute">Contribute:</string>
     <string name="open_source">Open-source</string>
     <string name="source_url"><a href='http://www.shyamalpatel.com/TransLoc-Android-Widget/'>http://www.shyamalpatel.com/TransLoc-Android-Widget/</a></string>
+    <string name="Edit">Edit Colors</string>
 
 </resources>
 

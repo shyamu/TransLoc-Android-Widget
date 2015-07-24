@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     private static ArrivalTimeWidget atw;
     private static int appWidgetId = 0;
 
+    private static boolean isEdit = false;
+    private static int editingPosition = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 listViewArray = new ArrayList<>();
             }
 
-            listViewArray.add(atw);
+            if(isEdit && editingPosition >= 0) listViewArray.set(editingPosition, atw);
+            else listViewArray.add(atw);
+
+            isEdit = false;
+            editingPosition = -1;
 
             try {
                 Utils.writeArrivalTimeWidgetsToStorage(this, listViewArray);
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         .replace(R.id.widget_container, new WidgetListFragment())
                         .addToBackStack(null)
                         .commit();
-                Toast.makeText(this, "Select Transloc Widget from your home screen widget drawer to see arrival times.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Select Transloc Widget from your home screen widget drawer to see arrival times.", Toast.LENGTH_SHORT).show();
 
             }
             return true;
@@ -252,8 +259,14 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             if (args != null && args.containsKey("atw")) {
                 atw = (ArrivalTimeWidget) args.getSerializable("atw");
             } else {
-                throw new IllegalStateException("No atw received from SelectStopFragment");
+                throw new IllegalStateException("No atw received in CustomizeColorFragment");
             }
+
+            // get values from bundle if we came here from Edit context menu options on widget list
+            if(args.containsKey("isEdit")) isEdit = args.getBoolean("isEdit");
+            else isEdit = false;
+            if(args.containsKey("editingPosition")) editingPosition = args.getInt("editingPosition");
+            else editingPosition = -1;
 
             setHasOptionsMenu(true);
             getActivity().setTitle(R.string.app_name);
