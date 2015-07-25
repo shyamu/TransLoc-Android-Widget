@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     private static ArrivalTimeWidget atw;
     private static int appWidgetId = 0;
 
+    private static boolean isEdit = false;
+    private static int editingPosition = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_empty, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -92,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.finish_item) {
+        if(id == R.id.about) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
+        } else if(id == R.id.finish_item) {
             // Finish button from customize colors fragment
             Log.v(TAG, "Selected Finish");
 
@@ -104,7 +110,11 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                 listViewArray = new ArrayList<>();
             }
 
-            listViewArray.add(atw);
+            if(isEdit && editingPosition >= 0) listViewArray.set(editingPosition, atw);
+            else listViewArray.add(atw);
+
+            isEdit = false;
+            editingPosition = -1;
 
             try {
                 Utils.writeArrivalTimeWidgetsToStorage(this, listViewArray);
@@ -124,14 +134,13 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
                         .replace(R.id.widget_container, new WidgetListFragment())
                         .addToBackStack(null)
                         .commit();
-                Toast.makeText(this, "Select Transloc Widget from your home screen widget drawer to see arrival times.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Select Transloc Widget from your home screen widget drawer to see arrival times.", Toast.LENGTH_SHORT).show();
 
             }
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void getArrivalsFromServiceAndCreateWidget(ArrivalTimeWidget atw) {
@@ -209,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         if (appWidgetId > 0) {
             getArrivalsFromServiceAndCreateWidget(widget);
         } else {
-            Toast.makeText(getApplicationContext(), "Select Transloc Widget from your home screen widget drawer to see arrival times", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "To use this widget, add TransLoc Widget from your launcher's widget drawer", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -240,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             menu.clear();
-            inflater.inflate(R.menu.menu_widget_list, menu);
+            inflater.inflate(R.menu.menu_customize_colors, menu);
         }
 
         @Override
@@ -252,8 +261,14 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             if (args != null && args.containsKey("atw")) {
                 atw = (ArrivalTimeWidget) args.getSerializable("atw");
             } else {
-                throw new IllegalStateException("No atw received from SelectStopFragment");
+                throw new IllegalStateException("No atw received in CustomizeColorFragment");
             }
+
+            // get values from bundle if we came here from Edit context menu options on widget list
+            if(args.containsKey("isEdit")) isEdit = args.getBoolean("isEdit");
+            else isEdit = false;
+            if(args.containsKey("editingPosition")) editingPosition = args.getInt("editingPosition");
+            else editingPosition = -1;
 
             setHasOptionsMenu(true);
             getActivity().setTitle(R.string.app_name);

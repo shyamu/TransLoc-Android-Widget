@@ -1,6 +1,7 @@
 package com.shyamu.translocwidget.fragments;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.shyamu.translocwidget.MainActivity;
 import com.shyamu.translocwidget.R;
 import com.shyamu.translocwidget.bl.ArrivalTimeWidget;
 import com.shyamu.translocwidget.bl.Utils;
@@ -176,6 +178,25 @@ public class WidgetListFragment extends ListFragment {
                 widgetListViewAdapter.setWidgetList(listViewArray);
                 widgetListViewAdapter.notifyDataSetChanged();
                 return true;
+            case R.id.edit :
+                ArrivalTimeWidget widgetToEdit = listViewArray.get(info.position);
+
+                MainActivity.CustomizeColorsFragment customizeColorsFragment = new MainActivity.CustomizeColorsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isEdit", true);
+                bundle.putInt("editingPosition", info.position);
+                bundle.putSerializable("atw", widgetToEdit);
+                customizeColorsFragment.setArguments(bundle);
+
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getActivity().getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .replace(R.id.widget_container, customizeColorsFragment)
+                        .addToBackStack(null)
+                        .commit();
+
+
             default:
                 return super.onContextItemSelected(item);
         }

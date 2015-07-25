@@ -11,7 +11,7 @@ import com.shyamu.translocwidget.R;
 
 
 public class AboutActivity extends Activity {
-    private TextView tvTwitter;
+    private TextView tvWebsite;
     private TextView tvApiUrl;
     private TextView tvGithubUrl;
 
@@ -19,27 +19,18 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        tvTwitter = (TextView) findViewById(R.id.tvTwitter);
+        tvWebsite = (TextView) findViewById(R.id.tvWebsite);
         tvApiUrl = (TextView) findViewById(R.id.tvApiUrl);
         tvGithubUrl = (TextView) findViewById(R.id.tvGithubURL);
 
-        tvTwitter.setOnClickListener(view -> {
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("twitter://user?screen_name=ShyamuP"));
-                startActivity(intent);
-
-            }catch (Exception e) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://twitter.com/#!/ShyamuP")));
-            }
-        });
+        tvWebsite.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.shyamalpatel.com"))));
 
         tvApiUrl.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://api.transloc.com"))));
+                Uri.parse("https://www.mashape.com/transloc/"))));
 
         tvGithubUrl.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://shyamu.github.io/TransLoc-Android-Widget/"))));
+                Uri.parse("http://www.shyamalpatel.com/TransLoc-Android-Widget/"))));
 
     }
 }
