@@ -201,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements WidgetListFragmen
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             setResult(RESULT_OK, resultValue);
             Toast.makeText(this, "Tap on the widget to update!", Toast.LENGTH_LONG).show();
+            // reset static appWidgetId
+            appWidgetId = 0;
             finish();
         } else {
             Log.e(TAG, "arrivals is null!");
