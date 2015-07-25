@@ -1,21 +1,22 @@
-# TransLoc Android Widget 
+# TransLoc Widget 
 
-Standalone Android widget application for TransLoc bus tracking.
+Simple Android widget application for viewing bus arrival times on Android homescreen. 
 Uses [TransLoc Public API](http://api.transloc.com)
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.shyamu.translocwidget)
 
 
 I decided to make it open-source because the Android documentation and online tutorials are very lacking in terms of developing Android widgets.
-The source may be useful as reference for the following..
+The source may be useful as reference for the following...
+* Material design with appcompat libraries
+* Service calls using RxAndroid
 * Making a widget with a widget configuration activity
+* Responsive layouts for widgets
 * Using an appwidgetmanager
-* Parsing JSON using Jackson
 * Updating a widget when its tapped
-* Filtering onReceive actions
-* PendingIntent, AsyncTask, Spinner, RemoteViews, SharedPreferences
-* Using Android Holo ColorPicker
-* Making responsive layouts for widgets
+* Fragment communication
+* PendingIntent, RemoteViews
+* Usage of the libraies below
 
 
 # Building
@@ -23,9 +24,9 @@ The source may be useful as reference for the following..
 
 2) Get an API key from [Mashape](https://www.mashape.com) for the TransLoc API
 
-3) Go to root of repo and add your API key to line 17 of strings.xml
+3) Go to TransLocWidget/gradle.properties_UPDATEME and add API keys
 
-4) Move the strings.xml file from the repo root and put into TransLocWidget/src/main/res/values
+4) Rename gradle.properties_UPDATEME to gradle.properties
 
 5) Import project into Android Studio and build
 
@@ -34,8 +35,9 @@ All application bus data is from [TransLoc](http://api.transloc.com) and using t
 
 It also uses other libraries and APIs such as:
 
-* [JodaTime](http://joda-time.sourceforge.net/)
-* [Jackson JSON processor](http://jackson.codehaus.org/)
+* [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+* [Retrofit](http://square.github.io/retrofit/)
+* [OkHttp](http://square.github.io/okhttp/)
+* [TourGuide](https://github.com/worker8/TourGuide)
 * [Holo ColorPicker](https://github.com/LarsWerkman/HoloColorPicker) 
-
-Some TransLoc JSON parsing courtesy of [Michael Marley](https://github.com/mamarley)
+* [JodaTime](http://joda-time.sourceforge.net/)
